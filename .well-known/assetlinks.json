@@ -1,0 +1,18 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "uz.noyob.dokon",
+      "sha256_cert_fingerprints": ["2F:C8:C8:2F:30:21:9F:DD:88:A8:BF:35:2C:E3:39:94:85:73:D2:88:95:8B:50:6B:6A:AD:86:A6:1F:BB:17:81"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "uz.noyob.optom",
+      "sha256_cert_fingerprints": ["3D:91:D3:85:DD:1C:D2:39:82:7F:BC:72:AD:05:69:CB:ED:64:5F:A7:89:D4:05:FC:D0:FC:0F:15:3B:5F:15:84"]
+    }
+  }
+]
