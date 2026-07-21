@@ -244,7 +244,8 @@ const T = {
     brend:"Brend", dona:"dona", qoshildi:"✅ Savatga qo'shildi",
     bosh:"Savat bo'sh.<br>Do'kondan mahsulot tanlang.", jami:"Jami:",
     buyurtma:"✅ Buyurtma berish", davom:"🛍 Xaridni davom ettirish",
-    ism:"Ismingiz", tel:"Telefon raqamingiz",
+    ism:"Ismingiz", ism_ph:"Ism va familiya", ism_hint:"Telegram taxallusi emas — haqiqiy ism-familiyangizni yozing",
+    tel:"Telefon raqamingiz",
     olish:"Qanday olasiz?", d_pickup:"🏪 O'zim olib ketaman", d_deliv:"🚚 Yetkazib berish",
     d_pickup_i:"✅ Buyurtmangizni tayyorlab qo'yamiz — kelganingizda shay bo'ladi. To'lov do'konda: naqd yoki karta.",
     d_deliv_i:"Shahar bo'ylab yetkazish — 50 000 so'mdan",
@@ -254,6 +255,8 @@ const T = {
     loc_wait:"⏳ Joylashuv aniqlanmoqda...",
     loc_ok:"📍 Joylashuvingiz aniqlandi", loc_acc:"aniqlik", loc_change:"🗺 Boshqa joy tanlash",
     loc_err:"Joylashuvni aniqlab bo'lmadi — kartadan tanlang",
+    loc_low:"📍 Aniqlik past — kartada joyingizni aniq belgilang",
+    loc_low_chip:"Aniqlik past", loc_map_set:"Kartadan belgilandi", loc_fix:"🗺 Kartada to'g'rilash",
     map_t:"Manzilni belgilang", map_ok:"✅ Shu yerga yetkazilsin",
     map_hint:"Kartada kerakli joyga bosing yoki pinni suring", mo_ljal:"Mo'ljal / izoh (ixtiyoriy)",
     tolov:"To'lov usuli",
@@ -290,7 +293,8 @@ const T = {
     brend:"Бренд", dona:"шт", qoshildi:"✅ Добавлено в корзину",
     bosh:"Корзина пуста.<br>Выберите товары в магазине.", jami:"Итого:",
     buyurtma:"✅ Оформить заказ", davom:"🛍 Продолжить покупки",
-    ism:"Ваше имя", tel:"Номер телефона",
+    ism:"Ваше имя", ism_ph:"Имя и фамилия", ism_hint:"Не ник в Telegram — укажите настоящие имя и фамилию",
+    tel:"Номер телефона",
     olish:"Как получите?", d_pickup:"🏪 Заберу сам", d_deliv:"🚚 Доставка",
     d_pickup_i:"✅ Подготовим заказ — будет готов к вашему приходу. Оплата в магазине: наличными или картой.",
     d_deliv_i:"Доставка по городу — от 50 000 сум",
@@ -300,6 +304,8 @@ const T = {
     loc_wait:"⏳ Определяем местоположение...",
     loc_ok:"📍 Местоположение определено", loc_acc:"точность", loc_change:"🗺 Выбрать другое место",
     loc_err:"Не удалось определить — выберите на карте",
+    loc_low:"📍 Низкая точность — укажите место на карте точно",
+    loc_low_chip:"Низкая точность", loc_map_set:"Указано на карте", loc_fix:"🗺 Исправить на карте",
     map_t:"Укажите адрес", map_ok:"✅ Доставить сюда",
     map_hint:"Нажмите на карте или перетащите маркер", mo_ljal:"Ориентир / комментарий (необязательно)",
     tolov:"Способ оплаты",
@@ -535,9 +541,9 @@ function renderCart(){
     </div>`;
   }).join('');
 
-  const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
   const prof = loadProf();
-  const defName = prof.name || [user.first_name, user.last_name].filter(Boolean).join(' ');
+  // Telegram taxallusini ISHLATMAYMIZ — mijoz haqiqiy ismini yozadi
+  const defName = prof.name || '';
   const defTel = prof.tel || '';
   const pay = payFor(total);
 
@@ -546,10 +552,20 @@ function renderCart(){
   if(ordMode==='deliv'){
     let locState;
     if(geoBusy) locState = `<div class="flabel" style="color:var(--accent-dark)">${t('loc_wait')}</div>`;
-    else if(ordLoc) locState = `
-      <div class="stockchip" style="margin-top:8px">${t('loc_ok')} · ±${Math.round(ordLoc.acc||0)}m</div>
+    else if(ordLoc){
+      const fromMap = ordLocSrc==='map';
+      const acc = Math.round(ordLoc.acc||0);
+      const poor = !fromMap && acc > ACC_GOOD;      // aniqlik past
+      const chip = fromMap
+        ? `<div class="stockchip" style="margin-top:8px">📍 ${t('loc_map_set')}</div>`
+        : (poor
+            ? `<div class="stockchip" style="margin-top:8px;background:rgba(226,75,74,.12);color:var(--red)">⚠️ ${t('loc_low_chip')} · ±${acc}m</div>`
+            : `<div class="stockchip" style="margin-top:8px">${t('loc_ok')} · ±${acc}m</div>`);
+      locState = `
+      ${chip}
       <div style="font-size:12px;color:var(--hint);margin-top:4px">${ordLoc.lat.toFixed(5)}, ${ordLoc.lon.toFixed(5)}${ordLoc.note?' · '+esc(ordLoc.note):''}</div>
-      <span class="vchip" onclick="openMap()">${t('loc_change')}</span>`;
+      <span class="vchip ${poor?'sel':''}" onclick="openMap()">${poor?t('loc_fix'):t('loc_change')}</span>`;
+    }
     else locState = `
       <div style="margin-top:4px">
         <span class="vchip" onclick="geoAniqla()">${t('loc_btn')}</span>
@@ -585,7 +601,8 @@ function renderCart(){
     <div class="cartbox">
       <div class="total"><span>${t('jami')}</span><span>${fmt(total)}</span></div>
       <div class="flabel">${t('ism')}</div>
-      <input class="finput" id="o-name" value="${esc(defName)}" placeholder="${t('ism')}">
+      <input class="finput" id="o-name" value="${esc(defName)}" placeholder="${t('ism_ph')}">
+      <div style="font-size:11.5px;color:var(--hint);margin-top:4px">${t('ism_hint')}</div>
       <div class="flabel">${t('tel')}</div>
       <input class="finput" id="o-tel" type="tel" value="${esc(defTel)}" placeholder="+998 __ ___-__-__">
       ${(tg && tg.requestContact && !defTel) ? `<span class="vchip" onclick="telUlash()">${t('tel_ulash')}</span>` : ''}
@@ -605,20 +622,41 @@ function renderCart(){
     </div>`;
 }
 
-/* GPS orqali joylashuv */
+/* GPS orqali joylashuv.
+   ACC_GOOD dan yaxshi bo'lsa — ishonamiz; past bo'lsa (masalan kompyuterda IP orqali
+   100 km xato) — avtomatik kartani ochamiz, mijoz pinni aniq joyga qo'yadi. */
+const ACC_GOOD = 150;    // metr
+const ACC_JUNK = 5000;   // bundan yomon = IP-geolokatsiya, koordinataga ishonmaymiz
 function geoAniqla(){
   if(!navigator.geolocation){ toast(t('loc_err')); openMap(); return; }
   geoBusy=true; renderCart();
-  navigator.geolocation.getCurrentPosition(
+  let best=null, done=false;
+  const watch = navigator.geolocation.watchPosition(
     pos=>{
-      geoBusy=false;
-      ordLoc = {lat:pos.coords.latitude, lon:pos.coords.longitude, acc:pos.coords.accuracy};
-      ordLocSrc='gps';
-      renderCart();
+      const acc = pos.coords.accuracy || 99999;
+      if(!best || acc < best.acc) best = {lat:pos.coords.latitude, lon:pos.coords.longitude, acc};
+      if(acc <= ACC_GOOD && !done){ finish(); }   // yetarli aniq — darrov to'xtaymiz
     },
-    ()=>{ geoBusy=false; renderCart(); toast(t('loc_err')); openMap(); },
-    {enableHighAccuracy:true, timeout:12000, maximumAge:30000}
+    ()=>{ if(!done){ finish(true); } },
+    {enableHighAccuracy:true, timeout:15000, maximumAge:0}
   );
+  // 12 soniyada eng yaxshi natijani olamiz
+  const timer = setTimeout(()=>finish(), 12000);
+  function finish(err){
+    if(done) return; done=true;
+    clearTimeout(timer);
+    try{ navigator.geolocation.clearWatch(watch); }catch(e){}
+    geoBusy=false;
+    if(err || !best){ renderCart(); toast(t('loc_err')); openMap(); return; }
+    ordLoc = {lat:best.lat, lon:best.lon, acc:best.acc};
+    ordLocSrc='gps';
+    if(best.acc > ACC_GOOD){        // aniqlik past — kartada tasdiqlatamiz
+      toast(t('loc_low'));
+      openMap();
+    } else {
+      renderCart();
+    }
+  }
 }
 
 /* Kartadan tanlash (Leaflet — kerak bo'lganda yuklanadi) */
@@ -635,15 +673,17 @@ function openMap(){
   document.body.appendChild(s);
 }
 function initMap(){
-  const start = ordLoc ? [ordLoc.lat, ordLoc.lon] : [40.5286, 70.9425]; // Qo'qon markazi
+  // GPS aniqligi juda past bo'lsa (IP orqali) koordinataga ishonmaymiz — Qo'qon markazidan boshlaymiz
+  const trust = ordLoc && !(ordLocSrc==='gps' && ordLoc.acc > ACC_JUNK);
+  const start = trust ? [ordLoc.lat, ordLoc.lon] : [40.5286, 70.9425]; // Qo'qon markazi
   if(!_map){
-    _map = L.map('mapbox').setView(start, ordLoc?16:13);
+    _map = L.map('mapbox').setView(start, trust?16:13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       {maxZoom:19, attribution:'© OpenStreetMap'}).addTo(_map);
     _pin = L.marker(start, {draggable:true}).addTo(_map);
     _map.on('click', e=>_pin.setLatLng(e.latlng));
   } else {
-    _map.setView(start, ordLoc?16:13); _pin.setLatLng(start);
+    _map.setView(start, trust?16:13); _pin.setLatLng(start);
   }
   setTimeout(()=>_map.invalidateSize(), 150);
 }
@@ -718,9 +758,8 @@ function order(total){
 function renderProfile(){
   const body = el('profBody');
   if(!body) return;
-  const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
   const prof = loadProf();
-  const name = prof.name || [user.first_name, user.last_name].filter(Boolean).join(' ');
+  const name = prof.name || '';   // Telegram taxallusi emas
   const hist = loadHist();
   const histHtml = hist.length
     ? hist.map(h=>{
@@ -736,7 +775,8 @@ function renderProfile(){
     <div class="panel">
       <h3>${t('profil')}</h3>
       <div class="flabel">${t('ism')}</div>
-      <input class="finput" id="p-name" value="${esc(name)}" placeholder="${t('ism')}">
+      <input class="finput" id="p-name" value="${esc(name)}" placeholder="${t('ism_ph')}">
+      <div style="font-size:11.5px;color:var(--hint);margin-top:4px">${t('ism_hint')}</div>
       <div class="flabel">${t('tel')}</div>
       <input class="finput" id="p-tel" type="tel" value="${esc(prof.tel||'')}" placeholder="+998 __ ___-__-__">
       ${(tg && tg.requestContact) ? `<span class="vchip" onclick="telUlash()">${t('tel_ulash')}</span>` : ''}
