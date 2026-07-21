@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Дом Строй — Qurilish mollari markazi</title>
+<meta name="theme-color" content="#EF7F1A">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#F4F5F7;
+  --card:#ffffff;
+  --card2:#EDEFF2;
+  --text:#1F2A37;
+  --hint:#6B7686;
+  --accent:#EF7F1A;
+  --accent-dark:#D96F0E;
+  --navy:#1F2A37;
+  --line:rgba(31,42,55,.08);
+  --green:#1d9e75;
+  --red:#e24b4a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);padding-bottom:72px}
+.view{display:none}
+.view.active{display:block}
+.header{padding:14px 16px 6px}
+.header h1{font-size:20px}
+
+/* brend paneli */
+.brandbar{background:var(--navy);padding:14px 16px;border-radius:0 0 22px 22px}
+.brandrow{display:flex;align-items:center;gap:10px}
+.blogo{width:40px;height:40px;border-radius:11px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto}
+.bname{color:#fff;font-size:21px;font-weight:800;letter-spacing:.3px;line-height:1.1}
+.bname span{color:var(--accent)}
+.bsub{color:#93a0b0;font-size:11px;margin-top:2px}
+.lbtn{padding:6px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#cfd7e0;font-size:12.5px;font-weight:700;cursor:pointer}
+.lbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{margin:12px 0 0;display:flex;gap:8px}
+.search input{flex:1;border:none;border-radius:12px;padding:11px 14px;font-size:15px;background:#fff;color:#1a1a1a;outline:none}
+.chanbtn{width:100%;margin-top:10px;border:none;border-radius:12px;padding:11px 14px;background:var(--accent);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.chanbtn:active{transform:scale(.98)}
+.updated{padding:6px 16px 0;color:var(--hint);font-size:11px}
+
+.section-title{font-size:17px;font-weight:700;margin:18px 16px 10px;letter-spacing:-.2px}
+.shelf{display:flex;gap:10px;overflow-x:auto;padding:2px 16px 6px;scrollbar-width:none}
+.shelf::-webkit-scrollbar{display:none}
+.scard{flex:0 0 150px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative;cursor:pointer;box-shadow:0 1px 4px rgba(31,42,55,.05)}
+.scard img{width:100%;height:150px;object-fit:contain;display:block;background:#fff}
+.scard .sbadge{position:absolute;top:8px;left:8px;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;background:var(--red)}
+.scard .sbadge.new{background:var(--green)}
+.scard .sbadge.top{background:var(--navy)}
+.scard .snm{font-size:12px;padding:8px 10px 2px;height:38px;overflow:hidden;line-height:1.25}
+.scard .spr{font-size:13.5px;font-weight:700;padding:0 10px 10px;color:var(--accent-dark)}
+.oldp{color:var(--hint);text-decoration:line-through;font-weight:400;font-size:11px;margin-right:5px}
+
+.cats{display:grid;grid-auto-flow:column;grid-template-rows:1fr 1fr;grid-auto-columns:minmax(146px,1fr);gap:10px;overflow-x:auto;padding:6px 16px 12px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cattile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:3px;white-space:nowrap}
+.cattile.active{background:var(--navy);border-color:var(--navy)}
+.cattile .cnm{font-size:13px;font-weight:600}
+.cattile .cnt{font-size:11px;color:var(--hint)}
+.cattile.active .cnm{color:#fff}
+.cattile.active .cnt{color:#93a0b0}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:8px 16px 18px}
+.pcard{background:var(--card);border-radius:18px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;box-shadow:0 1px 4px rgba(31,42,55,.05)}
+.pimg{position:relative}
+.pimg img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#fff}
+.discbadge{position:absolute;top:9px;left:9px;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:9px}
+.qadd{position:absolute;right:9px;bottom:9px;width:38px;height:38px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(31,42,55,.25)}
+.qadd:active{transform:scale(.92)}
+.pinfo{padding:10px 12px 13px;cursor:pointer}
+.pbrand{font-size:10.5px;color:var(--hint);text-transform:uppercase;letter-spacing:.4px;height:14px;overflow:hidden}
+.pname{font-size:13px;line-height:1.3;height:34px;overflow:hidden;margin-top:2px}
+.pprice{margin-top:6px;font-size:15px;font-weight:700;color:var(--accent-dark)}
+.empty{text-align:center;color:var(--hint);padding:40px 20px;font-size:14px}
+
+/* savat */
+.cartlist{padding:0 16px}
+.cartlist .ci{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.cartlist .ci img{width:54px;height:54px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line)}
+.cartlist .ci .nm{flex:1;font-size:13px;line-height:1.25}
+.cartlist .ci .nm .pr{color:var(--accent-dark);font-weight:700;margin-top:3px}
+.cartlist .ci .ctr{display:flex;align-items:center;gap:8px}
+.cartlist .ci .ctr button{width:30px;height:30px;border-radius:8px;border:none;background:var(--card2);font-size:16px;cursor:pointer;color:var(--text)}
+.cartlist .ci .ctr .q{min-width:24px;text-align:center;font-weight:700;font-size:14px}
+.cartbox{margin:12px 16px;background:var(--card);border-radius:14px;padding:14px 16px;border:1px solid var(--line)}
+.total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin:8px 0}
+.bigbtn{width:100%;border:none;border-radius:12px;padding:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px}
+.bigbtn.ghost{background:var(--card2);color:var(--text)}
+.finput{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 13px;font-size:15px;background:var(--card2);color:var(--text);outline:none;margin-top:8px}
+.flabel{font-size:13px;font-weight:700;margin-top:12px;color:var(--hint)}
+.vchip{padding:9px 13px;border-radius:11px;border:1.5px solid var(--line);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;margin:6px 6px 0 0;display:inline-block}
+.vchip.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* filiallar */
+.branch{margin:10px 16px;background:var(--card);border-radius:14px;padding:13px 15px;border:1px solid var(--line);display:flex;gap:11px;align-items:flex-start}
+.branch .ic{font-size:20px;margin-top:1px}
+.branch .bt{font-size:14px;font-weight:700}
+.branch .ba{font-size:12.5px;color:var(--hint);margin-top:2px;line-height:1.4}
+
+/* aloqa */
+.panel{margin:12px 16px;background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--line)}
+.panel h3{font-size:15px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--hint);flex:0 0 auto}
+.row .v{font-weight:600;text-align:right;word-break:break-word}
+.row .v a{color:var(--accent-dark);text-decoration:none}
+.promo{margin:12px 16px;background:linear-gradient(135deg,#EF7F1A,#D95E0E);border-radius:16px;padding:16px;color:#fff}
+.promo .pt{font-size:15px;font-weight:800;line-height:1.3}
+.promo .pd{font-size:12.5px;margin-top:5px;opacity:.92;line-height:1.45}
+
+/* pastki menyu */
+.nav{position:fixed;bottom:0;left:0;right:0;height:calc(58px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--card);box-shadow:0 -1px 8px rgba(31,42,55,.08);display:flex;z-index:40}
+.nav button{flex:1;border:none;background:none;color:var(--hint);font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;position:relative}
+.nav button .ic{font-size:20px}
+.nav button.active{color:var(--accent-dark)}
+.nav .badge{position:absolute;top:4px;right:50%;transform:translateX(18px);background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;z-index:50}
+.modal.show{display:flex}
+.sheet{background:var(--bg);width:100%;max-height:88vh;border-radius:18px 18px 0 0;overflow-y:auto;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.sheet img.big{width:100%;aspect-ratio:1/1;max-height:58vh;object-fit:contain;background:#fff}
+.sheet .body{padding:14px 16px}
+.sheet h2{font-size:17px;line-height:1.3}
+.sheet .price{font-size:21px;font-weight:800;color:var(--accent-dark);margin:8px 0 2px}
+.sheet .meta{color:var(--hint);font-size:13px;margin-bottom:12px;line-height:1.5}
+.qtyrow{display:flex;align-items:center;gap:14px;margin:10px 0 16px}
+.qtyrow button{width:44px;height:44px;border-radius:12px;border:none;background:var(--card);font-size:22px;cursor:pointer;border:1px solid var(--line)}
+.qtyrow .qv{font-size:18px;font-weight:700;width:72px;text-align:center}
+.stockchip{display:inline-block;background:rgba(29,158,117,.12);color:var(--green);font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;margin-top:6px}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,.92);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:99;display:none}
+.demo-tag{position:fixed;top:8px;right:8px;background:rgba(31,42,55,.85);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:8px;z-index:45;letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<div class="demo-tag">DEMO</div>
+
+<!-- DO'KON -->
+<div class="view active" id="v-shop">
+  <div class="brandbar">
+    <div class="brandrow">
+      <div class="blogo">🏗</div>
+      <div>
+        <div class="bname">Дом <span>Строй</span></div>
+        <div class="bsub" id="bsub">Qurilish mollari markazi · 2009-yildan</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="lbtn" id="lb-uz" onclick="setLang('uz')">UZ</button>
+        <button class="lbtn" id="lb-ru" onclick="setLang('ru')">RU</button>
+      </div>
+    </div>
+    <div class="search"><input id="q" type="search" placeholder="Mahsulot yoki artikul..."></div>
+    <button class="chanbtn" id="chanBtn" onclick="kanalOch()">📢 Telegram kanalimiz — aksiyalar va yangiliklar</button>
+  </div>
+  <div class="updated" id="updated"></div>
+  <div id="shelves"></div>
+  <div class="section-title" id="catTitle">Kategoriyalar</div>
+  <div class="cats" id="cats"></div>
+  <div class="section-title" id="gridTitle">Barcha mahsulotlar</div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">Hech narsa topilmadi 😕</div>
+</div>
+
+<!-- SAVAT -->
+<div class="view" id="v-cart">
+  <div class="header"><h1 id="cartH">🛒 Savat</h1></div>
+  <div id="cartBody"></div>
+</div>
+
+<!-- FILIALLAR -->
+<div class="view" id="v-branches">
+  <div class="header"><h1 id="brH">📍 Filiallarimiz</h1></div>
+  <div id="brBody"></div>
+</div>
+
+<!-- ALOQA -->
+<div class="view" id="v-info">
+  <div class="header"><h1 id="infH">ℹ️ Aloqa</h1></div>
+  <div id="infBody"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button data-v="shop" class="active"><span class="ic">🛍</span><span id="nv1">Do'kon</span></button>
+  <button data-v="cart"><span class="ic">🛒</span><span id="nv2">Savat</span><span class="badge" id="navBadge" style="display:none">0</span></button>
+  <button data-v="branches"><span class="ic">📍</span><span id="nv3">Filiallar</span></button>
+  <button data-v="info"><span class="ic">ℹ️</span><span id="nv4">Aloqa</span></button>
+</div>
+
+<div class="modal" id="pmodal"><div class="sheet" id="psheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const tg = window.Telegram ? Telegram.WebApp : null;
+if (tg) { tg.ready(); tg.expand(); }
+
+let DATA = {products: [], categories: [], shelves: []};
+let cart = {};
+let activeCat = '', query = '', curView = 'shop';
+let LANG = localStorage.getItem('ds_lang') || 'uz';
+
+const BRANCHES = [
+  {uz:"Qo'qon — bosh do'kon", ru:"Коканд — главный магазин", a_uz:"Furqat ko'chasi, 100-uy", a_ru:"ул. Фурката, 100", tel:"+998735412222"},
+  {uz:"Qo'qon — Dehqon bozori", ru:"Коканд — Дехканский рынок", a_uz:"Dehqon bozori yonida", a_ru:"рядом с Дехканским рынком", tel:"+998735412222"},
+  {uz:"Qo'qon — Hamza teatri", ru:"Коканд — театр Хамзы", a_uz:"Hamza teatri ro'parasida", a_ru:"напротив театра Хамзы", tel:"+998735412222"},
+  {uz:"Farg'ona", ru:"Фергана", a_uz:"Polsha bozori yonida", a_ru:"рядом с рынком Польша", tel:"+998994370701"},
+  {uz:"Namangan", ru:"Наманган", a_uz:"Shamshiboy mavzesi", a_ru:"массив Шамшибой", tel:"+998994370701"},
+  {uz:"Yaypan", ru:"Яйпан", a_uz:"Poliklinika yaqinida", a_ru:"рядом с поликлиникой", tel:"+998994370701"},
+];
+
+const T = {
+  uz: {
+    bsub:"Qurilish mollari markazi · 2009-yildan",
+    kanal:"📢 Telegram kanalimiz — aksiyalar va yangiliklar",
+    som:"so'm", qidiruv:"Mahsulot yoki artikul...",
+    kategoriyalar:"Kategoriyalar", hammasi:"Hammasi", barcha:"Barcha mahsulotlar",
+    natija:"Qidiruv natijasi", topilmadi:"Hech narsa topilmadi 😕",
+    savat_h:"🛒 Savat", filial_h:"📍 Filiallarimiz", aloqa_h:"ℹ️ Aloqa",
+    nav_shop:"Do'kon", nav_cart:"Savat", nav_br:"Filiallar", nav_inf:"Aloqa",
+    savatga:"🛒 Savatga qo'shish", mavjud:"✅ Sotuvda bor", artikul:"Artikul",
+    brend:"Brend", dona:"dona", qoshildi:"✅ Savatga qo'shildi",
+    bosh:"Savat bo'sh.<br>Do'kondan mahsulot tanlang.", jami:"Jami:",
+    buyurtma:"✅ Buyurtma berish", davom:"🛍 Xaridni davom ettirish",
+    ism:"Ismingiz", tel:"Telefon raqamingiz",
+    olish:"Qanday olasiz?", d_pickup:"🏪 Filialdan olib ketaman", d_deliv:"🚚 Yetkazib berilsin",
+    filial_t:"Qaysi filial?", manzil:"Yetkazish manzili",
+    ord_ok:"✅ Buyurtmangiz qabul qilindi!",
+    ord_note:"Operatorlarimiz tez orada siz bilan bog'lanadi.",
+    ord_demo:"(Bu demo: haqiqiy botda buyurtma to'g'ridan-to'g'ri menejerga tushadi)",
+    xato_ism:"Ismingizni yozing", xato_tel:"Telefon raqamingizni yozing",
+    qongiroq:"📞 Qo'ng'iroq qilish",
+    promo_t:"🚗 DomStroy'dan xarid qiling — 4 ta Damasdan birini yutib oling!",
+    promo_d:"Har 3 mln so'mlik xaridga kupon. Batafsil: ☎️ 73 541-22-22",
+    about:"Дом Строй — 2009-yildan beri Farg'ona vodiysida qurilish mollari savdosi. 6 ta do'kon, showroom va dizayn-studiya.",
+    dt:"Ma'lumotlar domstroymarket.uz saytidan olingan · Yangilangan:",
+  },
+  ru: {
+    bsub:"Центр стройматериалов · с 2009 года",
+    kanal:"📢 Наш Telegram-канал — акции и новинки",
+    som:"сум", qidiruv:"Товар или артикул...",
+    kategoriyalar:"Категории", hammasi:"Все", barcha:"Все товары",
+    natija:"Результаты поиска", topilmadi:"Ничего не найдено 😕",
+    savat_h:"🛒 Корзина", filial_h:"📍 Наши филиалы", aloqa_h:"ℹ️ Контакты",
+    nav_shop:"Магазин", nav_cart:"Корзина", nav_br:"Филиалы", nav_inf:"Контакты",
+    savatga:"🛒 В корзину", mavjud:"✅ В наличии", artikul:"Артикул",
+    brend:"Бренд", dona:"шт", qoshildi:"✅ Добавлено в корзину",
+    bosh:"Корзина пуста.<br>Выберите товары в магазине.", jami:"Итого:",
+    buyurtma:"✅ Оформить заказ", davom:"🛍 Продолжить покупки",
+    ism:"Ваше имя", tel:"Номер телефона",
+    olish:"Как получите?", d_pickup:"🏪 Заберу из филиала", d_deliv:"🚚 Доставка",
+    filial_t:"Какой филиал?", manzil:"Адрес доставки",
+    ord_ok:"✅ Ваш заказ принят!",
+    ord_note:"Наши операторы свяжутся с вами в ближайшее время.",
+    ord_demo:"(Это демо: в рабочем боте заказ сразу попадает менеджеру)",
+    xato_ism:"Напишите ваше имя", xato_tel:"Напишите номер телефона",
+    qongiroq:"📞 Позвонить",
+    promo_t:"🚗 Покупайте в DomStroy — выиграйте один из 4 Damas!",
+    promo_d:"Купон за каждую покупку на 3 млн сум. Подробнее: ☎️ 73 541-22-22",
+    about:"Дом Строй — продажа стройматериалов в Ферганской долине с 2009 года. 6 магазинов, шоурум и дизайн-студия.",
+    dt:"Данные с сайта domstroymarket.uz · Обновлено:",
+  },
+};
+const t = k => (T[LANG] && T[LANG][k]) || T.uz[k] || k;
+const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + t('som');
+const el = id => document.getElementById(id);
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+function toast(m){ const x=el('toast'); x.textContent=m; x.style.display='block'; clearTimeout(x._h); x._h=setTimeout(()=>x.style.display='none',1600); }
+function kanalOch(){
+  const u = (DATA.channel || 'https://t.me/domstroyofficial');
+  if (tg && tg.openTelegramLink) tg.openTelegramLink(u);
+  else window.open(u, '_blank');
+}
+function catName(key){
+  const c = (DATA.categories||[]).find(c=>c.key===key);
+  return c ? (c[LANG] || c.uz) : key;
+}
+
+function setLang(l){
+  LANG = l; localStorage.setItem('ds_lang', l);
+  applyLang(); renderShop(); renderCart(); renderBranches(); renderInfo();
+}
+function applyLang(){
+  el('lb-uz').classList.toggle('on', LANG==='uz');
+  el('lb-ru').classList.toggle('on', LANG==='ru');
+  el('bsub').textContent = t('bsub');
+  el('chanBtn').textContent = t('kanal');
+  el('q').placeholder = t('qidiruv');
+  el('catTitle').textContent = t('kategoriyalar');
+  el('cartH').textContent = t('savat_h');
+  el('brH').textContent = t('filial_h');
+  el('infH').textContent = t('aloqa_h');
+  el('nv1').textContent = t('nav_shop');
+  el('nv2').textContent = t('nav_cart');
+  el('nv3').textContent = t('nav_br');
+  el('nv4').textContent = t('nav_inf');
+  el('empty').textContent = t('topilmadi');
+  el('updated').textContent = t('dt') + ' ' + (DATA.generated_at||'');
+}
+
+async function load(){
+  try{
+    const r = await fetch('data/products.json?v=' + Date.now());
+    DATA = await r.json();
+    applyLang();
+    renderShop(); renderBranches(); renderInfo();
+  }catch(e){
+    el('empty').style.display='block';
+    el('empty').textContent='Katalog yuklanmadi. Internetni tekshiring.';
+  }
+}
+
+function prodById(id){ return (DATA.products||[]).find(p=>p.id===id); }
+
+function renderShop(){
+  // javonlar
+  const sh = el('shelves'); sh.innerHTML='';
+  if(!query && !activeCat){
+    (DATA.shelves||[]).forEach(s=>{
+      const items = (s.ids||[]).map(prodById).filter(Boolean);
+      if(!items.length) return;
+      const title = document.createElement('div');
+      title.className='section-title';
+      title.textContent = s.title[LANG] || s.title.uz;
+      sh.appendChild(title);
+      const rowEl = document.createElement('div');
+      rowEl.className='shelf';
+      rowEl.innerHTML = items.map(p=>`
+        <div class="scard" onclick="openP('${p.id}')">
+          <span class="sbadge ${s.key==='new'?'new':(s.key==='top'?'top':'')}">${s.badge}</span>
+          <img src="${p.photo}" loading="lazy" alt="">
+          <div class="snm">${esc(p.name)}</div>
+          <div class="spr">${p.old_price?`<span class="oldp">${fmt(p.old_price)}</span>`:''}${fmt(p.price)}</div>
+        </div>`).join('');
+      sh.appendChild(rowEl);
+    });
+  }
+  // kategoriyalar
+  const counts = {};
+  (DATA.products||[]).forEach(p=>{ counts[p.cat]=(counts[p.cat]||0)+1; });
+  const cats = el('cats');
+  cats.innerHTML = `<div class="cattile ${!activeCat?'active':''}" onclick="setCat('')"><div class="cnm">${t('hammasi')}</div><div class="cnt">${(DATA.products||[]).length}</div></div>` +
+    (DATA.categories||[]).filter(c=>counts[c.key]).map(c=>`
+      <div class="cattile ${activeCat===c.key?'active':''}" onclick="setCat('${c.key}')">
+        <div class="cnm">${c[LANG]||c.uz}</div><div class="cnt">${counts[c.key]}</div>
+      </div>`).join('');
+  // grid
+  let list = DATA.products||[];
+  if(activeCat) list = list.filter(p=>p.cat===activeCat);
+  if(query){
+    const q = query.toLowerCase();
+    list = list.filter(p=>(p.name+' '+p.sku+' '+(p.brand||'')).toLowerCase().includes(q));
+  }
+  el('gridTitle').textContent = query ? t('natija') : (activeCat ? catName(activeCat) : t('barcha'));
+  el('grid').innerHTML = list.map(p=>`
+    <div class="pcard">
+      <div class="pimg" onclick="openP('${p.id}')">
+        ${p.disc?`<span class="discbadge">-${p.disc}%</span>`:''}
+        <img src="${p.photo}" loading="lazy" alt="">
+        <button class="qadd" onclick="event.stopPropagation();add('${p.id}',1)">+</button>
+      </div>
+      <div class="pinfo" onclick="openP('${p.id}')">
+        <div class="pbrand">${esc(p.brand||'')}</div>
+        <div class="pname">${esc(p.name)}</div>
+        <div class="pprice">${p.old_price?`<span class="oldp">${fmt(p.old_price)}</span>`:''}${fmt(p.price)}</div>
+      </div>
+    </div>`).join('');
+  el('empty').style.display = list.length ? 'none' : 'block';
+}
+function setCat(c){ activeCat=c; renderShop(); }
+el('q').addEventListener('input', e=>{ query=e.target.value.trim(); renderShop(); });
+
+/* mahsulot oynasi */
+let curP = null, curQty = 1;
+function openP(id){
+  curP = prodById(id); if(!curP) return;
+  curQty = 1;
+  drawSheet();
+  el('pmodal').classList.add('show');
+}
+function drawSheet(){
+  const p = curP;
+  el('psheet').innerHTML = `
+    <img class="big" src="${p.photo}" alt="">
+    <div class="body">
+      <h2>${esc(p.name)}</h2>
+      <div class="price">${p.old_price?`<span class="oldp" style="font-size:14px">${fmt(p.old_price)}</span>`:''}${fmt(p.price)}</div>
+      <div class="stockchip">${t('mavjud')} · ${p.stock} ${t('dona')}</div>
+      <div class="meta" style="margin-top:10px">
+        ${p.brand?`${t('brend')}: <b>${esc(p.brand)}</b><br>`:''}
+        ${t('artikul')}: <b>${p.sku}</b>
+      </div>
+      <div class="qtyrow">
+        <button onclick="qty(-1)">−</button>
+        <div class="qv" id="qv">${curQty}</div>
+        <button onclick="qty(1)">+</button>
+      </div>
+      <button class="bigbtn" onclick="add(curP.id, curQty); closeP()">${t('savatga')}</button>
+    </div>`;
+}
+function qty(d){ curQty=Math.max(1,Math.min(curP.stock||99,curQty+d)); el('qv').textContent=curQty; }
+function closeP(){ el('pmodal').classList.remove('show'); }
+el('pmodal').addEventListener('click', e=>{ if(e.target.id==='pmodal') closeP(); });
+
+/* savat */
+function add(id, n){
+  cart[id]=(cart[id]||0)+n;
+  toast(t('qoshildi'));
+  updateBadge(); renderCart();
+  if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+function setQ(id, n){
+  if(n<=0) delete cart[id]; else cart[id]=n;
+  updateBadge(); renderCart();
+}
+function updateBadge(){
+  const n = Object.values(cart).reduce((a,b)=>a+b,0);
+  const b = el('navBadge');
+  b.style.display = n?'flex':'none'; b.textContent=n;
+}
+let ordMode='pickup', ordBranch=0;
+function renderCart(){
+  const body = el('cartBody');
+  const ids = Object.keys(cart);
+  if(!ids.length){
+    body.innerHTML = `<div class="empty">${t('bosh')}</div>
+      <div style="padding:0 16px"><button class="bigbtn ghost" onclick="nav('shop')">${t('davom')}</button></div>`;
+    return;
+  }
+  let total=0;
+  const rows = ids.map(id=>{
+    const p=prodById(id); if(!p) return '';
+    const s=p.price*cart[id]; total+=s;
+    return `<div class="ci">
+      <img src="${p.photo}" alt="">
+      <div class="nm">${esc(p.name)}<div class="pr">${fmt(p.price)}</div></div>
+      <div class="ctr">
+        <button onclick="setQ('${id}',${cart[id]-1})">−</button>
+        <span class="q">${cart[id]}</span>
+        <button onclick="setQ('${id}',${cart[id]+1})">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+  const defName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+  body.innerHTML = `
+    <div class="cartlist">${rows}</div>
+    <div class="cartbox">
+      <div class="total"><span>${t('jami')}</span><span>${fmt(total)}</span></div>
+      <div class="flabel">${t('ism')}</div>
+      <input class="finput" id="o-name" value="${esc(defName)}" placeholder="${t('ism')}">
+      <div class="flabel">${t('tel')}</div>
+      <input class="finput" id="o-tel" type="tel" placeholder="+998 __ ___-__-__">
+      <div class="flabel">${t('olish')}</div>
+      <div>
+        <span class="vchip ${ordMode==='pickup'?'sel':''}" onclick="ordMode='pickup';renderCart()">${t('d_pickup')}</span>
+        <span class="vchip ${ordMode==='deliv'?'sel':''}" onclick="ordMode='deliv';renderCart()">${t('d_deliv')}</span>
+      </div>
+      <div id="modebox">${
+        ordMode==='pickup'
+        ? `<div class="flabel">${t('filial_t')}</div><div>${BRANCHES.map((b,i)=>`<span class="vchip ${ordBranch===i?'sel':''}" onclick="ordBranch=${i};renderCart()">${b[LANG]||b.uz}</span>`).join('')}</div>`
+        : `<div class="flabel">${t('manzil')}</div><input class="finput" id="o-addr" placeholder="${t('manzil')}">`
+      }</div>
+      <button class="bigbtn" onclick="order(${total})">${t('buyurtma')}</button>
+    </div>`;
+}
+function order(total){
+  const name = el('o-name').value.trim();
+  const tel = el('o-tel').value.trim();
+  if(!name){ toast(t('xato_ism')); return; }
+  if(!tel){ toast(t('xato_tel')); return; }
+  const items = Object.keys(cart).map(id=>{
+    const p=prodById(id);
+    return {id, sku:p.sku, name:p.name, qty:cart[id], price:p.price};
+  });
+  const payload = {
+    type:'order', shop:'domstroy', name, tel, total,
+    mode: ordMode,
+    branch: ordMode==='pickup' ? (BRANCHES[ordBranch].uz) : null,
+    address: ordMode==='deliv' ? (el('o-addr')?el('o-addr').value.trim():'') : null,
+    items,
+  };
+  if (tg && tg.sendData) {
+    try { tg.sendData(JSON.stringify(payload)); } catch(e) {}
+  }
+  cart={}; updateBadge();
+  el('cartBody').innerHTML = `<div class="empty" style="padding-top:60px">
+    <div style="font-size:44px">🎉</div><br>
+    <b style="font-size:17px;color:var(--text)">${t('ord_ok')}</b><br><br>
+    ${t('ord_note')}<br><br>
+    <span style="font-size:12px">${t('ord_demo')}</span><br><br>
+    <button class="bigbtn ghost" style="max-width:280px" onclick="nav('shop')">${t('davom')}</button>
+  </div>`;
+}
+
+/* filiallar */
+function renderBranches(){
+  el('brBody').innerHTML = BRANCHES.map(b=>`
+    <div class="branch">
+      <div class="ic">🏪</div>
+      <div style="flex:1">
+        <div class="bt">${b[LANG]||b.uz}</div>
+        <div class="ba">${LANG==='ru'?b.a_ru:b.a_uz}</div>
+      </div>
+      <a href="tel:${b.tel}" style="text-decoration:none;font-size:20px">📞</a>
+    </div>`).join('');
+}
+
+/* aloqa */
+function renderInfo(){
+  el('infBody').innerHTML = `
+    <div class="promo"><div class="pt">${t('promo_t')}</div><div class="pd">${t('promo_d')}</div></div>
+    <div class="panel">
+      <h3>Дом Строй</h3>
+      <div style="font-size:13.5px;color:var(--hint);line-height:1.55">${t('about')}</div>
+    </div>
+    <div class="panel">
+      <div class="row"><span class="k">☎️</span><span class="v"><a href="tel:+998735412222">+998 73 541-22-22</a></span></div>
+      <div class="row"><span class="k">☎️</span><span class="v"><a href="tel:+998994370701">+998 99 437-07-01</a></span></div>
+      <div class="row"><span class="k">Telegram</span><span class="v"><a href="https://t.me/domstroyofficial">@domstroyofficial</a></span></div>
+      <div class="row"><span class="k">Instagram</span><span class="v"><a href="https://www.instagram.com/domstroy_official/">@domstroy_official</a></span></div>
+      <div class="row"><span class="k">Dizayn</span><span class="v"><a href="https://www.instagram.com/domstroy_designstudio/">@domstroy_designstudio</a></span></div>
+      <div class="row"><span class="k">Showroom</span><span class="v"><a href="https://www.instagram.com/domstroy_showroom/">@domstroy_showroom</a></span></div>
+      <div class="row"><span class="k">Sayt</span><span class="v"><a href="https://domstroymarket.uz">domstroymarket.uz</a></span></div>
+    </div>`;
+}
+
+/* navigatsiya */
+function nav(v){
+  curView=v;
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  el('v-'+(v==='shop'?'shop':v==='cart'?'cart':v==='branches'?'branches':'info')).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.v===v));
+  window.scrollTo(0,0);
+  if(v==='cart') renderCart();
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.v)));
+
+load();
+</script>
+</body>
+</html>

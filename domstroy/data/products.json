@@ -1,0 +1,676 @@
+{
+ "generated_at": "21.07.2026 12:17",
+ "shop": "Дом Строй",
+ "channel": "https://t.me/domstroyofficial",
+ "phone": "+998 73 541-22-22",
+ "categories": [
+  {
+   "key": "boyoq",
+   "uz": "🎨 Bo'yoq va emulsiya",
+   "ru": "🎨 Краски и эмульсии"
+  },
+  {
+   "key": "oboy",
+   "uz": "🖼 Oboylar",
+   "ru": "🖼 Обои"
+  },
+  {
+   "key": "yoritgich",
+   "uz": "💡 Yoritgichlar",
+   "ru": "💡 Светильники"
+  },
+  {
+   "key": "elektrika",
+   "uz": "🔌 Elektrika",
+   "ru": "🔌 Электрика"
+  },
+  {
+   "key": "asbob",
+   "uz": "🛠 Asboblar",
+   "ru": "🛠 Инструменты"
+  },
+  {
+   "key": "dekor",
+   "uz": "🏛 Dekor va plintus",
+   "ru": "🏛 Декор и плинтус"
+  },
+  {
+   "key": "boshqa",
+   "uz": "📦 Boshqalar",
+   "ru": "📦 Прочее"
+  }
+ ],
+ "shelves": [
+  {
+   "key": "disc",
+   "title": {
+    "uz": "🔥 Chegirmadagi mahsulotlar",
+    "ru": "🔥 Товары со скидкой"
+   },
+   "badge": "CHEGIRMA",
+   "ids": [
+    "647",
+    "5984"
+   ]
+  },
+  {
+   "key": "new",
+   "title": {
+    "uz": "🆕 Yangi kelganlar",
+    "ru": "🆕 Новинки"
+   },
+   "badge": "YANGI",
+   "ids": [
+    "102019",
+    "102021",
+    "102251",
+    "105455",
+    "107694",
+    "107695",
+    "102307",
+    "101710",
+    "100064"
+   ]
+  },
+  {
+   "key": "top",
+   "title": {
+    "uz": "⭐ Premium tanlov",
+    "ru": "⭐ Премиум выбор"
+   },
+   "badge": "TOP",
+   "ids": [
+    "3310",
+    "649",
+    "647",
+    "107694",
+    "98285",
+    "98302",
+    "102251",
+    "98301"
+   ]
+  }
+ ],
+ "products": [
+  {
+   "id": "4781",
+   "name": "Rangli imulsiya (18kg) 05",
+   "price": 17000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/26/d7/26d7f3ba6ae4cff3004f50e6d569ccbf.webp",
+   "sku": "4781",
+   "cat": "boyoq",
+   "brand": "Dunya boyasi",
+   "stock": 129,
+   "unit": "kg",
+   "is_new": false
+  },
+  {
+   "id": "102019",
+   "name": "De Baget M30U2 (24d)",
+   "price": 68930,
+   "photo": "https://panel.domstroymarket.uz/media/cache/db/f9/dbf97a0ac301bcada798295f30b1079d.webp",
+   "sku": "102019",
+   "cat": "dekor",
+   "brand": "",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "2745",
+   "name": "KOF Olmos Karonka 50mm",
+   "price": 23000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/54/c0/54c08bde4881c458873dcb781c2d3d94.webp",
+   "sku": "2745",
+   "cat": "asbob",
+   "brand": "KOF",
+   "stock": 10,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "4783",
+   "name": "Rangli imulsiya (18kg) 08",
+   "price": 17000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/de/15/de150b0f08f1a42cdaad31bbd2cd1094.webp",
+   "sku": "4783",
+   "cat": "boyoq",
+   "brand": "Dunya boyasi",
+   "stock": 176,
+   "unit": "kg",
+   "is_new": false
+  },
+  {
+   "id": "5994",
+   "name": "Yuda Valik Stakan Izimurud (2211) (50)",
+   "price": 45000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/35/35/35353ae74a4ee0840af5823391e98883.webp",
+   "sku": "5994",
+   "cat": "asbob",
+   "brand": "Yuda",
+   "stock": 44,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "102021",
+   "name": "De Baget M5U2 (15d)",
+   "price": 65294,
+   "photo": "https://panel.domstroymarket.uz/media/cache/9b/89/9b897202811de9181ea32bc44cb5cabd.webp",
+   "sku": "102021",
+   "cat": "dekor",
+   "brand": "",
+   "stock": 4,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "4479",
+   "name": "Плинтус 8 см 823 (20д)",
+   "price": 22000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/21/b5/21b56e32c4b7ab6ed03f34b67cf3dab1.webp",
+   "sku": "4479",
+   "cat": "dekor",
+   "brand": "Remark",
+   "stock": 80,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "4769",
+   "name": "Rangli imulsiya  (18kg) 111",
+   "price": 17000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/9a/f0/9af0865bceed0176deb5b34f49eb2683.webp",
+   "sku": "4769",
+   "cat": "boyoq",
+   "brand": "Dunya boyasi",
+   "stock": 201,
+   "unit": "kg",
+   "is_new": false
+  },
+  {
+   "id": "2746",
+   "name": "KOF Olmos Karonka 60mm",
+   "price": 29000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/eb/4a/eb4a7511a09ff17144cc499766d66036.webp",
+   "sku": "2746",
+   "cat": "asbob",
+   "brand": "KOF",
+   "stock": 8,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "2000",
+   "name": "Electro TAROQ KLIMMIK AVTOMAT 3F",
+   "price": 6000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/8a/41/8a4111f6c4cf360d01f361109e450ade.webp",
+   "sku": "2000",
+   "cat": "elektrika",
+   "brand": "",
+   "stock": 34,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "102251",
+   "name": "Клей для ленты Promix (7 кг)",
+   "price": 250000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/85/f0/85f02d221f63f1dbd13beb49cad2af02.webp",
+   "sku": "102251",
+   "cat": "boshqa",
+   "brand": "Promix",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "105455",
+   "name": "Изолента Meloni чёрная (300d)",
+   "price": 5000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/89/64/8964b3e3ce3d1fedba6d3bf93d459936.webp",
+   "sku": "105455",
+   "cat": "elektrika",
+   "brand": "",
+   "stock": 7,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "107694",
+   "name": "Французский шпатель никелированный (100 см)",
+   "price": 300000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/e7/69/e76963fb53f7626b2f9e8185decd27ac.webp",
+   "sku": "107694",
+   "cat": "asbob",
+   "brand": "",
+   "stock": 10,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "107695",
+   "name": "Французский шпатель никелированный (40 см)",
+   "price": 150000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/eb/b3/ebb35bbf8f8ae796ed451cd87ae308f4.webp",
+   "sku": "107695",
+   "cat": "asbob",
+   "brand": "",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "28",
+   "name": "BAUER (Ko'k) 2,7kg (6d)",
+   "price": 81000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/7c/32/7c32487e40fb61f2831239ed6b38f3d7.webp",
+   "sku": "28",
+   "cat": "boyoq",
+   "brand": "Bauer",
+   "stock": 19,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "29",
+   "name": "BAUER (Qizil) 2,7kg (6d)",
+   "price": 81000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/62/6b/626b75668f194d7f872e6d61c3d86262.webp",
+   "sku": "29",
+   "cat": "boyoq",
+   "brand": "Bauer",
+   "stock": 21,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "3969",
+   "name": "Obnalichni 400 (10sm)",
+   "price": 25000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/57/7e/577e3cff4b3903f605c040e5ba9b007a.webp",
+   "sku": "3969",
+   "cat": "dekor",
+   "brand": "",
+   "stock": 36,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "5699",
+   "name": "Valik Gips Karton",
+   "price": 145000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/5c/eb/5ceb8511b33d8ec31b8105294786a6c9.webp",
+   "sku": "5699",
+   "cat": "asbob",
+   "brand": "",
+   "stock": 8,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "924",
+   "name": "Bello Deco M 12 (40x20) 40d",
+   "price": 41949,
+   "photo": "https://panel.domstroymarket.uz/media/cache/33/c7/33c7064dc949e3dcb1ce062a1c4ee556.webp",
+   "sku": "924",
+   "cat": "dekor",
+   "brand": "Bella Decor",
+   "stock": 64,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "102307",
+   "name": "MAGNUS Shpatel 200mm (TE-0133)",
+   "price": 25000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/4e/bc/4ebc8dd2773b574f7f074b26ac98e317.webp",
+   "sku": "102307",
+   "cat": "asbob",
+   "brand": "Magnus",
+   "stock": 14,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "17",
+   "name": "Aksan BRA 6021",
+   "price": 140000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/ae/29/ae291accff8ba20e314ebd9b34c6046f.webp",
+   "sku": "17",
+   "cat": "yoritgich",
+   "brand": "Aksan",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "2992",
+   "name": "Lezard 1x Raz TV Proxod Vesna Oq 742-0288-129",
+   "price": 19000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/30/4a/304a15fbb7400bf7e2df1f9c1c3dfbc1.webp",
+   "sku": "2992",
+   "cat": "elektrika",
+   "brand": "Lezard",
+   "stock": 30,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "3310",
+   "name": "Мастер Антипас (25 кг)",
+   "price": 630000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/c9/8d/c98dca57b706bd97401a626e7344a1f6.webp",
+   "sku": "3310",
+   "cat": "boyoq",
+   "brand": "Master boya",
+   "stock": 9,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "2135",
+   "name": "Evroplast Ornament 1.60.109",
+   "price": 74546,
+   "photo": "https://panel.domstroymarket.uz/media/cache/33/63/33633ea17335d6f180ea6dd6496f7bfb.webp",
+   "sku": "2135",
+   "cat": "dekor",
+   "brand": "Evroplast",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "98999",
+   "name": "Koska Dekor MX036 52x17 2000mm",
+   "price": 46000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/81/49/81490daaf320bcbc6d2b1b0a6cf154d6.webp",
+   "sku": "98999",
+   "cat": "dekor",
+   "brand": "Koska Dekor",
+   "stock": 2,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "99388",
+   "name": "Oydin Korpus 201 BK-SL",
+   "price": 25000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/ab/54/ab54a8e829ba24aac939965bdd3a6270.webp",
+   "sku": "99388",
+   "cat": "dekor",
+   "brand": "Oydin",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "101710",
+   "name": "TOLSEN Tunika Qaychi 300mm (30024)",
+   "price": 90000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/e0/e3/e0e31e998f78fda13a89f2624cdf5265.webp",
+   "sku": "101710",
+   "cat": "asbob",
+   "brand": "Tolsen",
+   "stock": 5,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "5786",
+   "name": "Viko 2X Ramka Linera",
+   "price": 10000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/79/23/792352aa19a50c8602e19854b6a44e75.webp",
+   "sku": "5786",
+   "cat": "elektrika",
+   "brand": "Viko",
+   "stock": 20,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "98285",
+   "name": "Bella Luce 1019/3 Antique Brass",
+   "price": 299000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/82/75/8275746aed7807aca10d5e4e6bec09d9.webp",
+   "sku": "98285",
+   "cat": "yoritgich",
+   "brand": "Bella Luce",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "98301",
+   "name": "Bella Luce 6734-3 BK",
+   "price": 225000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/73/c7/73c72f8b982fc2fc554978fe30ab6b07.webp",
+   "sku": "98301",
+   "cat": "yoritgich",
+   "brand": "Bella Luce",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "98302",
+   "name": "Bella Luce 6734-4 BK",
+   "price": 280000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/77/92/7792c495cbc9004c535570f2cfe7b390.webp",
+   "sku": "98302",
+   "cat": "yoritgich",
+   "brand": "Bella Luce",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "98304",
+   "name": "Bella Luce 7211/2 FGD+WH",
+   "price": 157000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/4b/d5/4bd5850ae28af7c60a56b8b6ed41be94.webp",
+   "sku": "98304",
+   "cat": "yoritgich",
+   "brand": "Bella Luce",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "98696",
+   "name": "Dusel Galogen 107 7w Kv 6500k BK",
+   "price": 25000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/36/7a/367aa7b8b1f4de3d661319ae53d96644.webp",
+   "sku": "98696",
+   "cat": "yoritgich",
+   "brand": "Dusel",
+   "stock": 4,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "100064",
+   "name": "Щит металлический 30x40",
+   "price": 90000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/4e/02/4e021b22f8d518f67d246a135952abf2.webp",
+   "sku": "100064",
+   "cat": "elektrika",
+   "brand": "",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": true
+  },
+  {
+   "id": "5534",
+   "name": "TOLSEN Andava Jilvir Kichik (32100)",
+   "price": 31000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/e9/fd/e9fdaeafe57687214a4b8e87e765f539.webp",
+   "sku": "5534",
+   "cat": "asbob",
+   "brand": "Tolsen",
+   "stock": 12,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "5538",
+   "name": "TOLSEN Perchatka (45016)",
+   "price": 13000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/87/80/8780a98b7b8925659ef048093c9f956c.webp",
+   "sku": "5538",
+   "cat": "asbob",
+   "brand": "Tolsen",
+   "stock": 25,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "99754",
+   "name": "Пила TOLSEN 150мм (31013)",
+   "price": 47000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/f1/5c/f15c7dd9c22424376cc918467cae6468.webp",
+   "sku": "99754",
+   "cat": "asbob",
+   "brand": "Tolsen",
+   "stock": 6,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "3456",
+   "name": "Modern 1001-04",
+   "price": 109000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/63/b5/63b595ffdbc04ab95857c2f3a79cfb20.webp",
+   "sku": "3456",
+   "cat": "oboy",
+   "brand": "Modern",
+   "stock": 9,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "3462",
+   "name": "Modern 1005-01 (12)",
+   "price": 80000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/05/db/05dbe5570e6251bec5107f43c819de81.webp",
+   "sku": "3462",
+   "cat": "oboy",
+   "brand": "Modern",
+   "stock": 14,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "3471",
+   "name": "Modern 1007-01 (3)",
+   "price": 109000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/f8/a8/f8a8efb7ba6421b97b6670e7f0756e64.webp",
+   "sku": "3471",
+   "cat": "oboy",
+   "brand": "Modern",
+   "stock": 7,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "42",
+   "name": "Bella Luce SZ-2512 BG",
+   "price": 75000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/ce/a7/cea703e77d6661079130d33266f18f48.webp",
+   "sku": "42",
+   "cat": "yoritgich",
+   "brand": "Bella Luce",
+   "stock": 3,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "647",
+   "name": "Bella Luce 1019/8 Antique Brass",
+   "price": 499000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/3d/73/3d73edb1ce7d69d8e0002dc2ba1caad8.webp",
+   "sku": "647",
+   "cat": "yoritgich",
+   "brand": "Bella Luce",
+   "stock": 2,
+   "unit": "dona",
+   "is_new": false,
+   "old_price": 585000,
+   "disc": 15
+  },
+  {
+   "id": "649",
+   "name": "Bella Luce 1028/8 CR",
+   "price": 615000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/24/16/24165268b18e2a622ebd84578277ceec.webp",
+   "sku": "649",
+   "cat": "yoritgich",
+   "brand": "Bella Luce",
+   "stock": 1,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "100",
+   "name": "Lezard Akril 36w Tashqi Kv 6400K 6436",
+   "price": 59000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/85/0b/850b71e1b7e55b3b1838d7c38dac252a.webp",
+   "sku": "100",
+   "cat": "yoritgich",
+   "brand": "Lezard",
+   "stock": 11,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "2979",
+   "name": "Lezard 1x Ramka Vesna Qora 742-4200-146",
+   "price": 4000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/95/f5/95f5cb6f75154d943a081e279ae18f67.webp",
+   "sku": "2979",
+   "cat": "elektrika",
+   "brand": "Lezard",
+   "stock": 40,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "2980",
+   "name": "Lezard 1x Ramka Vesna Sheffield Grey 742-3400-146",
+   "price": 4000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/20/33/20337ca9628b29d38ea9e157b9d33b5b.webp",
+   "sku": "2980",
+   "cat": "elektrika",
+   "brand": "Lezard",
+   "stock": 35,
+   "unit": "dona",
+   "is_new": false
+  },
+  {
+   "id": "5984",
+   "name": "Yuda LAK Valik Zapas Original 45sm",
+   "price": 65000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/db/0d/db0d0df69bc23ea212cad0bfc2343a55.webp",
+   "sku": "5984",
+   "cat": "asbob",
+   "brand": "Yuda",
+   "stock": 7,
+   "unit": "dona",
+   "is_new": false,
+   "old_price": 150000,
+   "disc": 57
+  },
+  {
+   "id": "4326",
+   "name": "Palizh 1008",
+   "price": 22000,
+   "photo": "https://panel.domstroymarket.uz/media/cache/7c/f0/7cf07336f29ddbfa40cd917dd2c6658f.webp",
+   "sku": "4326",
+   "cat": "boyoq",
+   "brand": "Palizh",
+   "stock": 21,
+   "unit": "dona",
+   "is_new": false
+  }
+ ]
+}
