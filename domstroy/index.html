@@ -506,11 +506,16 @@ let ordMode='pickup', ordBranch=0, ordPay='cash';
 let ordLoc=null;                            // {lat, lon, acc} — GPS yoki karta
 let ordLocSrc='';                           // 'gps' | 'map'
 let geoBusy=false;
+let cartTotal=0;                            // renderCart'da yangilanadi (pickPay uchun)
 
 function payFor(total){
-  // naqd limitdan oshsa — majburiy karta
-  if(total > NAQD_LIMIT) return 'card';
+  // faqat YETKAZISHda naqd limiti majburiy kartaga o'tkazadi; olib ketishda ikkalasi ham mumkin
+  if(ordMode==='deliv' && total > NAQD_LIMIT) return 'card';
   return ordPay;
+}
+function pickPay(p){
+  if(p==='cash' && ordMode==='deliv' && cartTotal > NAQD_LIMIT){ toast(t('cash_lim')); return; }
+  ordPay = p; renderCart();
 }
 function vehicleFor(total){
   if(ordMode==='pickup') return null;
@@ -540,6 +545,7 @@ function renderCart(){
       </div>
     </div>`;
   }).join('');
+  cartTotal = total;
 
   const prof = loadProf();
   // Telegram taxallusini ISHLATMAYMIZ — mijoz haqiqiy ismini yozadi
@@ -576,25 +582,18 @@ function renderCart(){
       ${locState}`;
   }
 
-  // to'lov bloki
-  let payHtml = '';
-  if(ordMode==='pickup'){
-    payHtml = `<div class="flabel">${t('tolov')}</div>
-      <div style="font-size:13px;color:var(--hint);margin-top:6px;line-height:1.5">${t('p_store_i')}</div>`;
-  } else {
-    const cashOk = total <= NAQD_LIMIT;
-    payHtml = `
+  // to'lov bloki — HAR DOIM tanlov (naqd/karta), olish usuliga qarab izohi o'zgaradi
+  const cashOk = !(ordMode==='deliv' && total > NAQD_LIMIT);  // yetkazishda 500k+ da naqd yo'q
+  let payInfo;
+  if(ordMode==='pickup') payInfo = t('p_store_i');
+  else { payInfo = pay==='cash' ? t('p_cash_i') : t('p_card_i'); if(!cashOk) payInfo += '<br>⚠️ '+t('cash_lim'); }
+  const payHtml = `
       <div class="flabel">${t('tolov')}</div>
       <div>
-        <span class="vchip ${pay==='cash'?'sel':''}" style="${cashOk?'':'opacity:.45'}"
-          onclick="${cashOk?"ordPay='cash';renderCart()":`toast('${t('cash_lim')}')`}">${t('p_cash')}</span>
-        <span class="vchip ${pay==='card'?'sel':''}" onclick="ordPay='card';renderCart()">${t('p_card')}</span>
+        <span class="vchip ${pay==='cash'?'sel':''}" style="${cashOk?'':'opacity:.45'}" onclick="pickPay('cash')">${t('p_cash')}</span>
+        <span class="vchip ${pay==='card'?'sel':''}" onclick="pickPay('card')">${t('p_card')}</span>
       </div>
-      <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">
-        ${pay==='cash' ? t('p_cash_i') : t('p_card_i')}
-        ${!cashOk ? '<br>⚠️ '+t('cash_lim') : ''}
-      </div>`;
-  }
+      <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">${payInfo}</div>`;
 
   body.innerHTML = `
     <div class="cartlist">${rows}</div>
@@ -733,7 +732,8 @@ function order(total){
     lon: ordMode==='deliv' && ordLoc ? ordLoc.lon : null,
     loc_src: ordMode==='deliv' ? ordLocSrc : null,
     loc_note: ordMode==='deliv' && ordLoc && ordLoc.note ? ordLoc.note : null,
-    payment: ordMode==='pickup' ? 'store' : pay,
+    payment: pay,                        // 'cash' | 'card'
+    pay_at_store: ordMode==='pickup',    // olib ketishda to'lov do'konda
     vehicle: vehicleFor(total),
     items,
   };
