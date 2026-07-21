@@ -184,14 +184,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div id="infBody"></div>
 </div>
 
+<!-- KABINET -->
+<div class="view" id="v-profile">
+  <div class="header"><h1 id="profH">👤 Kabinet</h1></div>
+  <div id="profBody"></div>
+</div>
+
 <div class="nav" id="nav">
   <button data-v="shop" class="active"><span class="ic">🛍</span><span id="nv1">Do'kon</span></button>
   <button data-v="cart"><span class="ic">🛒</span><span id="nv2">Savat</span><span class="badge" id="navBadge" style="display:none">0</span></button>
   <button data-v="branches"><span class="ic">📍</span><span id="nv3">Filiallar</span></button>
+  <button data-v="profile"><span class="ic">👤</span><span id="nv5">Kabinet</span></button>
   <button data-v="info"><span class="ic">ℹ️</span><span id="nv4">Aloqa</span></button>
 </div>
 
 <div class="modal" id="pmodal"><div class="sheet" id="psheet"></div></div>
+<div class="modal" id="mapmodal"><div class="sheet" style="max-height:92vh">
+  <div class="body" style="padding-bottom:8px">
+    <h2 id="mapT">Manzilni belgilang</h2>
+    <div id="mapHint" style="color:var(--hint);font-size:12.5px;margin:6px 0 10px"></div>
+  </div>
+  <div id="mapbox" style="height:46vh;background:var(--card2)"></div>
+  <div class="body">
+    <input class="finput" id="map-note" placeholder="Mo'ljal / izoh (ixtiyoriy)" style="margin-top:10px">
+    <button class="bigbtn" id="mapOkBtn" onclick="mapTasdiq()">✅ Shu yerga yetkazilsin</button>
+    <button class="bigbtn ghost" onclick="closeMap()" id="mapCancelBtn">✖️</button>
+  </div>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -226,13 +245,34 @@ const T = {
     bosh:"Savat bo'sh.<br>Do'kondan mahsulot tanlang.", jami:"Jami:",
     buyurtma:"✅ Buyurtma berish", davom:"🛍 Xaridni davom ettirish",
     ism:"Ismingiz", tel:"Telefon raqamingiz",
-    olish:"Qanday olasiz?", d_pickup:"🏪 Filialdan olib ketaman", d_deliv:"🚚 Yetkazib berilsin",
+    olish:"Qanday olasiz?", d_pickup:"🏪 O'zim olib ketaman", d_deliv:"🚚 Yetkazib berish",
+    d_pickup_i:"✅ Buyurtmangizni tayyorlab qo'yamiz — kelganingizda shay bo'ladi. To'lov do'konda: naqd yoki karta.",
+    d_deliv_i:"Shahar bo'ylab yetkazish — 50 000 so'mdan",
     filial_t:"Qaysi filial?", manzil:"Yetkazish manzili",
+    loc_q:"Hozir turgan joyingizga yetkazamizmi?",
+    loc_btn:"📍 Ha, joylashuvimni aniqlang", map_btn:"🗺 Yo'q, kartadan tanlayman",
+    loc_wait:"⏳ Joylashuv aniqlanmoqda...",
+    loc_ok:"📍 Joylashuvingiz aniqlandi", loc_acc:"aniqlik", loc_change:"🗺 Boshqa joy tanlash",
+    loc_err:"Joylashuvni aniqlab bo'lmadi — kartadan tanlang",
+    map_t:"Manzilni belgilang", map_ok:"✅ Shu yerga yetkazilsin",
+    map_hint:"Kartada kerakli joyga bosing yoki pinni suring", mo_ljal:"Mo'ljal / izoh (ixtiyoriy)",
+    tolov:"To'lov usuli",
+    p_cash:"💵 Naqd", p_card:"💳 Karta",
+    p_cash_i:"🚕 IDEAL taxi orqali yuboramiz — pulni haydovchiga berasiz",
+    p_card_i:"🚛 Labo taxi — yuk hajmiga qarab, 50 000 so'mdan",
+    p_store_i:"💵/💳 To'lov do'konda — naqd yoki karta",
+    cash_lim:"Naqd to'lov faqat 500 000 so'mgacha",
     ord_ok:"✅ Buyurtmangiz qabul qilindi!",
     ord_note:"Operatorlarimiz tez orada siz bilan bog'lanadi.",
     ord_demo:"(Bu demo: haqiqiy botda buyurtma to'g'ridan-to'g'ri menejerga tushadi)",
     xato_ism:"Ismingizni yozing", xato_tel:"Telefon raqamingizni yozing",
+    xato_manzil:"Yetkazish manzilini belgilang",
     qongiroq:"📞 Qo'ng'iroq qilish",
+    kab_h:"👤 Kabinet", nav_kab:"Kabinet", profil:"Profil",
+    tel_ulash:"📱 Telegram raqamimni ulash", saqlash:"💾 Saqlash", saqlandi:"✅ Saqlandi",
+    tarix:"🧾 Buyurtmalarim", tarix_bosh:"Hali buyurtma bermagansiz",
+    holat:"✅ Qabul qilindi", dona_s:"tovar",
+    saved_addr:"📍 Saqlangan manzil", addr_yoq:"Manzil hali saqlanmagan",
     promo_t:"🚗 DomStroy'dan xarid qiling — 4 ta Damasdan birini yutib oling!",
     promo_d:"Har 3 mln so'mlik xaridga kupon. Batafsil: ☎️ 73 541-22-22",
     about:"Дом Строй — 2009-yildan beri Farg'ona vodiysida qurilish mollari savdosi. 6 ta do'kon, showroom va dizayn-studiya.",
@@ -251,13 +291,34 @@ const T = {
     bosh:"Корзина пуста.<br>Выберите товары в магазине.", jami:"Итого:",
     buyurtma:"✅ Оформить заказ", davom:"🛍 Продолжить покупки",
     ism:"Ваше имя", tel:"Номер телефона",
-    olish:"Как получите?", d_pickup:"🏪 Заберу из филиала", d_deliv:"🚚 Доставка",
+    olish:"Как получите?", d_pickup:"🏪 Заберу сам", d_deliv:"🚚 Доставка",
+    d_pickup_i:"✅ Подготовим заказ — будет готов к вашему приходу. Оплата в магазине: наличными или картой.",
+    d_deliv_i:"Доставка по городу — от 50 000 сум",
     filial_t:"Какой филиал?", manzil:"Адрес доставки",
+    loc_q:"Доставить туда, где вы сейчас находитесь?",
+    loc_btn:"📍 Да, определить моё местоположение", map_btn:"🗺 Нет, выберу на карте",
+    loc_wait:"⏳ Определяем местоположение...",
+    loc_ok:"📍 Местоположение определено", loc_acc:"точность", loc_change:"🗺 Выбрать другое место",
+    loc_err:"Не удалось определить — выберите на карте",
+    map_t:"Укажите адрес", map_ok:"✅ Доставить сюда",
+    map_hint:"Нажмите на карте или перетащите маркер", mo_ljal:"Ориентир / комментарий (необязательно)",
+    tolov:"Способ оплаты",
+    p_cash:"💵 Наличные", p_card:"💳 Карта",
+    p_cash_i:"🚕 Отправим через IDEAL такси — деньги отдадите водителю",
+    p_card_i:"🚛 Labo такси — по объёму груза, от 50 000 сум",
+    p_store_i:"💵/💳 Оплата в магазине — наличными или картой",
+    cash_lim:"Наличные — только до 500 000 сум",
     ord_ok:"✅ Ваш заказ принят!",
     ord_note:"Наши операторы свяжутся с вами в ближайшее время.",
     ord_demo:"(Это демо: в рабочем боте заказ сразу попадает менеджеру)",
     xato_ism:"Напишите ваше имя", xato_tel:"Напишите номер телефона",
+    xato_manzil:"Укажите адрес доставки",
     qongiroq:"📞 Позвонить",
+    kab_h:"👤 Кабинет", nav_kab:"Кабинет", profil:"Профиль",
+    tel_ulash:"📱 Привязать номер из Telegram", saqlash:"💾 Сохранить", saqlandi:"✅ Сохранено",
+    tarix:"🧾 Мои заказы", tarix_bosh:"Заказов пока нет",
+    holat:"✅ Принят", dona_s:"товар(ов)",
+    saved_addr:"📍 Сохранённый адрес", addr_yoq:"Адрес ещё не сохранён",
     promo_t:"🚗 Покупайте в DomStroy — выиграйте один из 4 Damas!",
     promo_d:"Купон за каждую покупку на 3 млн сум. Подробнее: ☎️ 73 541-22-22",
     about:"Дом Строй — продажа стройматериалов в Ферганской долине с 2009 года. 6 магазинов, шоурум и дизайн-студия.",
@@ -279,9 +340,15 @@ function catName(key){
   return c ? (c[LANG] || c.uz) : key;
 }
 
+/* profil (localStorage) */
+function loadProf(){ try{ return JSON.parse(localStorage.getItem('ds_prof')||'{}'); }catch(e){ return {}; } }
+function saveProf(p){ localStorage.setItem('ds_prof', JSON.stringify(Object.assign(loadProf(), p))); }
+function loadHist(){ try{ return JSON.parse(localStorage.getItem('ds_hist')||'[]'); }catch(e){ return []; } }
+function pushHist(o){ const h=loadHist(); h.unshift(o); localStorage.setItem('ds_hist', JSON.stringify(h.slice(0,20))); }
+
 function setLang(l){
   LANG = l; localStorage.setItem('ds_lang', l);
-  applyLang(); renderShop(); renderCart(); renderBranches(); renderInfo();
+  applyLang(); renderShop(); renderCart(); renderBranches(); renderInfo(); renderProfile();
 }
 function applyLang(){
   el('lb-uz').classList.toggle('on', LANG==='uz');
@@ -297,6 +364,12 @@ function applyLang(){
   el('nv2').textContent = t('nav_cart');
   el('nv3').textContent = t('nav_br');
   el('nv4').textContent = t('nav_inf');
+  el('nv5').textContent = t('nav_kab');
+  el('profH').textContent = t('kab_h');
+  el('mapT').textContent = t('map_t');
+  el('mapHint').textContent = t('map_hint');
+  el('map-note').placeholder = t('mo_ljal');
+  el('mapOkBtn').textContent = t('map_ok');
   el('empty').textContent = t('topilmadi');
   el('updated').textContent = t('dt') + ' ' + (DATA.generated_at||'');
 }
@@ -306,7 +379,7 @@ async function load(){
     const r = await fetch('data/products.json?v=' + Date.now());
     DATA = await r.json();
     applyLang();
-    renderShop(); renderBranches(); renderInfo();
+    renderShop(); renderBranches(); renderInfo(); renderProfile();
   }catch(e){
     el('empty').style.display='block';
     el('empty').textContent='Katalog yuklanmadi. Internetni tekshiring.';
@@ -421,9 +494,26 @@ function updateBadge(){
   const b = el('navBadge');
   b.style.display = n?'flex':'none'; b.textContent=n;
 }
-let ordMode='pickup', ordBranch=0;
+/* buyurtma holati: olish usuli + manzil + to'lov (bir-biriga bog'liq) */
+const NAQD_LIMIT = 500000;                 // naqd faqat shu summagacha (IDEAL taxi)
+let ordMode='pickup', ordBranch=0, ordPay='cash';
+let ordLoc=null;                            // {lat, lon, acc} — GPS yoki karta
+let ordLocSrc='';                           // 'gps' | 'map'
+let geoBusy=false;
+
+function payFor(total){
+  // naqd limitdan oshsa — majburiy karta
+  if(total > NAQD_LIMIT) return 'card';
+  return ordPay;
+}
+function vehicleFor(total){
+  if(ordMode==='pickup') return null;
+  return payFor(total)==='cash' ? 'IDEAL taxi' : 'Labo taxi';
+}
+
 function renderCart(){
   const body = el('cartBody');
+  if(!body) return;
   const ids = Object.keys(cart);
   if(!ids.length){
     body.innerHTML = `<div class="empty">${t('bosh')}</div>
@@ -433,7 +523,7 @@ function renderCart(){
   let total=0;
   const rows = ids.map(id=>{
     const p=prodById(id); if(!p) return '';
-    const s=p.price*cart[id]; total+=s;
+    total+=p.price*cart[id];
     return `<div class="ci">
       <img src="${p.photo}" alt="">
       <div class="nm">${esc(p.name)}<div class="pr">${fmt(p.price)}</div></div>
@@ -444,8 +534,52 @@ function renderCart(){
       </div>
     </div>`;
   }).join('');
+
   const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
-  const defName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+  const prof = loadProf();
+  const defName = prof.name || [user.first_name, user.last_name].filter(Boolean).join(' ');
+  const defTel = prof.tel || '';
+  const pay = payFor(total);
+
+  // manzil bloki (faqat yetkazishda)
+  let addrHtml = '';
+  if(ordMode==='deliv'){
+    let locState;
+    if(geoBusy) locState = `<div class="flabel" style="color:var(--accent-dark)">${t('loc_wait')}</div>`;
+    else if(ordLoc) locState = `
+      <div class="stockchip" style="margin-top:8px">${t('loc_ok')} · ±${Math.round(ordLoc.acc||0)}m</div>
+      <div style="font-size:12px;color:var(--hint);margin-top:4px">${ordLoc.lat.toFixed(5)}, ${ordLoc.lon.toFixed(5)}${ordLoc.note?' · '+esc(ordLoc.note):''}</div>
+      <span class="vchip" onclick="openMap()">${t('loc_change')}</span>`;
+    else locState = `
+      <div style="margin-top:4px">
+        <span class="vchip" onclick="geoAniqla()">${t('loc_btn')}</span>
+        <span class="vchip" onclick="openMap()">${t('map_btn')}</span>
+      </div>`;
+    addrHtml = `
+      <div class="flabel">${t('manzil')} — ${t('loc_q')}</div>
+      ${locState}`;
+  }
+
+  // to'lov bloki
+  let payHtml = '';
+  if(ordMode==='pickup'){
+    payHtml = `<div class="flabel">${t('tolov')}</div>
+      <div style="font-size:13px;color:var(--hint);margin-top:6px;line-height:1.5">${t('p_store_i')}</div>`;
+  } else {
+    const cashOk = total <= NAQD_LIMIT;
+    payHtml = `
+      <div class="flabel">${t('tolov')}</div>
+      <div>
+        <span class="vchip ${pay==='cash'?'sel':''}" style="${cashOk?'':'opacity:.45'}"
+          onclick="${cashOk?"ordPay='cash';renderCart()":`toast('${t('cash_lim')}')`}">${t('p_cash')}</span>
+        <span class="vchip ${pay==='card'?'sel':''}" onclick="ordPay='card';renderCart()">${t('p_card')}</span>
+      </div>
+      <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">
+        ${pay==='cash' ? t('p_cash_i') : t('p_card_i')}
+        ${!cashOk ? '<br>⚠️ '+t('cash_lim') : ''}
+      </div>`;
+  }
+
   body.innerHTML = `
     <div class="cartlist">${rows}</div>
     <div class="cartbox">
@@ -453,25 +587,100 @@ function renderCart(){
       <div class="flabel">${t('ism')}</div>
       <input class="finput" id="o-name" value="${esc(defName)}" placeholder="${t('ism')}">
       <div class="flabel">${t('tel')}</div>
-      <input class="finput" id="o-tel" type="tel" placeholder="+998 __ ___-__-__">
+      <input class="finput" id="o-tel" type="tel" value="${esc(defTel)}" placeholder="+998 __ ___-__-__">
+      ${(tg && tg.requestContact && !defTel) ? `<span class="vchip" onclick="telUlash()">${t('tel_ulash')}</span>` : ''}
       <div class="flabel">${t('olish')}</div>
       <div>
         <span class="vchip ${ordMode==='pickup'?'sel':''}" onclick="ordMode='pickup';renderCart()">${t('d_pickup')}</span>
         <span class="vchip ${ordMode==='deliv'?'sel':''}" onclick="ordMode='deliv';renderCart()">${t('d_deliv')}</span>
       </div>
-      <div id="modebox">${
-        ordMode==='pickup'
-        ? `<div class="flabel">${t('filial_t')}</div><div>${BRANCHES.map((b,i)=>`<span class="vchip ${ordBranch===i?'sel':''}" onclick="ordBranch=${i};renderCart()">${b[LANG]||b.uz}</span>`).join('')}</div>`
-        : `<div class="flabel">${t('manzil')}</div><input class="finput" id="o-addr" placeholder="${t('manzil')}">`
-      }</div>
+      ${ordMode==='pickup'
+        ? `<div class="flabel">${t('filial_t')}</div>
+           <div>${BRANCHES.map((b,i)=>`<span class="vchip ${ordBranch===i?'sel':''}" onclick="ordBranch=${i};renderCart()">${b[LANG]||b.uz}</span>`).join('')}</div>
+           <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">${t('d_pickup_i')}</div>`
+        : `<div style="font-size:12.5px;color:var(--hint);margin-top:6px">${t('d_deliv_i')}</div>`}
+      ${addrHtml}
+      ${payHtml}
       <button class="bigbtn" onclick="order(${total})">${t('buyurtma')}</button>
     </div>`;
 }
+
+/* GPS orqali joylashuv */
+function geoAniqla(){
+  if(!navigator.geolocation){ toast(t('loc_err')); openMap(); return; }
+  geoBusy=true; renderCart();
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      geoBusy=false;
+      ordLoc = {lat:pos.coords.latitude, lon:pos.coords.longitude, acc:pos.coords.accuracy};
+      ordLocSrc='gps';
+      renderCart();
+    },
+    ()=>{ geoBusy=false; renderCart(); toast(t('loc_err')); openMap(); },
+    {enableHighAccuracy:true, timeout:12000, maximumAge:30000}
+  );
+}
+
+/* Kartadan tanlash (Leaflet — kerak bo'lganda yuklanadi) */
+let _map=null, _pin=null;
+function openMap(){
+  el('mapmodal').classList.add('show');
+  if(window.L){ initMap(); return; }
+  const css=document.createElement('link'); css.rel='stylesheet';
+  css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(css);
+  const s=document.createElement('script');
+  s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload=initMap;
+  document.body.appendChild(s);
+}
+function initMap(){
+  const start = ordLoc ? [ordLoc.lat, ordLoc.lon] : [40.5286, 70.9425]; // Qo'qon markazi
+  if(!_map){
+    _map = L.map('mapbox').setView(start, ordLoc?16:13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {maxZoom:19, attribution:'© OpenStreetMap'}).addTo(_map);
+    _pin = L.marker(start, {draggable:true}).addTo(_map);
+    _map.on('click', e=>_pin.setLatLng(e.latlng));
+  } else {
+    _map.setView(start, ordLoc?16:13); _pin.setLatLng(start);
+  }
+  setTimeout(()=>_map.invalidateSize(), 150);
+}
+function mapTasdiq(){
+  if(!_pin) return;
+  const ll = _pin.getLatLng();
+  ordLoc = {lat:ll.lat, lon:ll.lng, acc:0, note:el('map-note').value.trim()};
+  ordLocSrc='map';
+  closeMap(); renderCart();
+}
+function closeMap(){ el('mapmodal').classList.remove('show'); }
+el('mapmodal').addEventListener('click', e=>{ if(e.target.id==='mapmodal') closeMap(); });
+
+/* Telegram'dan telefon raqamini so'rash */
+function telUlash(){
+  if(!(tg && tg.requestContact)){ toast('Telegram ichida ishlaydi'); return; }
+  try{
+    tg.requestContact((ok, ev)=>{
+      let ph='';
+      try{ ph = ev && ev.responseUnsafe && ev.responseUnsafe.contact ? ev.responseUnsafe.contact.phone_number : ''; }catch(e){}
+      if(ok && ph){
+        if(!ph.startsWith('+')) ph='+'+ph;
+        saveProf({tel:ph});
+        const inp=el('o-tel')||el('p-tel'); if(inp) inp.value=ph;
+        toast(t('saqlandi')); renderCart(); renderProfile();
+      } else if(!ok){ toast('✖️'); }
+    });
+  }catch(e){ toast('Telegram ichida ishlaydi'); }
+}
+
 function order(total){
   const name = el('o-name').value.trim();
   const tel = el('o-tel').value.trim();
   if(!name){ toast(t('xato_ism')); return; }
   if(!tel){ toast(t('xato_tel')); return; }
+  if(ordMode==='deliv' && !ordLoc){ toast(t('xato_manzil')); return; }
+  const pay = payFor(total);
   const items = Object.keys(cart).map(id=>{
     const p=prodById(id);
     return {id, sku:p.sku, name:p.name, qty:cart[id], price:p.price};
@@ -480,12 +689,20 @@ function order(total){
     type:'order', shop:'domstroy', name, tel, total,
     mode: ordMode,
     branch: ordMode==='pickup' ? (BRANCHES[ordBranch].uz) : null,
-    address: ordMode==='deliv' ? (el('o-addr')?el('o-addr').value.trim():'') : null,
+    lat: ordMode==='deliv' && ordLoc ? ordLoc.lat : null,
+    lon: ordMode==='deliv' && ordLoc ? ordLoc.lon : null,
+    loc_src: ordMode==='deliv' ? ordLocSrc : null,
+    loc_note: ordMode==='deliv' && ordLoc && ordLoc.note ? ordLoc.note : null,
+    payment: ordMode==='pickup' ? 'store' : pay,
+    vehicle: vehicleFor(total),
     items,
   };
   if (tg && tg.sendData) {
     try { tg.sendData(JSON.stringify(payload)); } catch(e) {}
   }
+  // profil + tarixga saqlash (keyingi buyurtmada avto-to'ldiriladi)
+  saveProf({name, tel, addr: ordMode==='deliv' ? ordLoc : (loadProf().addr||null)});
+  pushHist({ts:Date.now(), total, n:items.reduce((a,i)=>a+i.qty,0), mode:ordMode, payment:payload.payment});
   cart={}; updateBadge();
   el('cartBody').innerHTML = `<div class="empty" style="padding-top:60px">
     <div style="font-size:44px">🎉</div><br>
@@ -494,6 +711,51 @@ function order(total){
     <span style="font-size:12px">${t('ord_demo')}</span><br><br>
     <button class="bigbtn ghost" style="max-width:280px" onclick="nav('shop')">${t('davom')}</button>
   </div>`;
+  renderProfile();
+}
+
+/* kabinet */
+function renderProfile(){
+  const body = el('profBody');
+  if(!body) return;
+  const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+  const prof = loadProf();
+  const name = prof.name || [user.first_name, user.last_name].filter(Boolean).join(' ');
+  const hist = loadHist();
+  const histHtml = hist.length
+    ? hist.map(h=>{
+        const d = new Date(h.ts);
+        const dd = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+        return `<div class="row">
+          <span class="k">${dd} · ${h.n} ${t('dona_s')}</span>
+          <span class="v">${fmt(h.total)}<br><span style="font-size:11px;color:var(--green);font-weight:600">${t('holat')}</span></span>
+        </div>`;
+      }).join('')
+    : `<div style="color:var(--hint);font-size:13.5px;padding:6px 0">${t('tarix_bosh')}</div>`;
+  body.innerHTML = `
+    <div class="panel">
+      <h3>${t('profil')}</h3>
+      <div class="flabel">${t('ism')}</div>
+      <input class="finput" id="p-name" value="${esc(name)}" placeholder="${t('ism')}">
+      <div class="flabel">${t('tel')}</div>
+      <input class="finput" id="p-tel" type="tel" value="${esc(prof.tel||'')}" placeholder="+998 __ ___-__-__">
+      ${(tg && tg.requestContact) ? `<span class="vchip" onclick="telUlash()">${t('tel_ulash')}</span>` : ''}
+      <button class="bigbtn" onclick="profSaqla()">${t('saqlash')}</button>
+    </div>
+    <div class="panel">
+      <h3>${t('saved_addr')}</h3>
+      <div style="color:var(--hint);font-size:13px;line-height:1.5">${
+        prof.addr ? `${prof.addr.lat.toFixed(5)}, ${prof.addr.lon.toFixed(5)}${prof.addr.note?' · '+esc(prof.addr.note):''}` : t('addr_yoq')
+      }</div>
+    </div>
+    <div class="panel">
+      <h3>${t('tarix')}</h3>
+      ${histHtml}
+    </div>`;
+}
+function profSaqla(){
+  saveProf({name: el('p-name').value.trim(), tel: el('p-tel').value.trim()});
+  toast(t('saqlandi')); renderCart();
 }
 
 /* filiallar */
@@ -532,10 +794,12 @@ function renderInfo(){
 function nav(v){
   curView=v;
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-  el('v-'+(v==='shop'?'shop':v==='cart'?'cart':v==='branches'?'branches':'info')).classList.add('active');
+  const ok = ['shop','cart','branches','profile','info'];
+  el('v-'+(ok.includes(v)?v:'shop')).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.v===v));
   window.scrollTo(0,0);
   if(v==='cart') renderCart();
+  if(v==='profile') renderProfile();
 }
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.v)));
 
