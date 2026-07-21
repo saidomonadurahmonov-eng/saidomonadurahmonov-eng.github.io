@@ -249,7 +249,7 @@ const T = {
     olish:"Qanday olasiz?", d_pickup:"🏪 O'zim olib ketaman", d_deliv:"🚚 Yetkazib berish",
     d_pickup_i:"✅ Buyurtmangizni tayyorlab qo'yamiz — kelganingizda shay bo'ladi. To'lov do'konda: naqd yoki karta.",
     d_deliv_i:"Shahar bo'ylab yetkazish — 50 000 so'mdan",
-    filial_t:"Qaysi filial?", manzil:"Yetkazish manzili",
+    filial_t:"Qaysi filialdan olasiz?", filial_deliv:"Qaysi filial xizmat qiladi?", manzil:"Yetkazish manzili",
     loc_q:"Hozir turgan joyingizga yetkazamizmi?",
     loc_btn:"📍 Ha, joylashuvimni aniqlang", map_btn:"🗺 Yo'q, kartadan tanlayman",
     loc_wait:"⏳ Joylashuv aniqlanmoqda...",
@@ -298,7 +298,7 @@ const T = {
     olish:"Как получите?", d_pickup:"🏪 Заберу сам", d_deliv:"🚚 Доставка",
     d_pickup_i:"✅ Подготовим заказ — будет готов к вашему приходу. Оплата в магазине: наличными или картой.",
     d_deliv_i:"Доставка по городу — от 50 000 сум",
-    filial_t:"Какой филиал?", manzil:"Адрес доставки",
+    filial_t:"Из какого филиала заберёте?", filial_deliv:"Какой филиал обслужит?", manzil:"Адрес доставки",
     loc_q:"Доставить туда, где вы сейчас находитесь?",
     loc_btn:"📍 Да, определить моё местоположение", map_btn:"🗺 Нет, выберу на карте",
     loc_wait:"⏳ Определяем местоположение...",
@@ -610,11 +610,9 @@ function renderCart(){
         <span class="vchip ${ordMode==='pickup'?'sel':''}" onclick="ordMode='pickup';renderCart()">${t('d_pickup')}</span>
         <span class="vchip ${ordMode==='deliv'?'sel':''}" onclick="ordMode='deliv';renderCart()">${t('d_deliv')}</span>
       </div>
-      ${ordMode==='pickup'
-        ? `<div class="flabel">${t('filial_t')}</div>
-           <div>${BRANCHES.map((b,i)=>`<span class="vchip ${ordBranch===i?'sel':''}" onclick="ordBranch=${i};renderCart()">${b[LANG]||b.uz}</span>`).join('')}</div>
-           <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">${t('d_pickup_i')}</div>`
-        : `<div style="font-size:12.5px;color:var(--hint);margin-top:6px">${t('d_deliv_i')}</div>`}
+      <div style="font-size:12.5px;color:var(--hint);margin-top:6px;line-height:1.5">${ordMode==='pickup'?t('d_pickup_i'):t('d_deliv_i')}</div>
+      <div class="flabel">${ordMode==='pickup'?t('filial_t'):t('filial_deliv')}</div>
+      <div>${BRANCHES.map((b,i)=>`<span class="vchip ${ordBranch===i?'sel':''}" onclick="ordBranch=${i};renderCart()">${b[LANG]||b.uz}</span>`).join('')}</div>
       ${addrHtml}
       ${payHtml}
       <button class="bigbtn" onclick="order(${total})">${t('buyurtma')}</button>
@@ -727,7 +725,8 @@ function order(total){
   const payload = {
     type:'order', shop:'domstroy', name, tel, total,
     mode: ordMode,
-    branch: ordMode==='pickup' ? (BRANCHES[ordBranch].uz) : null,
+    branch_i: ordBranch,                 // filial indeksi — guruh marshrutlash uchun
+    branch: BRANCHES[ordBranch].uz,      // filial nomi (har doim)
     lat: ordMode==='deliv' && ordLoc ? ordLoc.lat : null,
     lon: ordMode==='deliv' && ordLoc ? ordLoc.lon : null,
     loc_src: ordMode==='deliv' ? ordLocSrc : null,
