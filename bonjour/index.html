@@ -198,7 +198,16 @@ let cart = {};           // id -> qty
 let cat = 'all', query = '';
 let mode = 'pickup', pay = 'cash';
 
-fetch('data/products.json').then(r=>r.json()).then(d=>{DATA=d;renderCats();renderGrid();});
+// Katalog jonli API'dan (admin o'zgarishlari darhol ko'rinadi), API ishlamasa statik faylga qaytadi
+const API_BASE = 'https://bonjour-demo-production.up.railway.app';
+function loadCatalog(){
+  fetch(API_BASE + '/api/catalog', {cache:'no-store'})
+    .then(r=>{ if(!r.ok) throw new Error('api'); return r.json(); })
+    .then(d=>{DATA=d;renderCats();renderGrid();})
+    .catch(()=> fetch('data/products.json',{cache:'no-store'}).then(r=>r.json())
+      .then(d=>{DATA=d;renderCats();renderGrid();}).catch(()=>{}));
+}
+loadCatalog();
 
 function renderCats(){
   const el = document.getElementById('cats');
