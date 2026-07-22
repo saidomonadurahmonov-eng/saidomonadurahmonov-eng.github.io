@@ -14,7 +14,10 @@
   --red:#A9442C; --green:#5E7A3A; --shadow:0 4px 16px rgba(74,50,32,.10);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:var(--cream);color:var(--brown);font-family:'Manrope',system-ui,sans-serif;padding-bottom:96px}
+html{background:#F1E5CF}
+body{background:var(--cream);color:var(--brown);font-family:'Manrope',system-ui,sans-serif;
+  padding-bottom:96px;max-width:430px;margin:0 auto;min-height:100vh;
+  box-shadow:0 0 40px rgba(74,50,32,.12)}
 .serif{font-family:'Playfair Display',Georgia,serif}
 
 /* ── Header ── */
@@ -111,6 +114,11 @@ textarea.inp{resize:none;min-height:64px}
 .ok .big{font-size:52px;margin-bottom:12px}
 .ok h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px}
 .ok p{font-size:13.5px;color:var(--brown2);line-height:1.5;max-width:280px}
+
+/* Desktop: telefon eni markazda (Telegram ichida ta'sir qilmaydi) */
+.cartbar{left:max(12px,calc(50% - 203px));right:max(12px,calc(50% - 203px))}
+.sheet{left:max(0px,calc(50% - 215px));right:max(0px,calc(50% - 215px))}
+.ok{left:max(0px,calc(50% - 215px));right:max(0px,calc(50% - 215px))}
 </style>
 </head>
 <body>
