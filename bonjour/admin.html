@@ -195,7 +195,7 @@ function renderForm(v, p){
     </div>
     <input type="file" id="f_file" accept="image/*" style="display:none">`:''}
     <button class="btn" id="f_save">💾 Saqlash</button>
-    ${!isNew?`<button class="btn sec" id="f_arch">${p.archived?'👁 Ko\\'rsatish':'🙈 Vaqtincha yashirish'}</button>
+    ${!isNew?`<button class="btn sec" id="f_arch">${p.archived?"👁 Ko'rsatish":"🙈 Vaqtincha yashirish"}</button>
     <button class="btn danger" id="f_del">🗑 O'chirish</button>`:''}
     <button class="btn sec" id="f_cancel">← Orqaga</button>
   `;
