@@ -1496,6 +1496,8 @@ function nav(v){
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.v)));
 
 load();
+// Deep-link: #rang bo'lsa to'g'ridan-to'g'ri Rang bo'limi ochilsin
+if(location.hash.toLowerCase().includes('rang')) setTimeout(()=>nav('rang'), 60);
 </script>
 </body>
 </html>
