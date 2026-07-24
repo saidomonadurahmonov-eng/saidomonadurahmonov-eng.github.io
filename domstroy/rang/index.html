@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Дом Строй — Rang tanlash va hisoblash</title>
+<meta name="theme-color" content="#EF7F1A">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#F4F5F7; --card:#fff; --card2:#EDEFF2; --text:#1F2A37; --hint:#6B7686;
+  --accent:#EF7F1A; --accent-dark:#D96F0E; --navy:#1F2A37; --line:rgba(31,42,55,.10);
+  --green:#1D9E75; --red:#E24B4A;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);padding-bottom:32px}
+.brandbar{background:var(--navy);padding:13px 16px;border-radius:0 0 20px 20px}
+.brow{display:flex;align-items:center;gap:10px}
+.blogo{width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:19px}
+.bname{color:#fff;font-size:19px;font-weight:800}
+.bname span{color:var(--accent)}
+.bsub{color:#93a0b0;font-size:11px;margin-top:2px}
+.notice{margin:12px 16px;background:#FFF4E6;border:1px solid #F5C88A;border-radius:12px;padding:10px 13px;font-size:12px;line-height:1.5;color:#7A4E10}
+.sec{margin:14px 16px}
+.sec h2{font-size:15px;font-weight:700;margin-bottom:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.canvaswrap{position:relative;background:#000;border-radius:14px;overflow:hidden;line-height:0}
+canvas{width:100%;height:auto;display:block;touch-action:manipulation}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{border:none;border-radius:11px;padding:10px 14px;font-size:13.5px;font-weight:700;cursor:pointer;background:var(--card2);color:var(--text)}
+.btn.pri{background:var(--accent);color:#fff}
+.btn.nav{background:var(--navy);color:#fff}
+.btn:active{transform:scale(.97)}
+.modes{display:flex;gap:8px;margin-top:10px}
+.mode{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer;background:#fff}
+.mode.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mode small{display:block;font-weight:400;font-size:10.5px;opacity:.75;margin-top:2px}
+.swatchbig{width:100%;height:64px;border-radius:12px;border:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.sw{width:40px;height:40px;border-radius:9px;flex:0 0 auto;border:1px solid var(--line)}
+.rinfo{flex:1;font-size:13px;line-height:1.35}
+.rinfo b{font-size:13.5px}
+.rinfo .code{color:var(--hint);font-size:11.5px}
+.de{font-size:11px;font-weight:700;padding:3px 7px;border-radius:7px;background:var(--card2);color:var(--hint)}
+.de.good{background:rgba(29,158,117,.13);color:var(--green)}
+.slider{width:100%;margin-top:6px}
+.lab{font-size:12px;color:var(--hint);margin-top:10px;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=number],input[type=text],select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 11px;font-size:14px;background:var(--card2);color:var(--text);outline:none}
+.res{background:var(--navy);color:#fff;border-radius:14px;padding:14px;margin-top:12px}
+.res .big{font-size:26px;font-weight:800;color:var(--accent)}
+.res .sm{font-size:12px;opacity:.85;line-height:1.5;margin-top:4px}
+.stat{display:flex;gap:8px;margin:10px 16px}
+.stat div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:17px;color:var(--accent-dark)}
+.stat span{font-size:10.5px;color:var(--hint)}
+.search{display:flex;gap:8px;margin-bottom:8px}
+.search input{flex:1}
+.hint{font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,.92);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:99;display:none}
+.tag{display:inline-block;background:var(--card2);color:var(--hint);font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:7px;margin-left:6px}
+</style>
+</head>
+<body>
+
+<div class="brandbar">
+  <div class="brow">
+    <div class="blogo">🎨</div>
+    <div>
+      <div class="bname">Дом <span>Строй</span></div>
+      <div class="bsub">Rang tanlash · devorni ko'rish · hisoblash</div>
+    </div>
+  </div>
+</div>
+
+<div class="notice">
+  <b>Texnologiya namunasi.</b> Palitra shu yerda avtomatik yaratilgan <b>namuna</b> ranglardan iborat —
+  haqiqiy Tikkurila / Ottocento kataloglari mijozdan olinadi. Maqsad: 30 000+ rang bilan ishlash,
+  rasmdan rang tanlash va devorni bo'yab ko'rsatish <b>texnik jihatdan mumkinligini</b> isbotlash.
+</div>
+
+<div class="stat">
+  <div><b id="stCount">…</b><span>palitradagi rang</span></div>
+  <div><b id="stMs">…</b><span>qidiruv tezligi</span></div>
+  <div><b>ΔE2000</b><span>moslash aniqligi</span></div>
+</div>
+
+<div class="sec">
+  <h2>1. Xona rasmi</h2>
+  <div class="card">
+    <div class="canvaswrap"><canvas id="cv"></canvas></div>
+    <div class="btnrow">
+      <button class="btn pri" onclick="document.getElementById('file').click()">📷 Rasm yuklash</button>
+      <button class="btn" onclick="sampleRoom()">🏠 Namuna xona</button>
+      <button class="btn" onclick="resetImg()">↩︎ Asliga qaytarish</button>
+    </div>
+    <input type="file" id="file" accept="image/*" style="display:none">
+    <div class="modes">
+      <div class="mode on" id="m-pick" onclick="setMode('pick')">💧 Pipetka<small>rasmdan rang olish</small></div>
+      <div class="mode" id="m-paint" onclick="setMode('paint')">🖌 Bo'yash<small>devorni bosing</small></div>
+    </div>
+    <div id="paintOpts" style="display:none">
+      <div class="lab">Devor tanlash aniqligi: <span id="tolV">22</span></div>
+      <input type="range" class="slider" id="tol" min="6" max="60" value="22" oninput="document.getElementById('tolV').textContent=this.value">
+      <div class="hint">Devorning bir joyini bosing — dastur shu rangdagi sohani topib, <b>soya va yorug'likni saqlagan holda</b> bo'yaydi.</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>2. Tanlangan rang</h2>
+  <div class="card">
+    <div class="swatchbig" id="picked" style="background:#cfd4da"></div>
+    <div class="hint" id="pickedTxt">Rasmdan rang olish uchun pipetka rejimida rasmni bosing, yoki pastdan qidiring.</div>
+    <div class="lab">Palitradan qidirish (kod yoki nom)</div>
+    <div class="search"><input type="text" id="q" placeholder="masalan: 1024 yoki bej" oninput="qidir()"></div>
+    <div id="matches"></div>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>3. Bo'yoq hisobi</h2>
+  <div class="card">
+    <div class="grid2">
+      <div><div class="lab">Xona uzunligi (m)</div><input type="number" id="rl" value="5" step="0.1" oninput="hisobla()"></div>
+      <div><div class="lab">Xona eni (m)</div><input type="number" id="rw" value="4" step="0.1" oninput="hisobla()"></div>
+      <div><div class="lab">Shift balandligi (m)</div><input type="number" id="rh" value="2.8" step="0.1" oninput="hisobla()"></div>
+      <div><div class="lab">Eshik/deraza (dona)</div><input type="number" id="rd" value="3" step="1" oninput="hisobla()"></div>
+    </div>
+    <div class="lab">Mahsulot turi</div>
+    <select id="prod" onchange="hisobla()">
+      <option value="10">Mat emulsiya — ~10 m²/L</option>
+      <option value="11">Yarim mat emulsiya — ~11 m²/L</option>
+      <option value="8">Yuviladigan emulsiya — ~8 m²/L</option>
+      <option value="5">Dekorativ qoplama — ~5 m²/L</option>
+    </select>
+    <div class="lab">Qatlam soni</div>
+    <select id="coats" onchange="hisobla()">
+      <option value="1">1 qatlam</option>
+      <option value="2" selected>2 qatlam</option>
+      <option value="3">3 qatlam</option>
+    </select>
+    <div class="res" id="calcRes"></div>
+    <div class="hint">
+      Sarf me'yorlari — <b>namuna qiymatlar</b>; haqiqiy raqamlar mahsulot texnik ma'lumotnomasidan olinadi.
+      Rang formulasi (kolerovka) do'kondagi tinting mashinasida tayyorlanadi — biz kod, baza va litrni beramiz.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const tg = window.Telegram ? Telegram.WebApp : null;
+if (tg) { tg.ready(); tg.expand(); }
+const el = id => document.getElementById(id);
+function toast(m){ const x=el('toast'); x.textContent=m; x.style.display='block'; clearTimeout(x._h); x._h=setTimeout(()=>x.style.display='none',1700); }
+
+/* ─────────── Rang matematikasi ─────────── */
+function rgb2lab(r,g,b){
+  r/=255; g/=255; b/=255;
+  r = r>0.04045 ? Math.pow((r+0.055)/1.055,2.4) : r/12.92;
+  g = g>0.04045 ? Math.pow((g+0.055)/1.055,2.4) : g/12.92;
+  b = b>0.04045 ? Math.pow((b+0.055)/1.055,2.4) : b/12.92;
+  let x=(r*0.4124+g*0.3576+b*0.1805)/0.95047;
+  let y=(r*0.2126+g*0.7152+b*0.0722)/1.00000;
+  let z=(r*0.0193+g*0.1192+b*0.9505)/1.08883;
+  const f=t=> t>0.008856 ? Math.cbrt(t) : (7.787*t+16/116);
+  x=f(x); y=f(y); z=f(z);
+  return [116*y-16, 500*(x-y), 200*(y-z)];
+}
+function lab2rgb(L,a,bb){
+  let y=(L+16)/116, x=a/500+y, z=y-bb/200;
+  const f=t=>{ const t3=t*t*t; return t3>0.008856 ? t3 : (t-16/116)/7.787; };
+  x=f(x)*0.95047; y=f(y)*1.00000; z=f(z)*1.08883;
+  let r= x* 3.2406 + y*-1.5372 + z*-0.4986;
+  let g= x*-0.9689 + y* 1.8758 + z* 0.0415;
+  let b= x* 0.0557 + y*-0.2040 + z* 1.0570;
+  const h=c=>{ c = c>0.0031308 ? 1.055*Math.pow(c,1/2.4)-0.055 : 12.92*c; return Math.max(0,Math.min(255,Math.round(c*255))); };
+  return [h(r),h(g),h(b)];
+}
+function inGamut(L,a,b){
+  let y=(L+16)/116, x=a/500+y, z=y-b/200;
+  const f=t=>{ const t3=t*t*t; return t3>0.008856 ? t3 : (t-16/116)/7.787; };
+  x=f(x)*0.95047; y=f(y)*1.00000; z=f(z)*1.08883;
+  const r= x*3.2406+y*-1.5372+z*-0.4986, g= x*-0.9689+y*1.8758+z*0.0415, bl= x*0.0557+y*-0.2040+z*1.0570;
+  return r>=-0.001&&r<=1.001&&g>=-0.001&&g<=1.001&&bl>=-0.001&&bl<=1.001;
+}
+/* CIEDE2000 — Sharma etalon ma'lumotlarida tekshirilgan */
+function deltaE2000(L1,a1,b1,L2,a2,b2){
+  const rad=Math.PI/180, deg=180/Math.PI;
+  const C1=Math.hypot(a1,b1), C2=Math.hypot(a2,b2), Cb=(C1+C2)/2;
+  const Cb7=Math.pow(Cb,7);
+  const G=0.5*(1-Math.sqrt(Cb7/(Cb7+6103515625)));
+  const ap1=(1+G)*a1, ap2=(1+G)*a2;
+  const Cp1=Math.hypot(ap1,b1), Cp2=Math.hypot(ap2,b2);
+  let hp1=Math.atan2(b1,ap1)*deg; if(hp1<0)hp1+=360;
+  let hp2=Math.atan2(b2,ap2)*deg; if(hp2<0)hp2+=360;
+  if(Cp1===0)hp1=0; if(Cp2===0)hp2=0;
+  const dL=L2-L1, dC=Cp2-Cp1;
+  let dhp=0;
+  if(Cp1*Cp2!==0){ dhp=hp2-hp1; if(dhp>180)dhp-=360; else if(dhp<-180)dhp+=360; }
+  const dH=2*Math.sqrt(Cp1*Cp2)*Math.sin(dhp/2*rad);
+  const Lb=(L1+L2)/2, Cpb=(Cp1+Cp2)/2;
+  let hpb;
+  if(Cp1*Cp2===0){ hpb=hp1+hp2; }
+  else{ hpb=(hp1+hp2)/2;
+    if(Math.abs(hp1-hp2)>180){ hpb = (hp1+hp2<360) ? (hp1+hp2+360)/2 : (hp1+hp2-360)/2; } }
+  const T=1-0.17*Math.cos((hpb-30)*rad)+0.24*Math.cos(2*hpb*rad)
+         +0.32*Math.cos((3*hpb+6)*rad)-0.20*Math.cos((4*hpb-63)*rad);
+  const dTh=30*Math.exp(-Math.pow((hpb-275)/25,2));
+  const Cpb7=Math.pow(Cpb,7);
+  const Rc=2*Math.sqrt(Cpb7/(Cpb7+6103515625));
+  const Sl=1+(0.015*Math.pow(Lb-50,2))/Math.sqrt(20+Math.pow(Lb-50,2));
+  const Sc=1+0.045*Cpb, Sh=1+0.015*Cpb*T;
+  const Rt=-Math.sin(2*dTh*rad)*Rc;
+  return Math.sqrt(Math.pow(dL/Sl,2)+Math.pow(dC/Sc,2)+Math.pow(dH/Sh,2)+Rt*(dC/Sc)*(dH/Sh));
+}
+const hex = (r,g,b)=>'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+
+/* ─────────── Namuna palitra (30 000+) ─────────── */
+/* Oila nomlari — LAB rang burchagiga kalibrlangan
+   (Lab'da qizil ~40°, sariq ~103°, yashil ~136°, ko'k ~306°) */
+const OILA = [
+  [0,'Pushti'],[20,'Marjon'],[40,'Qizil'],[58,'Terrakota'],[73,'To\'q sariq'],
+  [88,'Bej'],[103,'Sariq'],[118,'Zaytun'],[136,'Yashil'],[160,'O\'t rang'],
+  [180,'Nefrit'],[196,'Firuza'],[225,'Moviy'],[260,'Havorang'],[290,'Ko\'k'],
+  [310,'To\'q ko\'k'],[328,'Binafsha'],[345,'Siren'],
+];
+function oilaNomi(h,C){
+  if(C<6) return 'Neytral';
+  let best=OILA[0], bd=999;
+  for(const o of OILA){ const d=Math.abs(((h-o[0]+540)%360)-180); if(d<bd){bd=d;best=o;} }
+  return best[1];
+}
+let PAL=[];
+function buildPalette(){
+  const t0=performance.now();
+  PAL=[];
+  let n=0;
+  const add=(L,a,b,h,C)=>{
+    const [r,g,bl]=lab2rgb(L,a,b);
+    n++;
+    // la/lb — Lab koordinatalari; r/g/b — ekran ranglari (kalitlar aralashmasin!)
+    PAL.push({c:'DS-'+String(n).padStart(5,'0'), n:oilaNomi(h,C)+' '+Math.round(L), L, la:a, lb:b, r, g, b:bl});
+  };
+  for(let L=20; L<=96; L+=2){
+    add(L,0,0,0,0);                       // neytral — har yorug'lik uchun bir marta
+    for(let h=0; h<360; h+=4){
+      for(let ci=1; ci<=18; ci++){
+        const C = ci*3.6;
+        const a = C*Math.cos(h*Math.PI/180), b = C*Math.sin(h*Math.PI/180);
+        if(!inGamut(L,a,b)) break;        // undan yuqori xroma ham gamutdan tashqarida
+        add(L,a,b,h,C);
+      }
+    }
+  }
+  el('stCount').textContent = PAL.length.toLocaleString('uz-UZ');
+  console.log('palitra', PAL.length, ((performance.now()-t0)|0)+'ms');
+}
+function nearest(L,a,b,k=5){
+  const t0=performance.now();
+  const res=[];
+  for(let i=0;i<PAL.length;i++){
+    const p=PAL[i];
+    const d=deltaE2000(L,a,b,p.L,p.la,p.lb);
+    if(res.length<k){ res.push({p,d}); res.sort((x,y)=>x.d-y.d); }
+    else if(d<res[k-1].d){ res[k-1]={p,d}; res.sort((x,y)=>x.d-y.d); }
+  }
+  el('stMs').textContent = Math.max(1,Math.round(performance.now()-t0))+' ms';
+  return res;
+}
+
+/* ─────────── Rasm / kanvas ─────────── */
+const cv=el('cv'), ctx=cv.getContext('2d',{willReadFrequently:true});
+let baseImg=null;      // asl ImageData
+let curImg=null;       // joriy (bo'yalgan) ImageData
+let labCache=null;     // Float32Array — har piksel L,a,b
+const MAXW=900;
+
+function setCanvasFromSource(src, w, h){
+  let sw=w, sh=h;
+  if(sw>MAXW){ sh=Math.round(sh*MAXW/sw); sw=MAXW; }
+  cv.width=sw; cv.height=sh;
+  ctx.drawImage(src,0,0,sw,sh);
+  baseImg=ctx.getImageData(0,0,sw,sh);
+  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), sw, sh);
+  labCache=null;
+}
+function ensureLab(){
+  if(labCache) return labCache;
+  const d=curImg.data, n=cv.width*cv.height;
+  labCache=new Float32Array(n*3);
+  for(let i=0,j=0;i<n;i++,j+=4){
+    const [L,a,b]=rgb2lab(d[j],d[j+1],d[j+2]);
+    labCache[i*3]=L; labCache[i*3+1]=a; labCache[i*3+2]=b;
+  }
+  return labCache;
+}
+function resetImg(){
+  if(!baseImg) return;
+  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), cv.width, cv.height);
+  ctx.putImageData(curImg,0,0);
+  labCache=null;
+  toast('Asliga qaytarildi');
+}
+el('file').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const img=new Image();
+  img.onload=()=>{ setCanvasFromSource(img, img.width, img.height); ctx.putImageData(curImg,0,0); toast('Rasm yuklandi'); };
+  img.src=URL.createObjectURL(f);
+});
+
+/* Namuna xona — soya/yorug'lik bilan (algoritmni ko'rsatish uchun) */
+function sampleRoom(){
+  const w=880,h=620;
+  cv.width=w; cv.height=h;
+  // orqa devor — vertikal gradient
+  let g=ctx.createLinearGradient(0,0,0,h*0.78);
+  g.addColorStop(0,'#dcd6ca'); g.addColorStop(1,'#c9c2b4');
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h*0.78);
+  // deraza yorug'ligi (devorda dog')
+  const rg=ctx.createRadialGradient(w*0.74,h*0.30,10,w*0.74,h*0.30,w*0.42);
+  rg.addColorStop(0,'rgba(255,250,235,.55)'); rg.addColorStop(1,'rgba(255,250,235,0)');
+  ctx.fillStyle=rg; ctx.fillRect(0,0,w,h*0.78);
+  // burchak soyasi
+  const sg=ctx.createLinearGradient(0,0,w*0.22,0);
+  sg.addColorStop(0,'rgba(0,0,0,.20)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=sg; ctx.fillRect(0,0,w*0.22,h*0.78);
+  // pol
+  const fg=ctx.createLinearGradient(0,h*0.78,0,h);
+  fg.addColorStop(0,'#8a6a45'); fg.addColorStop(1,'#6d5334');
+  ctx.fillStyle=fg; ctx.fillRect(0,h*0.78,w,h*0.22);
+  for(let x=0;x<w;x+=46){ ctx.strokeStyle='rgba(0,0,0,.10)'; ctx.beginPath(); ctx.moveTo(x,h*0.78); ctx.lineTo(x-30,h); ctx.stroke(); }
+  // plintus
+  ctx.fillStyle='#efece6'; ctx.fillRect(0,h*0.78-12,w,12);
+  // deraza
+  ctx.fillStyle='#f6f7f8'; ctx.fillRect(w*0.60,h*0.13,w*0.28,h*0.36);
+  ctx.fillStyle='#bcd6e8'; ctx.fillRect(w*0.615,h*0.145,w*0.25,h*0.33);
+  ctx.strokeStyle='#f6f7f8'; ctx.lineWidth=7;
+  ctx.beginPath(); ctx.moveTo(w*0.74,h*0.145); ctx.lineTo(w*0.74,h*0.475); ctx.stroke();
+  // divan
+  ctx.fillStyle='#5c6b7a'; ctx.fillRect(w*0.07,h*0.52,w*0.34,h*0.20);
+  ctx.fillStyle='#6b7b8c'; ctx.fillRect(w*0.07,h*0.50,w*0.34,h*0.06);
+  // stol
+  ctx.fillStyle='#7a5a3a'; ctx.fillRect(w*0.46,h*0.66,w*0.16,h*0.05);
+  baseImg=ctx.getImageData(0,0,w,h);
+  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), w, h);
+  labCache=null;
+  toast('Namuna xona tayyor');
+}
+
+/* ─────────── Rejimlar ─────────── */
+let MODE='pick';
+function setMode(m){
+  MODE=m;
+  el('m-pick').classList.toggle('on', m==='pick');
+  el('m-paint').classList.toggle('on', m==='paint');
+  el('paintOpts').style.display = m==='paint' ? 'block' : 'none';
+}
+let SEL=null;   // tanlangan bo'yoq rangi {L,a,b,r,g,b,c,n}
+
+cv.addEventListener('click', e=>{
+  const rect=cv.getBoundingClientRect();
+  const x=Math.floor((e.clientX-rect.left)*cv.width/rect.width);
+  const y=Math.floor((e.clientY-rect.top)*cv.height/rect.height);
+  if(x<0||y<0||x>=cv.width||y>=cv.height) return;
+  if(MODE==='pick') pipetka(x,y); else boya(x,y);
+});
+
+function pipetka(x,y){
+  const d=curImg.data, i=(y*cv.width+x)*4;
+  const r=d[i],g=d[i+1],b=d[i+2];
+  const [L,A,B]=rgb2lab(r,g,b);
+  el('picked').style.background=hex(r,g,b);
+  el('pickedTxt').innerHTML=`Rasmdan olindi: <b>${hex(r,g,b)}</b> — eng yaqin bo'yoq ranglari:`;
+  korsat(nearest(L,A,B,5));
+}
+function qidir(){
+  const q=el('q').value.trim().toLowerCase();
+  if(!q){ el('matches').innerHTML=''; return; }
+  const res=[];
+  for(const p of PAL){
+    if(p.c.toLowerCase().includes(q) || p.n.toLowerCase().includes(q)){
+      res.push({p,d:null});
+      if(res.length>=8) break;
+    }
+  }
+  korsat(res);
+}
+function korsat(list){
+  el('matches').innerHTML = list.map((it,idx)=>{
+    const p=it.p, hx=hex(p.r,p.g,p.b);
+    const de = it.d==null ? '' :
+      `<span class="de ${it.d<2?'good':''}">ΔE ${it.d.toFixed(1)}</span>`;
+    return `<div class="row" onclick="tanla(${PAL.indexOf(p)})">
+      <div class="sw" style="background:${hx}"></div>
+      <div class="rinfo"><b>${p.n}</b><div class="code">${p.c} · ${hx}</div></div>
+      ${de}
+    </div>`;
+  }).join('');
+}
+function tanla(i){
+  SEL=PAL[i];
+  el('picked').style.background=hex(SEL.r,SEL.g,SEL.b);
+  el('pickedTxt').innerHTML=`Tanlandi: <b>${SEL.n}</b> <span class="tag">${SEL.c}</span> — endi <b>Bo'yash</b> rejimida devorni bosing.`;
+  setMode('paint');
+  hisobla();
+  toast('Rang tanlandi: '+SEL.c);
+}
+
+/* ─────────── Devorni tanlash (flood fill) va bo'yash ─────────── */
+function boya(sx,sy){
+  if(!SEL){ toast('Avval rang tanlang'); return; }
+  const t0=performance.now();
+  const W=cv.width, H=cv.height, N=W*H;
+  const lab=ensureLab();
+  const tol=+el('tol').value;
+  const si=sy*W+sx;
+  const sL=lab[si*3], sA=lab[si*3+1], sB=lab[si*3+2];
+  const mask=new Float32Array(N);
+  const seen=new Uint8Array(N);
+  const stack=new Int32Array(N);
+  let sp=0; stack[sp++]=si; seen[si]=1;
+  while(sp>0){
+    const i=stack[--sp];
+    const dL=lab[i*3]-sL, dA=lab[i*3+1]-sA, dB=lab[i*3+2]-sB;
+    if(Math.sqrt(dL*dL+dA*dA+dB*dB) > tol) continue;
+    mask[i]=1;
+    const x=i%W, y=(i/W)|0;
+    if(x>0   && !seen[i-1]){ seen[i-1]=1; stack[sp++]=i-1; }
+    if(x<W-1 && !seen[i+1]){ seen[i+1]=1; stack[sp++]=i+1; }
+    if(y>0   && !seen[i-W]){ seen[i-W]=1; stack[sp++]=i-W; }
+    if(y<H-1 && !seen[i+W]){ seen[i+W]=1; stack[sp++]=i+W; }
+  }
+  let cnt=0, sumL=0;
+  for(let i=0;i<N;i++) if(mask[i]){ cnt++; sumL+=lab[i*3]; }
+  if(cnt<40){ toast('Soha juda kichik — aniqlikni oshiring'); return; }
+  // chetlarini yumshatish (2 marta box blur)
+  blurMask(mask,W,H); blurMask(mask,W,H);
+  const meanL=sumL/cnt;
+  const src=baseImg.data, out=curImg.data;
+  const tL=SEL.L, tA=SEL.la, tB=SEL.lb;
+  for(let i=0;i<N;i++){
+    const m=mask[i];
+    if(m<=0.004) continue;
+    // asl yorug'lik/soyani saqlaymiz: L farqini ko'chiramiz
+    const oL=lab[i*3];
+    let nL=tL+(oL-meanL);
+    nL=Math.max(0,Math.min(100,nL));
+    const [r,g,b]=lab2rgb(nL,tA,tB);
+    const j=i*4;
+    out[j]  = src[j]  *(1-m) + r*m;
+    out[j+1]= src[j+1]*(1-m) + g*m;
+    out[j+2]= src[j+2]*(1-m) + b*m;
+  }
+  ctx.putImageData(curImg,0,0);
+  const pct=(cnt/N*100).toFixed(0);
+  toast(`Bo'yaldi — ${pct}% soha · ${Math.round(performance.now()-t0)} ms`);
+}
+function blurMask(m,W,H){
+  const t=new Float32Array(m.length);
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    const i=y*W+x;
+    let s=m[i], c=1;
+    if(x>0){s+=m[i-1];c++;} if(x<W-1){s+=m[i+1];c++;}
+    if(y>0){s+=m[i-W];c++;} if(y<H-1){s+=m[i+W];c++;}
+    t[i]=s/c;
+  }
+  m.set(t);
+}
+
+/* ─────────── Bo'yoq hisobi ─────────── */
+function hisobla(){
+  const L=+el('rl').value||0, W=+el('rw').value||0, H=+el('rh').value||0;
+  const openings=+el('rd').value||0;
+  const cover=+el('prod').value, coats=+el('coats').value;
+  let area = 2*(L+W)*H;                 // devorlar yuzasi
+  area -= openings*1.8;                 // eshik/deraza taxminiy
+  area = Math.max(0, area);
+  const liters = area*coats/cover;
+  const cans = Math.ceil(liters/9);     // 9 L bankalar
+  el('calcRes').innerHTML = `
+    <div class="big">${liters.toFixed(1)} L</div>
+    <div class="sm">
+      Devor yuzasi: <b>${area.toFixed(1)} m²</b> · ${coats} qatlam · sarf ~${cover} m²/L<br>
+      Taxminan <b>${cans} ta 9 L banka</b> (yoki mos hajmlar)
+      ${SEL ? `<br>Rang: <b>${SEL.n}</b> · kod <b>${SEL.c}</b> — kolerovka do'konda` : `<br>Rang tanlanmagan`}
+    </div>`;
+}
+
+/* ─────────── Ishga tushirish ─────────── */
+buildPalette();
+sampleRoom();
+ctx.putImageData(curImg,0,0);
+hisobla();
+</script>
+</body>
+</html>
