@@ -1428,7 +1428,10 @@ function setTool(tool){
 /* ── AI segmentatsiya: DeepLab (ADE20K) — devor/shift/polni o'zi topadi.
    Model o'zimizning serverda (model/), telefon ichida ishlaydi, so'rov puli yo'q. ── */
 let segModel=null, segMap=null, segW=0, segH=0, segBusy=false;
-const SEG_CLS={wall:1, floor:4, ceiling:6};   // ADE20K klass raqamlari
+/* ADE20K klasslari. Devor = ichki devor + tashqi fasad (building, house).
+   Pol = pol + yo'l + yo'lak + yer (hovli suratlari uchun). */
+const SEG_CLS={wall:[1,2,26], floor:[4,7,12,14], ceiling:[6]};
+const AI_SIZE=513;   // model ichki qatlamlari 513 ga qattiq bog'langan (65x65 ASPP)
 function aiStatus(msg){
   const s=el('aiStatus');
   if(!msg){ s.style.display='none'; return; }
@@ -1457,7 +1460,7 @@ async function aiAuto(){
     oc.getContext('2d').putImageData(baseImg,0,0);
     const out = tf.tidy(()=>{
       const img=tf.browser.fromPixels(oc);
-      const sc=513/Math.max(oc.width,oc.height);
+      const sc=AI_SIZE/Math.max(oc.width,oc.height);
       const th=Math.round(oc.height*sc), tw=Math.round(oc.width*sc);
       const resized=tf.image.resizeBilinear(img,[th,tw]);
       return segModel.execute(resized.expandDims(0).toInt());
@@ -1482,20 +1485,61 @@ function applySurface(kind){
   if(!segMap) return;
   if(!SEL){ toast(t('wall_need')); return; }
   ['wall','ceiling','floor'].forEach(k=>el('sf-'+k).classList.toggle('sel', k===kind));
-  const cls=SEG_CLS[kind];
+  const clsSet=new Uint8Array(160);
+  SEG_CLS[kind].forEach(c=>clsSet[c]=1);
   const W=rcv.width,H=rcv.height,m=ensureMask();
   let cnt=0;
   for(let y=0;y<H;y++){
     const sy=Math.min(segH-1,(y*segH/H)|0);
     for(let x=0;x<W;x++){
       const sx=Math.min(segW-1,(x*segW/W)|0);
-      const v=segMap[sy*segW+sx]===cls?1:0;
+      const v=clsSet[segMap[sy*segW+sx]];
       m[y*W+x]=v; cnt+=v;
     }
   }
   if(cnt<50){ toast(t('ai_none')); renderPaint(); return; }
-  cleanMask(m);                       // AI xatolarini rang statistikasi bilan tozalash
+  cleanMask(m);       // rang statistikasi bilan tozalash (mebel bleed'i ketadi)
+  refineEdges(m);     // chegaralarni haqiqiy rang chegaralariga yopishtirish
   renderPaint();
+}
+
+/* Chegara sayqallash: mask chetidagi har piksel lokal "devor o'rtachasi" va
+   "tashqari o'rtachasi" bilan solishtiriladi — qaysi biriga yaqin bo'lsa, o'shanga o'tadi.
+   Natijada AI'ning dag'al (641px) chegarasi haqiqiy rang chegarasiga yopishadi. */
+function refineEdges(m){
+  const W=rcv.width,H=rcv.height,lab=ensureLab();
+  const R=9, S=3;
+  for(let it=0; it<2; it++){
+    const band=[];
+    for(let y=1;y<H-1;y++){
+      const row=y*W;
+      for(let x=1;x<W-1;x++){
+        const i=row+x, v=m[i]>0;
+        if((m[i-1]>0)!==v||(m[i+1]>0)!==v||(m[i-W]>0)!==v||(m[i+W]>0)!==v) band.push(i);
+      }
+    }
+    const upd=[];
+    for(const i of band){
+      const x=i%W,y=(i/W)|0;
+      let wl=0,wa=0,wb=0,wc=0, ql=0,qa=0,qb=0,qc=0;
+      for(let dy=-R;dy<=R;dy+=S){
+        const yy=y+dy; if(yy<0||yy>=H) continue;
+        for(let dx=-R;dx<=R;dx+=S){
+          const xx=x+dx; if(xx<0||xx>=W) continue;
+          const j=yy*W+xx;
+          if(m[j]>0.5){ wl+=lab[j*3];wa+=lab[j*3+1];wb+=lab[j*3+2];wc++; }
+          else{ ql+=lab[j*3];qa+=lab[j*3+1];qb+=lab[j*3+2];qc++; }
+        }
+      }
+      if(wc<3||qc<3) continue;
+      const L=lab[i*3],A=lab[i*3+1],B=lab[i*3+2];
+      // xroma asosiy, yorug'lik kam vazn (soya devorni "tashqari" qilmasin)
+      const dw=0.35*(L-wl/wc)**2 + (A-wa/wc)**2 + (B-wb/wc)**2;
+      const dq=0.35*(L-ql/qc)**2 + (A-qa/qc)**2 + (B-qb/qc)**2;
+      upd.push(dw<=dq ? i : ~i);
+    }
+    for(const u of upd){ if(u>=0) m[u]=1; else m[~u]=0; }
+  }
 }
 
 /* AI maskasini tozalash:
