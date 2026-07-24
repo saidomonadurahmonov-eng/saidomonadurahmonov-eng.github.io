@@ -146,7 +146,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .statrow b{display:block;font-size:14px;color:var(--accent-dark)}
 .statrow span{font-size:9.5px;color:var(--hint)}
 .canvaswrap{position:relative;background:#000;border-radius:14px;overflow:hidden;line-height:0}
-.canvaswrap canvas{width:100%;height:auto;display:block;touch-action:manipulation}
+.canvaswrap canvas{width:100%;height:auto;display:block;touch-action:none}
 .modes{display:flex;gap:8px;margin-top:10px}
 .mode{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:9px 6px;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--card)}
 .mode.on{background:var(--navy);color:#fff;border-color:var(--navy)}
@@ -256,9 +256,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div class="mode" id="m-paint" onclick="setRMode('paint')">🖌 <span id="mPaint">Bo'yash</span><small id="mPaintS">devorni bosing</small></div>
     </div>
     <div id="paintOpts" style="display:none">
-      <div class="flabel"><span id="tolL">Devor tanlash aniqligi</span>: <span id="tolV">22</span></div>
-      <input type="range" style="width:100%" id="tol" min="6" max="60" value="22" oninput="document.getElementById('tolV').textContent=this.value">
-      <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:6px" id="tolHint"></div>
+      <div class="modes" style="margin-top:8px">
+        <div class="mode on" id="pt-magic" onclick="setTool('magic')">🪄 <span id="ptMagic">Sehrli</span><small id="ptMagicS"></small></div>
+        <div class="mode" id="pt-add" onclick="setTool('add')">➕ <span id="ptAdd">Qo'shish</span><small id="ptAddS"></small></div>
+        <div class="mode" id="pt-erase" onclick="setTool('erase')">➖ <span id="ptErase">O'chirish</span><small id="ptEraseS"></small></div>
+      </div>
+      <div id="magicRow">
+        <div class="flabel"><span id="tolL">Aniqlik</span>: <span id="tolV">22</span></div>
+        <input type="range" style="width:100%" id="tol" min="6" max="60" value="22" oninput="document.getElementById('tolV').textContent=this.value">
+      </div>
+      <div id="brushRow" style="display:none">
+        <div class="flabel"><span id="brushL">Cho'tka o'lchami</span>: <span id="brushV">26</span></div>
+        <input type="range" style="width:100%" id="brushSize" min="8" max="70" value="26" oninput="brush=+this.value;document.getElementById('brushV').textContent=this.value">
+      </div>
+      <button class="vchip" id="clearBtn" onclick="clearMask()" style="margin-top:8px">🗑 <span id="clearL">Tozalash</span></button>
+      <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px" id="tolHint"></div>
     </div>
   </div>
 
@@ -393,8 +405,11 @@ const T = {
     btn_up:"📷 Rasm yuklash", btn_sample:"🏠 Namuna xona", btn_reset:"↩︎ Asliga",
     m_pick:"Pipetka", m_pick_s:"rasmdan rang olish",
     m_paint:"Bo'yash", m_paint_s:"devorni bosing",
-    tol_l:"Devor tanlash aniqligi",
-    tol_hint:"Devorning bir joyini bosing — dastur shu rangdagi sohani topib, <b>soya va yorug'likni saqlagan holda</b> bo'yaydi.",
+    tol_l:"Aniqlik (sehrli)",
+    tol_hint:"🪄 <b>Sehrli</b> — devorni bir bosishda tanlaydi, predmet chetlarida to'xtaydi. Ortiqcha joyni ➖ bilan oling, tushmay qolgan joyni ➕ cho'tka bilan qo'shing. Bir necha bosish mumkin.",
+    pt_magic:"Sehrli", pt_magic_s:"1 bosish", pt_add:"Qo'shish", pt_add_s:"surtib qo'shish",
+    pt_erase:"O'chirish", pt_erase_s:"ortiqchani ol", brush_l:"Cho'tka o'lchami",
+    sel_clear:"Tozalash", sel_cleared:"Tanlov tozalandi",
     sel_h:"Tanlangan rang", fam_l:"Rang oilasini tanlang",
     pick_hint:"Rang oilasini bosing va tusni tanlang — yoki rasmdan pipetka bilan oling.",
     pick_done:"Rasmdan olindi", pick_near:"eng yaqin bo'yoq ranglari:",
@@ -474,8 +489,11 @@ const T = {
     btn_up:"📷 Загрузить фото", btn_sample:"🏠 Пример комнаты", btn_reset:"↩︎ Сбросить",
     m_pick:"Пипетка", m_pick_s:"взять цвет с фото",
     m_paint:"Покраска", m_paint_s:"нажмите на стену",
-    tol_l:"Точность выделения стены",
-    tol_hint:"Нажмите на стену — программа найдёт область этого цвета и покрасит её, <b>сохраняя тени и свет</b>.",
+    tol_l:"Точность (волшебное)",
+    tol_hint:"🪄 <b>Волшебное</b> — выделяет стену одним касанием, останавливается на краях предметов. Лишнее уберите ➖, пропущенное добавьте кистью ➕. Можно нажимать несколько раз.",
+    pt_magic:"Волшебное", pt_magic_s:"1 касание", pt_add:"Добавить", pt_add_s:"провести пальцем",
+    pt_erase:"Стереть", pt_erase_s:"убрать лишнее", brush_l:"Размер кисти",
+    sel_clear:"Очистить", sel_cleared:"Выделение очищено",
     sel_h:"Выбранный цвет", fam_l:"Выберите цветовую семью",
     pick_hint:"Нажмите на семью и выберите оттенок — или возьмите цвет пипеткой с фото.",
     pick_done:"Взято с фото", pick_near:"ближайшие цвета краски:",
@@ -1176,11 +1194,11 @@ function setCanvasFromSource(src,w,h){
   rctx.drawImage(src,0,0,sw,sh);
   baseImg=rctx.getImageData(0,0,sw,sh);
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), sw, sh);
-  labCache=null;
+  labCache=null; wallMask=null;
 }
 function ensureLab(){
   if(labCache) return labCache;
-  const d=curImg.data, n=rcv.width*rcv.height;
+  const d=baseImg.data, n=rcv.width*rcv.height;   // ASL rasmdan (bo'yalgandan emas!)
   labCache=new Float32Array(n*3);
   for(let i=0,j=0;i<n;i++,j+=4){
     const [L,a,b]=rgb2lab(d[j],d[j+1],d[j+2]);
@@ -1190,8 +1208,9 @@ function ensureLab(){
 }
 function resetImg(){
   if(!baseImg) return;
+  if(wallMask) wallMask.fill(0);
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), rcv.width, rcv.height);
-  redraw(); labCache=null; toast(t('img_reset'));
+  redraw(); toast(t('img_reset'));
 }
 function sampleRoom(){
   const w=880,h=620;
@@ -1220,7 +1239,7 @@ function sampleRoom(){
   c.fillStyle='#7a5a3a'; c.fillRect(w*0.46,h*0.66,w*0.16,h*0.05);
   baseImg=rctx.getImageData(0,0,w,h);
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), w, h);
-  labCache=null;
+  labCache=null; wallMask=null;
 }
 
 /* rejimlar */
@@ -1259,57 +1278,94 @@ function tanla(i){
   toast(t('sel_done')+': '+SEL.c);
 }
 
-/* devorni bo'yash */
-function boya(sx,sy){
+/* ── Devorni ajratish: sehrli tanlov + qo'lda cho'tka (istalgan rasm uchun) ── */
+let wallMask=null, ptool='magic', brush=26, stroking=false, lastP=null, rafPending=false;
+function ensureMask(){
+  const N=rcv.width*rcv.height;
+  if(!wallMask || wallMask.length!==N) wallMask=new Float32Array(N);
+  return wallMask;
+}
+function clearMask(){ ensureMask().fill(0); renderPaint(); toast(t('sel_cleared')); }
+
+/* Sehrli: chetlarda TO'XTAYDI — o'xshash rangli qo'shni predmetga oqib ketmaydi.
+   Mavjud tanlovga QO'SHADI (bir necha bosishда butun devorni yig'ish mumkin). */
+function magicAdd(sx,sy){
   if(!SEL){ toast(t('wall_need')); return; }
-  const t0=performance.now();
-  const W=rcv.width, H=rcv.height, N=W*H;
-  const lab=ensureLab();
+  const W=rcv.width,H=rcv.height,N=W*H,lab=ensureLab(),m=ensureMask();
   const tol=+el('tol').value;
-  const si=sy*W+sx;
-  const sL=lab[si*3], sA=lab[si*3+1], sB=lab[si*3+2];
-  const mask=new Float32Array(N), seen=new Uint8Array(N), stack=new Int32Array(N);
-  let sp=0; stack[sp++]=si; seen[si]=1;
+  const edge=Math.max(5, tol*0.55);   // qo'shni pikselga qadam chegarasi (chekka to'siq)
+  const si=sy*W+sx, sL=lab[si*3],sA=lab[si*3+1],sB=lab[si*3+2];
+  const seen=new Uint8Array(N), st=new Int32Array(N);
+  let sp=0; st[sp++]=si; seen[si]=1; let cnt=0;
   while(sp>0){
-    const i=stack[--sp];
-    const dL=lab[i*3]-sL, dA=lab[i*3+1]-sA, dB=lab[i*3+2]-sB;
-    if(Math.sqrt(dL*dL+dA*dA+dB*dB) > tol) continue;
-    mask[i]=1;
-    const x=i%W, y=(i/W)|0;
-    if(x>0   && !seen[i-1]){ seen[i-1]=1; stack[sp++]=i-1; }
-    if(x<W-1 && !seen[i+1]){ seen[i+1]=1; stack[sp++]=i+1; }
-    if(y>0   && !seen[i-W]){ seen[i-W]=1; stack[sp++]=i-W; }
-    if(y<H-1 && !seen[i+W]){ seen[i+W]=1; stack[sp++]=i+W; }
+    const i=st[--sp];
+    const dL=lab[i*3]-sL,dA=lab[i*3+1]-sA,dB=lab[i*3+2]-sB;
+    if(Math.sqrt(dL*dL+dA*dA+dB*dB) > tol) continue;   // seed'dan uzoq — rad
+    m[i]=1; cnt++;
+    const x=i%W,y=(i/W)|0, iL=lab[i*3],iA=lab[i*3+1],iB=lab[i*3+2];
+    const tryN=j=>{
+      if(seen[j]) return; seen[j]=1;
+      const s=Math.abs(lab[j*3]-iL)+Math.abs(lab[j*3+1]-iA)+Math.abs(lab[j*3+2]-iB);
+      if(s>edge) return;                                // chekka: predmet chegarasi — to'xta
+      st[sp++]=j;
+    };
+    if(x>0)tryN(i-1); if(x<W-1)tryN(i+1); if(y>0)tryN(i-W); if(y<H-1)tryN(i+W);
   }
-  let cnt=0, sumL=0;
-  for(let i=0;i<N;i++) if(mask[i]){ cnt++; sumL+=lab[i*3]; }
-  if(cnt<40){ toast(t('wall_small')); return; }
-  blurMask(mask,W,H); blurMask(mask,W,H);
-  const meanL=sumL/cnt, src=baseImg.data, out=curImg.data;
-  const tL=SEL.L, tA=SEL.la, tB=SEL.lb;
+  if(cnt<20){ toast(t('wall_small')); }
+  renderPaint();
+}
+function paintCircle(cx,cy,add){
+  const W=rcv.width,H=rcv.height,m=ensureMask(),r=brush,r2=r*r;
+  const x0=Math.max(0,cx-r),x1=Math.min(W-1,cx+r),y0=Math.max(0,cy-r),y1=Math.min(H-1,cy+r);
+  const v=add?1:0;
+  for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){
+    const dx=x-cx,dy=y-cy; if(dx*dx+dy*dy<=r2) m[y*W+x]=v;
+  }
+}
+function brushStroke(x0,y0,x1,y1,add){
+  const dist=Math.hypot(x1-x0,y1-y0), steps=Math.max(1,Math.round(dist/(brush*0.4)));
+  for(let i=0;i<=steps;i++){ const tt=i/steps; paintCircle(Math.round(x0+(x1-x0)*tt), Math.round(y0+(y1-y0)*tt), add); }
+  scheduleRender();
+}
+function scheduleRender(){ if(rafPending) return; rafPending=true; requestAnimationFrame(()=>{ rafPending=false; renderPaint(); }); }
+
+/* Tanlangan (mask) sohani bo'yaydi — asl soya/yorug'lik saqlanadi, chetlari yumshoq */
+function renderPaint(){
+  if(!baseImg) return;
+  const W=rcv.width,H=rcv.height,N=W*H,src=baseImg.data,out=curImg.data;
+  const m=ensureMask(), lab=ensureLab();
+  let cnt=0,sum=0; for(let i=0;i<N;i++) if(m[i]>0){cnt++; sum+=lab[i*3];}
+  if(!SEL || cnt===0){ out.set(src); redraw(); return; }
+  const mm=featherMask(m,W,H);
+  const meanL=sum/cnt, tL=SEL.L,tA=SEL.la,tB=SEL.lb;
   for(let i=0;i<N;i++){
-    const m=mask[i];
-    if(m<=0.004) continue;
-    let nL=tL+(lab[i*3]-meanL);          // asl soya/yorug'likni saqlaymiz
-    nL=Math.max(0,Math.min(100,nL));
+    const a=mm[i], j=i*4;
+    if(a<=0.004){ out[j]=src[j];out[j+1]=src[j+1];out[j+2]=src[j+2]; continue; }
+    let nL=tL+(lab[i*3]-meanL); nL=Math.max(0,Math.min(100,nL));
     const [r,g,b]=lab2rgb(nL,tA,tB);
-    const j=i*4;
-    out[j]  = src[j]  *(1-m) + r*m;
-    out[j+1]= src[j+1]*(1-m) + g*m;
-    out[j+2]= src[j+2]*(1-m) + b*m;
+    out[j]  = src[j]  *(1-a)+r*a;
+    out[j+1]= src[j+1]*(1-a)+g*a;
+    out[j+2]= src[j+2]*(1-a)+b*a;
   }
   redraw();
-  toast(`${t('wall_done')} — ${(cnt/N*100).toFixed(0)}% · ${Math.round(performance.now()-t0)} ms`);
 }
-function blurMask(m,W,H){
-  const tmp=new Float32Array(m.length);
+function featherMask(m,W,H){
+  const t=new Float32Array(m.length);
   for(let y=0;y<H;y++) for(let x=0;x<W;x++){
-    const i=y*W+x; let s=m[i], c=1;
+    const i=y*W+x; let s=m[i],c=1;
     if(x>0){s+=m[i-1];c++;} if(x<W-1){s+=m[i+1];c++;}
     if(y>0){s+=m[i-W];c++;} if(y<H-1){s+=m[i+W];c++;}
-    tmp[i]=s/c;
+    t[i]=s/c;
   }
-  m.set(tmp);
+  return t;
+}
+function setTool(tool){
+  ptool=tool;
+  el('pt-magic').classList.toggle('on', tool==='magic');
+  el('pt-add').classList.toggle('on', tool==='add');
+  el('pt-erase').classList.toggle('on', tool==='erase');
+  el('magicRow').style.display = tool==='magic' ? 'block' : 'none';
+  el('brushRow').style.display = tool==='magic' ? 'none' : 'block';
 }
 
 /* bo'yoq hisobi */
@@ -1349,13 +1405,28 @@ let rangInit=false;
 function renderRang(){
   if(!rangInit){
     rcv=el('cv'); rctx=rcv.getContext('2d',{willReadFrequently:true});
-    rcv.addEventListener('click', e=>{
-      const rect=rcv.getBoundingClientRect();
-      const x=Math.floor((e.clientX-rect.left)*rcv.width/rect.width);
-      const y=Math.floor((e.clientY-rect.top)*rcv.height/rect.height);
-      if(x<0||y<0||x>=rcv.width||y>=rcv.height) return;
-      if(RMODE==='pick') pipetka(x,y); else boya(x,y);
+    const cpt=e=>{ const r=rcv.getBoundingClientRect();
+      return [Math.floor((e.clientX-r.left)*rcv.width/r.width), Math.floor((e.clientY-r.top)*rcv.height/r.height)]; };
+    rcv.addEventListener('pointerdown', e=>{
+      const [x,y]=cpt(e); if(x<0||y<0||x>=rcv.width||y>=rcv.height) return;
+      if(RMODE==='pick'){ pipetka(x,y); return; }
+      if(ptool==='magic'){ magicAdd(x,y); return; }
+      if(!SEL){ toast(t('wall_need')); return; }
+      stroking=true; lastP=[x,y];
+      try{ rcv.setPointerCapture(e.pointerId); }catch(_){}
+      brushStroke(x,y,x,y, ptool==='add');
+      e.preventDefault();
     });
+    rcv.addEventListener('pointermove', e=>{
+      if(!stroking) return;
+      const [x,y]=cpt(e);
+      brushStroke(lastP[0],lastP[1],x,y, ptool==='add');
+      lastP=[x,y]; e.preventDefault();
+    });
+    const endStroke=()=>{ stroking=false; lastP=null; };
+    rcv.addEventListener('pointerup', endStroke);
+    rcv.addEventListener('pointercancel', endStroke);
+    rcv.addEventListener('pointerleave', endStroke);
     el('rfile').addEventListener('change', e=>{
       const f=e.target.files[0]; if(!f) return;
       const img=new Image();
@@ -1386,6 +1457,11 @@ function applyRangLang(){
   el('mPaint').textContent=t('m_paint'); el('mPaintS').textContent=t('m_paint_s');
   el('tolL').textContent=t('tol_l');
   el('tolHint').innerHTML=t('tol_hint');
+  el('ptMagic').textContent=t('pt_magic'); el('ptMagicS').textContent=t('pt_magic_s');
+  el('ptAdd').textContent=t('pt_add'); el('ptAddS').textContent=t('pt_add_s');
+  el('ptErase').textContent=t('pt_erase'); el('ptEraseS').textContent=t('pt_erase_s');
+  el('brushL').textContent=t('brush_l');
+  el('clearL').textContent=t('sel_clear');
   el('selH').textContent=t('sel_h');
   el('famL').textContent=t('fam_l');
   if(!SEL) el('pickedTxt').innerHTML=t('pick_hint');

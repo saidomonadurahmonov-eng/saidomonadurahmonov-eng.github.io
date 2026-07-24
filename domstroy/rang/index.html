@@ -3,168 +3,1046 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Дом Строй — Rang tanlash va hisoblash</title>
+<title>Дом Строй — Qurilish mollari markazi</title>
 <meta name="theme-color" content="#EF7F1A">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{
-  --bg:#F4F5F7; --card:#fff; --card2:#EDEFF2; --text:#1F2A37; --hint:#6B7686;
-  --accent:#EF7F1A; --accent-dark:#D96F0E; --navy:#1F2A37; --line:rgba(31,42,55,.10);
-  --green:#1D9E75; --red:#E24B4A;
+  --bg:#F4F5F7;
+  --card:#ffffff;
+  --card2:#EDEFF2;
+  --text:#1F2A37;
+  --hint:#6B7686;
+  --accent:#EF7F1A;
+  --accent-dark:#D96F0E;
+  --navy:#1F2A37;
+  --line:rgba(31,42,55,.08);
+  --green:#1d9e75;
+  --red:#e24b4a;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);padding-bottom:32px}
-.brandbar{background:var(--navy);padding:13px 16px;border-radius:0 0 20px 20px}
-.brow{display:flex;align-items:center;gap:10px}
-.blogo{width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:19px}
-.bname{color:#fff;font-size:19px;font-weight:800}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);padding-bottom:72px}
+.view{display:none}
+.view.active{display:block}
+.header{padding:14px 16px 6px}
+.header h1{font-size:20px}
+
+/* brend paneli */
+.brandbar{background:var(--navy);padding:14px 16px;border-radius:0 0 22px 22px}
+.brandrow{display:flex;align-items:center;gap:10px}
+.blogo{width:40px;height:40px;border-radius:11px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto}
+.bname{color:#fff;font-size:21px;font-weight:800;letter-spacing:.3px;line-height:1.1}
 .bname span{color:var(--accent)}
 .bsub{color:#93a0b0;font-size:11px;margin-top:2px}
-.notice{margin:12px 16px;background:#FFF4E6;border:1px solid #F5C88A;border-radius:12px;padding:10px 13px;font-size:12px;line-height:1.5;color:#7A4E10}
-.sec{margin:14px 16px}
-.sec h2{font-size:15px;font-weight:700;margin-bottom:8px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
-.canvaswrap{position:relative;background:#000;border-radius:14px;overflow:hidden;line-height:0}
-canvas{width:100%;height:auto;display:block;touch-action:manipulation}
-.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.btn{border:none;border-radius:11px;padding:10px 14px;font-size:13.5px;font-weight:700;cursor:pointer;background:var(--card2);color:var(--text)}
-.btn.pri{background:var(--accent);color:#fff}
-.btn.nav{background:var(--navy);color:#fff}
-.btn:active{transform:scale(.97)}
-.modes{display:flex;gap:8px;margin-top:10px}
-.mode{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer;background:#fff}
-.mode.on{background:var(--navy);color:#fff;border-color:var(--navy)}
-.mode small{display:block;font-weight:400;font-size:10.5px;opacity:.75;margin-top:2px}
-.swatchbig{width:100%;height:64px;border-radius:12px;border:1px solid var(--line)}
-.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.lbtn{padding:6px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#cfd7e0;font-size:12.5px;font-weight:700;cursor:pointer}
+.lbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{margin:12px 0 0;display:flex;gap:8px}
+.search input{flex:1;border:none;border-radius:12px;padding:11px 14px;font-size:15px;background:#fff;color:#1a1a1a;outline:none}
+.chanbtn{width:100%;margin-top:10px;border:none;border-radius:12px;padding:11px 14px;background:var(--accent);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.chanbtn:active{transform:scale(.98)}
+.updated{padding:6px 16px 0;color:var(--hint);font-size:11px}
+
+.section-title{font-size:17px;font-weight:700;margin:18px 16px 10px;letter-spacing:-.2px}
+.shelf{display:flex;gap:10px;overflow-x:auto;padding:2px 16px 6px;scrollbar-width:none}
+.shelf::-webkit-scrollbar{display:none}
+.scard{flex:0 0 150px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative;cursor:pointer;box-shadow:0 1px 4px rgba(31,42,55,.05)}
+.scard img{width:100%;height:150px;object-fit:contain;display:block;background:#fff}
+.scard .sbadge{position:absolute;top:8px;left:8px;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;background:var(--red)}
+.scard .sbadge.new{background:var(--green)}
+.scard .sbadge.top{background:var(--navy)}
+.scard .snm{font-size:12px;padding:8px 10px 2px;height:38px;overflow:hidden;line-height:1.25}
+.scard .spr{font-size:13.5px;font-weight:700;padding:0 10px 10px;color:var(--accent-dark)}
+.oldp{color:var(--hint);text-decoration:line-through;font-weight:400;font-size:11px;margin-right:5px}
+
+.cats{display:grid;grid-auto-flow:column;grid-template-rows:1fr 1fr;grid-auto-columns:minmax(146px,1fr);gap:10px;overflow-x:auto;padding:6px 16px 12px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cattile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:3px;white-space:nowrap}
+.cattile.active{background:var(--navy);border-color:var(--navy)}
+.cattile .cnm{font-size:13px;font-weight:600}
+.cattile .cnt{font-size:11px;color:var(--hint)}
+.cattile.active .cnm{color:#fff}
+.cattile.active .cnt{color:#93a0b0}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:8px 16px 18px}
+.pcard{background:var(--card);border-radius:18px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;box-shadow:0 1px 4px rgba(31,42,55,.05)}
+.pimg{position:relative}
+.pimg img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#fff}
+.discbadge{position:absolute;top:9px;left:9px;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:9px}
+.qadd{position:absolute;right:9px;bottom:9px;width:38px;height:38px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px rgba(31,42,55,.25)}
+.qadd:active{transform:scale(.92)}
+.pinfo{padding:10px 12px 13px;cursor:pointer}
+.pbrand{font-size:10.5px;color:var(--hint);text-transform:uppercase;letter-spacing:.4px;height:14px;overflow:hidden}
+.pname{font-size:13px;line-height:1.3;height:34px;overflow:hidden;margin-top:2px}
+.pprice{margin-top:6px;font-size:15px;font-weight:700;color:var(--accent-dark)}
+.empty{text-align:center;color:var(--hint);padding:40px 20px;font-size:14px}
+
+/* savat */
+.cartlist{padding:0 16px}
+.cartlist .ci{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.cartlist .ci img{width:54px;height:54px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line)}
+.cartlist .ci .nm{flex:1;font-size:13px;line-height:1.25}
+.cartlist .ci .nm .pr{color:var(--accent-dark);font-weight:700;margin-top:3px}
+.cartlist .ci .ctr{display:flex;align-items:center;gap:8px}
+.cartlist .ci .ctr button{width:30px;height:30px;border-radius:8px;border:none;background:var(--card2);font-size:16px;cursor:pointer;color:var(--text)}
+.cartlist .ci .ctr .q{min-width:24px;text-align:center;font-weight:700;font-size:14px}
+.cartbox{margin:12px 16px;background:var(--card);border-radius:14px;padding:14px 16px;border:1px solid var(--line)}
+.total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin:8px 0}
+.bigbtn{width:100%;border:none;border-radius:12px;padding:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px}
+.bigbtn.ghost{background:var(--card2);color:var(--text)}
+.finput{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 13px;font-size:15px;background:var(--card2);color:var(--text);outline:none;margin-top:8px}
+.flabel{font-size:13px;font-weight:700;margin-top:12px;color:var(--hint)}
+.vchip{padding:9px 13px;border-radius:11px;border:1.5px solid var(--line);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;margin:6px 6px 0 0;display:inline-block}
+.vchip.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* filiallar */
+.branch{margin:10px 16px;background:var(--card);border-radius:14px;padding:13px 15px;border:1px solid var(--line);display:flex;gap:11px;align-items:flex-start}
+.branch .ic{font-size:20px;margin-top:1px}
+.branch .bt{font-size:14px;font-weight:700}
+.branch .ba{font-size:12.5px;color:var(--hint);margin-top:2px;line-height:1.4}
+
+/* aloqa */
+.panel{margin:12px 16px;background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--line)}
+.panel h3{font-size:15px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
 .row:last-child{border-bottom:none}
-.sw{width:40px;height:40px;border-radius:9px;flex:0 0 auto;border:1px solid var(--line)}
-.rinfo{flex:1;font-size:13px;line-height:1.35}
-.rinfo b{font-size:13.5px}
-.rinfo .code{color:var(--hint);font-size:11.5px}
+.row .k{color:var(--hint);flex:0 0 auto}
+.row .v{font-weight:600;text-align:right;word-break:break-word}
+.row .v a{color:var(--accent-dark);text-decoration:none}
+.promo{margin:12px 16px;background:linear-gradient(135deg,#EF7F1A,#D95E0E);border-radius:16px;padding:16px;color:#fff}
+.promo .pt{font-size:15px;font-weight:800;line-height:1.3}
+.promo .pd{font-size:12.5px;margin-top:5px;opacity:.92;line-height:1.45}
+
+/* pastki menyu */
+.nav{position:fixed;bottom:0;left:0;right:0;height:calc(58px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--card);box-shadow:0 -1px 8px rgba(31,42,55,.08);display:flex;z-index:40}
+.nav button{flex:1;border:none;background:none;color:var(--hint);font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;position:relative}
+.nav button .ic{font-size:20px}
+.nav button.active{color:var(--accent-dark)}
+.nav .badge{position:absolute;top:4px;right:50%;transform:translateX(18px);background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;z-index:50}
+.modal.show{display:flex}
+.sheet{background:var(--bg);width:100%;max-height:88vh;border-radius:18px 18px 0 0;overflow-y:auto;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.sheet img.big{width:100%;aspect-ratio:1/1;max-height:58vh;object-fit:contain;background:#fff}
+.sheet .body{padding:14px 16px}
+.sheet h2{font-size:17px;line-height:1.3}
+.sheet .price{font-size:21px;font-weight:800;color:var(--accent-dark);margin:8px 0 2px}
+.sheet .meta{color:var(--hint);font-size:13px;margin-bottom:12px;line-height:1.5}
+.qtyrow{display:flex;align-items:center;gap:14px;margin:10px 0 16px}
+.qtyrow button{width:44px;height:44px;border-radius:12px;border:none;background:var(--card);font-size:22px;cursor:pointer;border:1px solid var(--line)}
+.qtyrow .qv{font-size:18px;font-weight:700;width:72px;text-align:center}
+.stockchip{display:inline-block;background:rgba(29,158,117,.12);color:var(--green);font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;margin-top:6px}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,.92);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:99;display:none}
+.demo-tag{position:fixed;top:8px;right:8px;background:rgba(31,42,55,.85);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:8px;z-index:45;letter-spacing:.5px}
+
+/* ── Rang tanlash ── */
+.rangbanner{margin:12px 16px;background:linear-gradient(135deg,#EF7F1A,#D95E0E);border-radius:16px;padding:14px 16px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:12px}
+.rangbanner .ic{font-size:28px;flex:0 0 auto}
+.rangbanner .t{font-size:14.5px;font-weight:800;line-height:1.25}
+.rangbanner .d{font-size:11.5px;opacity:.93;margin-top:3px;line-height:1.4}
+.notice{background:#FFF4E6;border:1px solid #F5C88A;border-radius:12px;padding:9px 12px;font-size:11.5px;line-height:1.5;color:#7A4E10;margin-bottom:10px}
+.statrow{display:flex;gap:8px;margin-bottom:10px}
+.statrow div{flex:1;background:var(--card2);border-radius:10px;padding:8px 4px;text-align:center}
+.statrow b{display:block;font-size:14px;color:var(--accent-dark)}
+.statrow span{font-size:9.5px;color:var(--hint)}
+.canvaswrap{position:relative;background:#000;border-radius:14px;overflow:hidden;line-height:0}
+.canvaswrap canvas{width:100%;height:auto;display:block;touch-action:none}
+.modes{display:flex;gap:8px;margin-top:10px}
+.mode{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:9px 6px;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--card)}
+.mode.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mode small{display:block;font-weight:400;font-size:10px;opacity:.75;margin-top:2px}
+.swatchbig{width:100%;height:60px;border-radius:12px;border:1px solid var(--line)}
+.crow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.crow:last-child{border-bottom:none}
+.csw{width:38px;height:38px;border-radius:9px;flex:0 0 auto;border:1px solid var(--line)}
+.cinfo{flex:1;font-size:13px;line-height:1.35}
+.cinfo .ccode{color:var(--hint);font-size:11.5px}
 .de{font-size:11px;font-weight:700;padding:3px 7px;border-radius:7px;background:var(--card2);color:var(--hint)}
 .de.good{background:rgba(29,158,117,.13);color:var(--green)}
-.slider{width:100%;margin-top:6px}
-.lab{font-size:12px;color:var(--hint);margin-top:10px;font-weight:600}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input[type=number],input[type=text],select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 11px;font-size:14px;background:var(--card2);color:var(--text);outline:none}
-.res{background:var(--navy);color:#fff;border-radius:14px;padding:14px;margin-top:12px}
-.res .big{font-size:26px;font-weight:800;color:var(--accent)}
-.res .sm{font-size:12px;opacity:.85;line-height:1.5;margin-top:4px}
-.stat{display:flex;gap:8px;margin:10px 16px}
-.stat div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
-.stat b{display:block;font-size:17px;color:var(--accent-dark)}
-.stat span{font-size:10.5px;color:var(--hint)}
-.search{display:flex;gap:8px;margin-bottom:8px}
-.search input{flex:1}
-.hint{font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px}
-.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,.92);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:99;display:none}
-.tag{display:inline-block;background:var(--card2);color:var(--hint);font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:7px;margin-left:6px}
+.paintbox{background:var(--navy);color:#fff;border-radius:14px;padding:13px;margin-top:12px}
+.paintbox .big{font-size:24px;font-weight:800;color:var(--accent)}
+.paintbox .sm{font-size:11.5px;opacity:.88;line-height:1.5;margin-top:4px}
+.paintcart{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:12px;padding:11px;margin-top:10px}
+.paintcart .pcsw{width:42px;height:42px;border-radius:10px;flex:0 0 auto;border:1px solid var(--line)}
+/* rang oilalari */
+.fams{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.fams::-webkit-scrollbar{display:none}
+.famchip{flex:0 0 auto;display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:22px;padding:5px 12px 5px 6px;font-size:12.5px;font-weight:600;cursor:pointer;background:var(--card);white-space:nowrap}
+.famchip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.famchip .fdot{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.15);flex:0 0 auto}
+.famname{font-size:12.5px;color:var(--hint);margin:2px 0 6px}
+.fangrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:5px;margin-top:2px}
+.fansw{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);cursor:pointer}
+.fansw.sel{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.selcode{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:13px}
+.selcode code{background:var(--card2);padding:3px 9px;border-radius:8px;font-weight:700;font-size:13px;color:var(--accent-dark)}
 </style>
 </head>
 <body>
 
-<div class="brandbar">
-  <div class="brow">
-    <div class="blogo">🎨</div>
+<div class="demo-tag">DEMO</div>
+
+<!-- DO'KON -->
+<div class="view active" id="v-shop">
+  <div class="brandbar">
+    <div class="brandrow">
+      <div class="blogo">🏗</div>
+      <div>
+        <div class="bname">Дом <span>Строй</span></div>
+        <div class="bsub" id="bsub">Qurilish mollari markazi · 2009-yildan</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="lbtn" id="lb-uz" onclick="setLang('uz')">UZ</button>
+        <button class="lbtn" id="lb-ru" onclick="setLang('ru')">RU</button>
+      </div>
+    </div>
+    <div class="search"><input id="q" type="search" placeholder="Mahsulot yoki artikul..."></div>
+    <button class="chanbtn" id="chanBtn" onclick="kanalOch()">📢 Telegram kanalimiz — aksiyalar va yangiliklar</button>
+  </div>
+  <div class="updated" id="updated"></div>
+  <div class="rangbanner" onclick="nav('rang')">
+    <div class="ic">🎨</div>
     <div>
-      <div class="bname">Дом <span>Строй</span></div>
-      <div class="bsub">Rang tanlash · devorni ko'rish · hisoblash</div>
+      <div class="t" id="rbT">Rang tanlash — devoringizni bo'yab ko'ring</div>
+      <div class="d" id="rbD">Tikkurila · Ottocento · 40 000+ tus · bo'yoq hisobi</div>
     </div>
   </div>
+  <div id="shelves"></div>
+  <div class="section-title" id="catTitle">Kategoriyalar</div>
+  <div class="cats" id="cats"></div>
+  <div class="section-title" id="gridTitle">Barcha mahsulotlar</div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">Hech narsa topilmadi 😕</div>
 </div>
 
-<div class="notice">
-  <b>Texnologiya namunasi.</b> Palitra shu yerda avtomatik yaratilgan <b>namuna</b> ranglardan iborat —
-  haqiqiy Tikkurila / Ottocento kataloglari mijozdan olinadi. Maqsad: 30 000+ rang bilan ishlash,
-  rasmdan rang tanlash va devorni bo'yab ko'rsatish <b>texnik jihatdan mumkinligini</b> isbotlash.
+<!-- SAVAT -->
+<div class="view" id="v-cart">
+  <div class="header"><h1 id="cartH">🛒 Savat</h1></div>
+  <div id="cartBody"></div>
 </div>
 
-<div class="stat">
-  <div><b id="stCount">…</b><span>palitradagi rang</span></div>
-  <div><b id="stMs">…</b><span>qidiruv tezligi</span></div>
-  <div><b>ΔE2000</b><span>moslash aniqligi</span></div>
+<!-- FILIALLAR -->
+<div class="view" id="v-branches">
+  <div class="header"><h1 id="brH">📍 Filiallarimiz</h1></div>
+  <div id="brBody"></div>
 </div>
 
-<div class="sec">
-  <h2>1. Xona rasmi</h2>
-  <div class="card">
-    <div class="canvaswrap"><canvas id="cv"></canvas></div>
-    <div class="btnrow">
-      <button class="btn pri" onclick="document.getElementById('file').click()">📷 Rasm yuklash</button>
-      <button class="btn" onclick="sampleRoom()">🏠 Namuna xona</button>
-      <button class="btn" onclick="resetImg()">↩︎ Asliga qaytarish</button>
+<!-- ALOQA -->
+<div class="view" id="v-info">
+  <div class="header"><h1 id="infH">ℹ️ Aloqa</h1></div>
+  <div id="infBody"></div>
+</div>
+
+<!-- RANG TANLASH -->
+<div class="view" id="v-rang">
+  <div class="header"><h1 id="rangH">🎨 Rang tanlash</h1></div>
+
+  <div class="panel">
+    <div class="notice" id="rangNote"></div>
+    <div class="statrow">
+      <div><b id="stCount">…</b><span id="stCountL">palitradagi tus</span></div>
+      <div><b id="stMs">…</b><span id="stMsL">qidiruv</span></div>
+      <div><b>ΔE2000</b><span id="stAccL">aniqlik</span></div>
     </div>
-    <input type="file" id="file" accept="image/*" style="display:none">
+    <div class="canvaswrap"><canvas id="cv"></canvas></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="vchip" onclick="document.getElementById('rfile').click()" id="btnUp">📷 Rasm yuklash</button>
+      <button class="vchip" onclick="sampleRoom();redraw()" id="btnSample">🏠 Namuna xona</button>
+      <button class="vchip" onclick="resetImg()" id="btnReset">↩︎ Asliga</button>
+    </div>
+    <input type="file" id="rfile" accept="image/*" style="display:none">
     <div class="modes">
-      <div class="mode on" id="m-pick" onclick="setMode('pick')">💧 Pipetka<small>rasmdan rang olish</small></div>
-      <div class="mode" id="m-paint" onclick="setMode('paint')">🖌 Bo'yash<small>devorni bosing</small></div>
+      <div class="mode on" id="m-pick" onclick="setRMode('pick')">💧 <span id="mPick">Pipetka</span><small id="mPickS">rasmdan rang olish</small></div>
+      <div class="mode" id="m-paint" onclick="setRMode('paint')">🖌 <span id="mPaint">Bo'yash</span><small id="mPaintS">devorni bosing</small></div>
     </div>
     <div id="paintOpts" style="display:none">
-      <div class="lab">Devor tanlash aniqligi: <span id="tolV">22</span></div>
-      <input type="range" class="slider" id="tol" min="6" max="60" value="22" oninput="document.getElementById('tolV').textContent=this.value">
-      <div class="hint">Devorning bir joyini bosing — dastur shu rangdagi sohani topib, <b>soya va yorug'likni saqlagan holda</b> bo'yaydi.</div>
+      <div class="modes" style="margin-top:8px">
+        <div class="mode on" id="pt-magic" onclick="setTool('magic')">🪄 <span id="ptMagic">Sehrli</span><small id="ptMagicS"></small></div>
+        <div class="mode" id="pt-add" onclick="setTool('add')">➕ <span id="ptAdd">Qo'shish</span><small id="ptAddS"></small></div>
+        <div class="mode" id="pt-erase" onclick="setTool('erase')">➖ <span id="ptErase">O'chirish</span><small id="ptEraseS"></small></div>
+      </div>
+      <div id="magicRow">
+        <div class="flabel"><span id="tolL">Aniqlik</span>: <span id="tolV">22</span></div>
+        <input type="range" style="width:100%" id="tol" min="6" max="60" value="22" oninput="document.getElementById('tolV').textContent=this.value">
+      </div>
+      <div id="brushRow" style="display:none">
+        <div class="flabel"><span id="brushL">Cho'tka o'lchami</span>: <span id="brushV">26</span></div>
+        <input type="range" style="width:100%" id="brushSize" min="8" max="70" value="26" oninput="brush=+this.value;document.getElementById('brushV').textContent=this.value">
+      </div>
+      <button class="vchip" id="clearBtn" onclick="clearMask()" style="margin-top:8px">🗑 <span id="clearL">Tozalash</span></button>
+      <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px" id="tolHint"></div>
     </div>
   </div>
-</div>
 
-<div class="sec">
-  <h2>2. Tanlangan rang</h2>
-  <div class="card">
+  <div class="panel">
+    <h3 id="selH">Tanlangan rang</h3>
     <div class="swatchbig" id="picked" style="background:#cfd4da"></div>
-    <div class="hint" id="pickedTxt">Rasmdan rang olish uchun pipetka rejimida rasmni bosing, yoki pastdan qidiring.</div>
-    <div class="lab">Palitradan qidirish (kod yoki nom)</div>
-    <div class="search"><input type="text" id="q" placeholder="masalan: 1024 yoki bej" oninput="qidir()"></div>
+    <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px" id="pickedTxt"></div>
     <div id="matches"></div>
+    <div class="flabel" id="famL">Rang oilasi</div>
+    <div class="fams" id="fams"></div>
+    <div class="famname" id="famName"></div>
+    <div class="fangrid" id="fangrid"></div>
+  </div>
+
+  <div class="panel">
+    <h3 id="calcH">Bo'yoq hisobi</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><div class="flabel" id="lblL">Uzunligi (m)</div><input class="finput" type="number" id="rl" value="5" step="0.1" oninput="hisobla()"></div>
+      <div><div class="flabel" id="lblW">Eni (m)</div><input class="finput" type="number" id="rw" value="4" step="0.1" oninput="hisobla()"></div>
+      <div><div class="flabel" id="lblH">Balandligi (m)</div><input class="finput" type="number" id="rh" value="2.8" step="0.1" oninput="hisobla()"></div>
+      <div><div class="flabel" id="lblD">Eshik/deraza</div><input class="finput" type="number" id="rd" value="3" step="1" oninput="hisobla()"></div>
+    </div>
+    <div class="flabel" id="lblProd">Mahsulot turi</div>
+    <select class="finput" id="prod" onchange="hisobla()"></select>
+    <div class="flabel" id="lblCoats">Qatlam soni</div>
+    <select class="finput" id="coats" onchange="hisobla()"></select>
+    <div class="paintbox" id="calcRes"></div>
+    <button class="bigbtn" id="addPaintBtn" onclick="paintToCart()">🛒 Buyurtmaga qo'shish</button>
+    <div style="font-size:11px;color:var(--hint);line-height:1.5;margin-top:8px" id="calcNote"></div>
   </div>
 </div>
 
-<div class="sec">
-  <h2>3. Bo'yoq hisobi</h2>
-  <div class="card">
-    <div class="grid2">
-      <div><div class="lab">Xona uzunligi (m)</div><input type="number" id="rl" value="5" step="0.1" oninput="hisobla()"></div>
-      <div><div class="lab">Xona eni (m)</div><input type="number" id="rw" value="4" step="0.1" oninput="hisobla()"></div>
-      <div><div class="lab">Shift balandligi (m)</div><input type="number" id="rh" value="2.8" step="0.1" oninput="hisobla()"></div>
-      <div><div class="lab">Eshik/deraza (dona)</div><input type="number" id="rd" value="3" step="1" oninput="hisobla()"></div>
-    </div>
-    <div class="lab">Mahsulot turi</div>
-    <select id="prod" onchange="hisobla()">
-      <option value="10">Mat emulsiya — ~10 m²/L</option>
-      <option value="11">Yarim mat emulsiya — ~11 m²/L</option>
-      <option value="8">Yuviladigan emulsiya — ~8 m²/L</option>
-      <option value="5">Dekorativ qoplama — ~5 m²/L</option>
-    </select>
-    <div class="lab">Qatlam soni</div>
-    <select id="coats" onchange="hisobla()">
-      <option value="1">1 qatlam</option>
-      <option value="2" selected>2 qatlam</option>
-      <option value="3">3 qatlam</option>
-    </select>
-    <div class="res" id="calcRes"></div>
-    <div class="hint">
-      Sarf me'yorlari — <b>namuna qiymatlar</b>; haqiqiy raqamlar mahsulot texnik ma'lumotnomasidan olinadi.
-      Rang formulasi (kolerovka) do'kondagi tinting mashinasida tayyorlanadi — biz kod, baza va litrni beramiz.
-    </div>
-  </div>
+<!-- KABINET -->
+<div class="view" id="v-profile">
+  <div class="header"><h1 id="profH">👤 Kabinet</h1></div>
+  <div id="profBody"></div>
 </div>
 
+<div class="nav" id="nav">
+  <button data-v="shop" class="active"><span class="ic">🛍</span><span id="nv1">Do'kon</span></button>
+  <button data-v="cart"><span class="ic">🛒</span><span id="nv2">Savat</span><span class="badge" id="navBadge" style="display:none">0</span></button>
+  <button data-v="rang"><span class="ic">🎨</span><span id="nv6">Rang</span></button>
+  <button data-v="branches"><span class="ic">📍</span><span id="nv3">Filiallar</span></button>
+  <button data-v="profile"><span class="ic">👤</span><span id="nv5">Kabinet</span></button>
+  <button data-v="info"><span class="ic">ℹ️</span><span id="nv4">Aloqa</span></button>
+</div>
+
+<div class="modal" id="pmodal"><div class="sheet" id="psheet"></div></div>
+<div class="modal" id="mapmodal"><div class="sheet" style="max-height:92vh">
+  <div class="body" style="padding-bottom:8px">
+    <h2 id="mapT">Manzilni belgilang</h2>
+    <div id="mapHint" style="color:var(--hint);font-size:12.5px;margin:6px 0 10px"></div>
+  </div>
+  <div id="mapbox" style="height:46vh;background:var(--card2)"></div>
+  <div class="body">
+    <input class="finput" id="map-note" placeholder="Mo'ljal / izoh (ixtiyoriy)" style="margin-top:10px">
+    <button class="bigbtn" id="mapOkBtn" onclick="mapTasdiq()">✅ Shu yerga yetkazilsin</button>
+    <button class="bigbtn ghost" onclick="closeMap()" id="mapCancelBtn">✖️</button>
+  </div>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 const tg = window.Telegram ? Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
-const el = id => document.getElementById(id);
-function toast(m){ const x=el('toast'); x.textContent=m; x.style.display='block'; clearTimeout(x._h); x._h=setTimeout(()=>x.style.display='none',1700); }
 
-/* ─────────── Rang matematikasi ─────────── */
+let DATA = {products: [], categories: [], shelves: []};
+let cart = {};
+let activeCat = '', query = '', curView = 'shop';
+let LANG = localStorage.getItem('ds_lang') || 'uz';
+
+const BRANCHES = [
+  {uz:"Qo'qon — bosh do'kon", ru:"Коканд — главный магазин", a_uz:"Furqat ko'chasi, 100-uy", a_ru:"ул. Фурката, 100", tel:"+998735412222"},
+  {uz:"Qo'qon — Dehqon bozori", ru:"Коканд — Дехканский рынок", a_uz:"Dehqon bozori yonida", a_ru:"рядом с Дехканским рынком", tel:"+998735412222"},
+  {uz:"Qo'qon — Hamza teatri", ru:"Коканд — театр Хамзы", a_uz:"Hamza teatri ro'parasida", a_ru:"напротив театра Хамзы", tel:"+998735412222"},
+  {uz:"Farg'ona", ru:"Фергана", a_uz:"Polsha bozori yonida", a_ru:"рядом с рынком Польша", tel:"+998994370701"},
+  {uz:"Namangan", ru:"Наманган", a_uz:"Shamshiboy mavzesi", a_ru:"массив Шамшибой", tel:"+998994370701"},
+  {uz:"Yaypan", ru:"Яйпан", a_uz:"Poliklinika yaqinida", a_ru:"рядом с поликлиникой", tel:"+998994370701"},
+];
+
+const T = {
+  uz: {
+    bsub:"Qurilish mollari markazi · 2009-yildan",
+    kanal:"📢 Telegram kanalimiz — aksiyalar va yangiliklar",
+    som:"so'm", qidiruv:"Mahsulot yoki artikul...",
+    kategoriyalar:"Kategoriyalar", hammasi:"Hammasi", barcha:"Barcha mahsulotlar",
+    natija:"Qidiruv natijasi", topilmadi:"Hech narsa topilmadi 😕",
+    savat_h:"🛒 Savat", filial_h:"📍 Filiallarimiz", aloqa_h:"ℹ️ Aloqa",
+    nav_shop:"Do'kon", nav_cart:"Savat", nav_br:"Filiallar", nav_inf:"Aloqa",
+    savatga:"🛒 Savatga qo'shish", mavjud:"✅ Sotuvda bor", artikul:"Artikul",
+    brend:"Brend", dona:"dona", qoshildi:"✅ Savatga qo'shildi",
+    bosh:"Savat bo'sh.<br>Do'kondan mahsulot tanlang.", jami:"Jami:",
+    buyurtma:"✅ Buyurtma berish", davom:"🛍 Xaridni davom ettirish",
+    ism:"Ismingiz", ism_ph:"Ism va familiya", ism_hint:"Telegram taxallusi emas — haqiqiy ism-familiyangizni yozing",
+    tel:"Telefon raqamingiz",
+    olish:"Qanday olasiz?", d_pickup:"🏪 O'zim olib ketaman", d_deliv:"🚚 Yetkazib berish",
+    d_pickup_i:"✅ Buyurtmangizni tayyorlab qo'yamiz — kelganingizda shay bo'ladi. To'lov do'konda: naqd yoki karta.",
+    d_deliv_i:"Shahar bo'ylab yetkazish — 50 000 so'mdan",
+    filial_t:"Qaysi filialdan olasiz?", filial_deliv:"Qaysi filial xizmat qiladi?", manzil:"Yetkazish manzili",
+    loc_q:"Hozir turgan joyingizga yetkazamizmi?",
+    loc_btn:"📍 Ha, joylashuvimni aniqlang", map_btn:"🗺 Yo'q, kartadan tanlayman",
+    loc_wait:"⏳ Joylashuv aniqlanmoqda...",
+    loc_ok:"📍 Joylashuvingiz aniqlandi", loc_acc:"aniqlik", loc_change:"🗺 Boshqa joy tanlash",
+    loc_err:"Joylashuvni aniqlab bo'lmadi — kartadan tanlang",
+    loc_low:"📍 Aniqlik past — kartada joyingizni aniq belgilang",
+    loc_low_chip:"Aniqlik past", loc_map_set:"Kartadan belgilandi", loc_fix:"🗺 Kartada to'g'rilash",
+    map_t:"Manzilni belgilang", map_ok:"✅ Shu yerga yetkazilsin",
+    map_hint:"Kartada kerakli joyga bosing yoki pinni suring", mo_ljal:"Mo'ljal / izoh (ixtiyoriy)",
+    tolov:"To'lov usuli",
+    p_cash:"💵 Naqd", p_card:"💳 Karta",
+    p_cash_i:"🚕 IDEAL taxi orqali yuboramiz — pulni haydovchiga berasiz",
+    p_card_i:"🚛 Labo taxi — yuk hajmiga qarab, 50 000 so'mdan",
+    p_store_i:"💵/💳 To'lov do'konda — naqd yoki karta",
+    cash_lim:"Naqd to'lov faqat 500 000 so'mgacha",
+    ord_ok:"✅ Buyurtmangiz qabul qilindi!",
+    ord_note:"Operatorlarimiz tez orada siz bilan bog'lanadi.",
+    ord_demo:"(Bu demo: haqiqiy botda buyurtma to'g'ridan-to'g'ri menejerga tushadi)",
+    xato_ism:"Ismingizni yozing", xato_tel:"Telefon raqamingizni yozing",
+    xato_manzil:"Yetkazish manzilini belgilang",
+    qongiroq:"📞 Qo'ng'iroq qilish",
+    kab_h:"👤 Kabinet", nav_kab:"Kabinet", profil:"Profil",
+    tel_ulash:"📱 Telegram raqamimni ulash", saqlash:"💾 Saqlash", saqlandi:"✅ Saqlandi",
+    tarix:"🧾 Buyurtmalarim", tarix_bosh:"Hali buyurtma bermagansiz",
+    holat:"✅ Qabul qilindi", dona_s:"tovar",
+    saved_addr:"📍 Saqlangan manzil", addr_yoq:"Manzil hali saqlanmagan",
+    /* rang tanlash */
+    rang_h:"🎨 Rang tanlash", nav_rang:"Rang",
+    rb_t:"Rang tanlash — devoringizni bo'yab ko'ring",
+    rb_d:"Tikkurila · Ottocento · 40 000+ tus · bo'yoq hisobi",
+    rang_note:"<b>Namuna palitra.</b> Ranglar shu yerda avtomatik yaratilgan — haqiqiy Tikkurila / Ottocento kataloglari ulanganda shu tizim o'zgarmasdan ishlaydi.",
+    st_count:"palitradagi tus", st_ms:"qidiruv", st_acc:"aniqlik",
+    btn_up:"📷 Rasm yuklash", btn_sample:"🏠 Namuna xona", btn_reset:"↩︎ Asliga",
+    m_pick:"Pipetka", m_pick_s:"rasmdan rang olish",
+    m_paint:"Bo'yash", m_paint_s:"devorni bosing",
+    tol_l:"Aniqlik (sehrli)",
+    tol_hint:"🪄 <b>Sehrli</b> — devorni bir bosishda tanlaydi, predmet chetlarida to'xtaydi. Ortiqcha joyni ➖ bilan oling, tushmay qolgan joyni ➕ cho'tka bilan qo'shing. Bir necha bosish mumkin.",
+    pt_magic:"Sehrli", pt_magic_s:"1 bosish", pt_add:"Qo'shish", pt_add_s:"surtib qo'shish",
+    pt_erase:"O'chirish", pt_erase_s:"ortiqchani ol", brush_l:"Cho'tka o'lchami",
+    sel_clear:"Tozalash", sel_cleared:"Tanlov tozalandi",
+    sel_h:"Tanlangan rang", fam_l:"Rang oilasini tanlang",
+    pick_hint:"Rang oilasini bosing va tusni tanlang — yoki rasmdan pipetka bilan oling.",
+    pick_done:"Rasmdan olindi", pick_near:"eng yaqin bo'yoq ranglari:",
+    sel_done:"Tanlandi", sel_next:"endi <b>Bo'yash</b> rejimida devorni bosing.",
+    calc_h:"Bo'yoq hisobi",
+    lbl_l:"Uzunligi (m)", lbl_w:"Eni (m)", lbl_h:"Balandligi (m)", lbl_d:"Eshik/deraza",
+    lbl_prod:"Mahsulot turi", lbl_coats:"Qatlam soni",
+    prods:["Mat emulsiya — ~10 m²/L","Yarim mat emulsiya — ~11 m²/L","Yuviladigan emulsiya — ~8 m²/L","Dekorativ qoplama — ~5 m²/L"],
+    coats:["1 qatlam","2 qatlam","3 qatlam"],
+    area:"Devor yuzasi", layer:"qatlam", usage:"sarf",
+    cans:"ta 9 L banka (yoki mos hajmlar)",
+    no_color:"Rang tanlanmagan",
+    add_paint:"🛒 Buyurtmaga qo'shish",
+    calc_note:"Sarf me'yorlari — namuna qiymatlar; haqiqiy raqamlar mahsulot texnik ma'lumotnomasidan olinadi. Kolerovka do'kondagi tinting mashinasida tayyorlanadi — biz rang kodi, baza va litrni beramiz.",
+    paint_added:"✅ Bo'yoq buyurtmaga qo'shildi",
+    paint_need:"Avval rang tanlang",
+    paint_title:"🎨 Bo'yoq (kolerovka)", paint_price:"narx do'konda aniqlanadi",
+    paint_del:"o'chirish",
+    wall_small:"Soha juda kichik — aniqlikni oshiring",
+    wall_done:"Bo'yaldi", wall_need:"Avval rang tanlang",
+    img_loaded:"Rasm yuklandi", img_reset:"Asliga qaytarildi", room_ready:"Namuna xona tayyor",
+    promo_t:"🚗 DomStroy'dan xarid qiling — 4 ta Damasdan birini yutib oling!",
+    promo_d:"Har 3 mln so'mlik xaridga kupon. Batafsil: ☎️ 73 541-22-22",
+    about:"Дом Строй — 2009-yildan beri Farg'ona vodiysida qurilish mollari savdosi. 6 ta do'kon, showroom va dizayn-studiya.",
+    dt:"Ma'lumotlar domstroymarket.uz saytidan olingan · Yangilangan:",
+  },
+  ru: {
+    bsub:"Центр стройматериалов · с 2009 года",
+    kanal:"📢 Наш Telegram-канал — акции и новинки",
+    som:"сум", qidiruv:"Товар или артикул...",
+    kategoriyalar:"Категории", hammasi:"Все", barcha:"Все товары",
+    natija:"Результаты поиска", topilmadi:"Ничего не найдено 😕",
+    savat_h:"🛒 Корзина", filial_h:"📍 Наши филиалы", aloqa_h:"ℹ️ Контакты",
+    nav_shop:"Магазин", nav_cart:"Корзина", nav_br:"Филиалы", nav_inf:"Контакты",
+    savatga:"🛒 В корзину", mavjud:"✅ В наличии", artikul:"Артикул",
+    brend:"Бренд", dona:"шт", qoshildi:"✅ Добавлено в корзину",
+    bosh:"Корзина пуста.<br>Выберите товары в магазине.", jami:"Итого:",
+    buyurtma:"✅ Оформить заказ", davom:"🛍 Продолжить покупки",
+    ism:"Ваше имя", ism_ph:"Имя и фамилия", ism_hint:"Не ник в Telegram — укажите настоящие имя и фамилию",
+    tel:"Номер телефона",
+    olish:"Как получите?", d_pickup:"🏪 Заберу сам", d_deliv:"🚚 Доставка",
+    d_pickup_i:"✅ Подготовим заказ — будет готов к вашему приходу. Оплата в магазине: наличными или картой.",
+    d_deliv_i:"Доставка по городу — от 50 000 сум",
+    filial_t:"Из какого филиала заберёте?", filial_deliv:"Какой филиал обслужит?", manzil:"Адрес доставки",
+    loc_q:"Доставить туда, где вы сейчас находитесь?",
+    loc_btn:"📍 Да, определить моё местоположение", map_btn:"🗺 Нет, выберу на карте",
+    loc_wait:"⏳ Определяем местоположение...",
+    loc_ok:"📍 Местоположение определено", loc_acc:"точность", loc_change:"🗺 Выбрать другое место",
+    loc_err:"Не удалось определить — выберите на карте",
+    loc_low:"📍 Низкая точность — укажите место на карте точно",
+    loc_low_chip:"Низкая точность", loc_map_set:"Указано на карте", loc_fix:"🗺 Исправить на карте",
+    map_t:"Укажите адрес", map_ok:"✅ Доставить сюда",
+    map_hint:"Нажмите на карте или перетащите маркер", mo_ljal:"Ориентир / комментарий (необязательно)",
+    tolov:"Способ оплаты",
+    p_cash:"💵 Наличные", p_card:"💳 Карта",
+    p_cash_i:"🚕 Отправим через IDEAL такси — деньги отдадите водителю",
+    p_card_i:"🚛 Labo такси — по объёму груза, от 50 000 сум",
+    p_store_i:"💵/💳 Оплата в магазине — наличными или картой",
+    cash_lim:"Наличные — только до 500 000 сум",
+    ord_ok:"✅ Ваш заказ принят!",
+    ord_note:"Наши операторы свяжутся с вами в ближайшее время.",
+    ord_demo:"(Это демо: в рабочем боте заказ сразу попадает менеджеру)",
+    xato_ism:"Напишите ваше имя", xato_tel:"Напишите номер телефона",
+    xato_manzil:"Укажите адрес доставки",
+    qongiroq:"📞 Позвонить",
+    kab_h:"👤 Кабинет", nav_kab:"Кабинет", profil:"Профиль",
+    tel_ulash:"📱 Привязать номер из Telegram", saqlash:"💾 Сохранить", saqlandi:"✅ Сохранено",
+    tarix:"🧾 Мои заказы", tarix_bosh:"Заказов пока нет",
+    holat:"✅ Принят", dona_s:"товар(ов)",
+    saved_addr:"📍 Сохранённый адрес", addr_yoq:"Адрес ещё не сохранён",
+    /* подбор цвета */
+    rang_h:"🎨 Подбор цвета", nav_rang:"Цвет",
+    rb_t:"Подбор цвета — покрасьте свою стену",
+    rb_d:"Tikkurila · Ottocento · 40 000+ оттенков · расчёт краски",
+    rang_note:"<b>Демо-палитра.</b> Цвета сгенерированы здесь — при подключении реальных каталогов Tikkurila / Ottocento система работает без изменений.",
+    st_count:"оттенков", st_ms:"поиск", st_acc:"точность",
+    btn_up:"📷 Загрузить фото", btn_sample:"🏠 Пример комнаты", btn_reset:"↩︎ Сбросить",
+    m_pick:"Пипетка", m_pick_s:"взять цвет с фото",
+    m_paint:"Покраска", m_paint_s:"нажмите на стену",
+    tol_l:"Точность (волшебное)",
+    tol_hint:"🪄 <b>Волшебное</b> — выделяет стену одним касанием, останавливается на краях предметов. Лишнее уберите ➖, пропущенное добавьте кистью ➕. Можно нажимать несколько раз.",
+    pt_magic:"Волшебное", pt_magic_s:"1 касание", pt_add:"Добавить", pt_add_s:"провести пальцем",
+    pt_erase:"Стереть", pt_erase_s:"убрать лишнее", brush_l:"Размер кисти",
+    sel_clear:"Очистить", sel_cleared:"Выделение очищено",
+    sel_h:"Выбранный цвет", fam_l:"Выберите цветовую семью",
+    pick_hint:"Нажмите на семью и выберите оттенок — или возьмите цвет пипеткой с фото.",
+    pick_done:"Взято с фото", pick_near:"ближайшие цвета краски:",
+    sel_done:"Выбрано", sel_next:"теперь в режиме <b>Покраска</b> нажмите на стену.",
+    calc_h:"Расчёт краски",
+    lbl_l:"Длина (м)", lbl_w:"Ширина (м)", lbl_h:"Высота (м)", lbl_d:"Двери/окна",
+    lbl_prod:"Тип продукта", lbl_coats:"Количество слоёв",
+    prods:["Матовая эмульсия — ~10 м²/л","Полуматовая — ~11 м²/л","Моющаяся — ~8 м²/л","Декоративное покрытие — ~5 м²/л"],
+    coats:["1 слой","2 слоя","3 слоя"],
+    area:"Площадь стен", layer:"слоя", usage:"расход",
+    cans:"банки по 9 л (или подходящие объёмы)",
+    no_color:"Цвет не выбран",
+    add_paint:"🛒 Добавить в заказ",
+    calc_note:"Нормы расхода — примерные; точные значения берутся из техдокументации продукта. Колеровка выполняется на тонировочной машине в магазине — мы передаём код цвета, базу и литраж.",
+    paint_added:"✅ Краска добавлена в заказ",
+    paint_need:"Сначала выберите цвет",
+    paint_title:"🎨 Краска (колеровка)", paint_price:"цена определяется в магазине",
+    paint_del:"удалить",
+    wall_small:"Область слишком мала — увеличьте точность",
+    wall_done:"Покрашено", wall_need:"Сначала выберите цвет",
+    img_loaded:"Фото загружено", img_reset:"Сброшено", room_ready:"Пример комнаты готов",
+    promo_t:"🚗 Покупайте в DomStroy — выиграйте один из 4 Damas!",
+    promo_d:"Купон за каждую покупку на 3 млн сум. Подробнее: ☎️ 73 541-22-22",
+    about:"Дом Строй — продажа стройматериалов в Ферганской долине с 2009 года. 6 магазинов, шоурум и дизайн-студия.",
+    dt:"Данные с сайта domstroymarket.uz · Обновлено:",
+  },
+};
+const t = k => (T[LANG] && T[LANG][k]) || T.uz[k] || k;
+const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + t('som');
+const el = id => document.getElementById(id);
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+function toast(m){ const x=el('toast'); x.textContent=m; x.style.display='block'; clearTimeout(x._h); x._h=setTimeout(()=>x.style.display='none',1600); }
+function kanalOch(){
+  const u = (DATA.channel || 'https://t.me/domstroyofficial');
+  if (tg && tg.openTelegramLink) tg.openTelegramLink(u);
+  else window.open(u, '_blank');
+}
+function catName(key){
+  const c = (DATA.categories||[]).find(c=>c.key===key);
+  return c ? (c[LANG] || c.uz) : key;
+}
+
+/* profil (localStorage) */
+function loadProf(){ try{ return JSON.parse(localStorage.getItem('ds_prof')||'{}'); }catch(e){ return {}; } }
+function saveProf(p){ localStorage.setItem('ds_prof', JSON.stringify(Object.assign(loadProf(), p))); }
+function loadHist(){ try{ return JSON.parse(localStorage.getItem('ds_hist')||'[]'); }catch(e){ return []; } }
+function pushHist(o){ const h=loadHist(); h.unshift(o); localStorage.setItem('ds_hist', JSON.stringify(h.slice(0,20))); }
+
+function setLang(l){
+  LANG = l; localStorage.setItem('ds_lang', l);
+  applyLang(); renderShop(); renderCart(); renderBranches(); renderInfo(); renderProfile();
+}
+function applyLang(){
+  el('lb-uz').classList.toggle('on', LANG==='uz');
+  el('lb-ru').classList.toggle('on', LANG==='ru');
+  el('bsub').textContent = t('bsub');
+  el('chanBtn').textContent = t('kanal');
+  el('q').placeholder = t('qidiruv');
+  el('catTitle').textContent = t('kategoriyalar');
+  el('cartH').textContent = t('savat_h');
+  el('brH').textContent = t('filial_h');
+  el('infH').textContent = t('aloqa_h');
+  el('nv1').textContent = t('nav_shop');
+  el('nv2').textContent = t('nav_cart');
+  el('nv3').textContent = t('nav_br');
+  el('nv4').textContent = t('nav_inf');
+  el('nv5').textContent = t('nav_kab');
+  el('nv6').textContent = t('nav_rang');
+  el('profH').textContent = t('kab_h');
+  if(typeof applyRangLang==='function') applyRangLang();
+  el('mapT').textContent = t('map_t');
+  el('mapHint').textContent = t('map_hint');
+  el('map-note').placeholder = t('mo_ljal');
+  el('mapOkBtn').textContent = t('map_ok');
+  el('empty').textContent = t('topilmadi');
+  el('updated').textContent = t('dt') + ' ' + (DATA.generated_at||'');
+}
+
+async function load(){
+  try{
+    const r = await fetch('data/products.json?v=' + Date.now());
+    DATA = await r.json();
+    applyLang();
+    renderShop(); renderBranches(); renderInfo(); renderProfile();
+  }catch(e){
+    el('empty').style.display='block';
+    el('empty').textContent='Katalog yuklanmadi. Internetni tekshiring.';
+  }
+}
+
+function prodById(id){ return (DATA.products||[]).find(p=>p.id===id); }
+
+function renderShop(){
+  // javonlar
+  const sh = el('shelves'); sh.innerHTML='';
+  if(!query && !activeCat){
+    (DATA.shelves||[]).forEach(s=>{
+      const items = (s.ids||[]).map(prodById).filter(Boolean);
+      if(!items.length) return;
+      const title = document.createElement('div');
+      title.className='section-title';
+      title.textContent = s.title[LANG] || s.title.uz;
+      sh.appendChild(title);
+      const rowEl = document.createElement('div');
+      rowEl.className='shelf';
+      rowEl.innerHTML = items.map(p=>`
+        <div class="scard" onclick="openP('${p.id}')">
+          <span class="sbadge ${s.key==='new'?'new':(s.key==='top'?'top':'')}">${s.badge}</span>
+          <img src="${p.photo}" loading="lazy" alt="">
+          <div class="snm">${esc(p.name)}</div>
+          <div class="spr">${p.old_price?`<span class="oldp">${fmt(p.old_price)}</span>`:''}${fmt(p.price)}</div>
+        </div>`).join('');
+      sh.appendChild(rowEl);
+    });
+  }
+  // kategoriyalar
+  const counts = {};
+  (DATA.products||[]).forEach(p=>{ counts[p.cat]=(counts[p.cat]||0)+1; });
+  const cats = el('cats');
+  cats.innerHTML = `<div class="cattile ${!activeCat?'active':''}" onclick="setCat('')"><div class="cnm">${t('hammasi')}</div><div class="cnt">${(DATA.products||[]).length}</div></div>` +
+    (DATA.categories||[]).filter(c=>counts[c.key]).map(c=>`
+      <div class="cattile ${activeCat===c.key?'active':''}" onclick="setCat('${c.key}')">
+        <div class="cnm">${c[LANG]||c.uz}</div><div class="cnt">${counts[c.key]}</div>
+      </div>`).join('');
+  // grid
+  let list = DATA.products||[];
+  if(activeCat) list = list.filter(p=>p.cat===activeCat);
+  if(query){
+    const q = query.toLowerCase();
+    list = list.filter(p=>(p.name+' '+p.sku+' '+(p.brand||'')).toLowerCase().includes(q));
+  }
+  el('gridTitle').textContent = query ? t('natija') : (activeCat ? catName(activeCat) : t('barcha'));
+  el('grid').innerHTML = list.map(p=>`
+    <div class="pcard">
+      <div class="pimg" onclick="openP('${p.id}')">
+        ${p.disc?`<span class="discbadge">-${p.disc}%</span>`:''}
+        <img src="${p.photo}" loading="lazy" alt="">
+        <button class="qadd" onclick="event.stopPropagation();add('${p.id}',1)">+</button>
+      </div>
+      <div class="pinfo" onclick="openP('${p.id}')">
+        <div class="pbrand">${esc(p.brand||'')}</div>
+        <div class="pname">${esc(p.name)}</div>
+        <div class="pprice">${p.old_price?`<span class="oldp">${fmt(p.old_price)}</span>`:''}${fmt(p.price)}</div>
+      </div>
+    </div>`).join('');
+  el('empty').style.display = list.length ? 'none' : 'block';
+}
+function setCat(c){ activeCat=c; renderShop(); }
+el('q').addEventListener('input', e=>{ query=e.target.value.trim(); renderShop(); });
+
+/* mahsulot oynasi */
+let curP = null, curQty = 1;
+function openP(id){
+  curP = prodById(id); if(!curP) return;
+  curQty = 1;
+  drawSheet();
+  el('pmodal').classList.add('show');
+}
+function drawSheet(){
+  const p = curP;
+  el('psheet').innerHTML = `
+    <img class="big" src="${p.photo}" alt="">
+    <div class="body">
+      <h2>${esc(p.name)}</h2>
+      <div class="price">${p.old_price?`<span class="oldp" style="font-size:14px">${fmt(p.old_price)}</span>`:''}${fmt(p.price)}</div>
+      <div class="stockchip">${t('mavjud')} · ${p.stock} ${t('dona')}</div>
+      <div class="meta" style="margin-top:10px">
+        ${p.brand?`${t('brend')}: <b>${esc(p.brand)}</b><br>`:''}
+        ${t('artikul')}: <b>${p.sku}</b>
+      </div>
+      <div class="qtyrow">
+        <button onclick="qty(-1)">−</button>
+        <div class="qv" id="qv">${curQty}</div>
+        <button onclick="qty(1)">+</button>
+      </div>
+      <button class="bigbtn" onclick="add(curP.id, curQty); closeP()">${t('savatga')}</button>
+    </div>`;
+}
+function qty(d){ curQty=Math.max(1,Math.min(curP.stock||99,curQty+d)); el('qv').textContent=curQty; }
+function closeP(){ el('pmodal').classList.remove('show'); }
+el('pmodal').addEventListener('click', e=>{ if(e.target.id==='pmodal') closeP(); });
+
+/* savat */
+function add(id, n){
+  cart[id]=(cart[id]||0)+n;
+  toast(t('qoshildi'));
+  updateBadge(); renderCart();
+  if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+function setQ(id, n){
+  if(n<=0) delete cart[id]; else cart[id]=n;
+  updateBadge(); renderCart();
+}
+function updateBadge(){
+  const n = Object.values(cart).reduce((a,b)=>a+b,0) + (PAINT?1:0);
+  const b = el('navBadge');
+  b.style.display = n?'flex':'none'; b.textContent=n;
+}
+/* buyurtma holati: olish usuli + manzil + to'lov (bir-biriga bog'liq) */
+const NAQD_LIMIT = 500000;                 // naqd faqat shu summagacha (IDEAL taxi)
+let ordMode='pickup', ordBranch=0, ordPay='cash';
+let ordLoc=null;                            // {lat, lon, acc} — GPS yoki karta
+let ordLocSrc='';                           // 'gps' | 'map'
+let geoBusy=false;
+let cartTotal=0;                            // renderCart'da yangilanadi (pickPay uchun)
+
+function payFor(total){
+  // faqat YETKAZISHda naqd limiti majburiy kartaga o'tkazadi; olib ketishda ikkalasi ham mumkin
+  if(ordMode==='deliv' && total > NAQD_LIMIT) return 'card';
+  return ordPay;
+}
+function pickPay(p){
+  if(p==='cash' && ordMode==='deliv' && cartTotal > NAQD_LIMIT){ toast(t('cash_lim')); return; }
+  ordPay = p; renderCart();
+}
+function vehicleFor(total){
+  if(ordMode==='pickup') return null;
+  return payFor(total)==='cash' ? 'IDEAL taxi' : 'Labo taxi';
+}
+
+function renderCart(){
+  const body = el('cartBody');
+  if(!body) return;
+  const ids = Object.keys(cart);
+  if(!ids.length && !PAINT){
+    body.innerHTML = `<div class="empty">${t('bosh')}</div>
+      <div style="padding:0 16px"><button class="bigbtn ghost" onclick="nav('shop')">${t('davom')}</button></div>`;
+    return;
+  }
+  let total=0;
+  const rows = ids.map(id=>{
+    const p=prodById(id); if(!p) return '';
+    total+=p.price*cart[id];
+    return `<div class="ci">
+      <img src="${p.photo}" alt="">
+      <div class="nm">${esc(p.name)}<div class="pr">${fmt(p.price)}</div></div>
+      <div class="ctr">
+        <button onclick="setQ('${id}',${cart[id]-1})">−</button>
+        <span class="q">${cart[id]}</span>
+        <button onclick="setQ('${id}',${cart[id]+1})">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  cartTotal = total;
+
+  const prof = loadProf();
+  // Telegram taxallusini ISHLATMAYMIZ — mijoz haqiqiy ismini yozadi
+  const defName = prof.name || '';
+  const defTel = prof.tel || '';
+  const pay = payFor(total);
+
+  // manzil bloki (faqat yetkazishda)
+  let addrHtml = '';
+  if(ordMode==='deliv'){
+    let locState;
+    if(geoBusy) locState = `<div class="flabel" style="color:var(--accent-dark)">${t('loc_wait')}</div>`;
+    else if(ordLoc){
+      const fromMap = ordLocSrc==='map';
+      const acc = Math.round(ordLoc.acc||0);
+      const poor = !fromMap && acc > ACC_GOOD;      // aniqlik past
+      const chip = fromMap
+        ? `<div class="stockchip" style="margin-top:8px">📍 ${t('loc_map_set')}</div>`
+        : (poor
+            ? `<div class="stockchip" style="margin-top:8px;background:rgba(226,75,74,.12);color:var(--red)">⚠️ ${t('loc_low_chip')} · ±${acc}m</div>`
+            : `<div class="stockchip" style="margin-top:8px">${t('loc_ok')} · ±${acc}m</div>`);
+      locState = `
+      ${chip}
+      <div style="font-size:12px;color:var(--hint);margin-top:4px">${ordLoc.lat.toFixed(5)}, ${ordLoc.lon.toFixed(5)}${ordLoc.note?' · '+esc(ordLoc.note):''}</div>
+      <span class="vchip ${poor?'sel':''}" onclick="openMap()">${poor?t('loc_fix'):t('loc_change')}</span>`;
+    }
+    else locState = `
+      <div style="margin-top:4px">
+        <span class="vchip" onclick="geoAniqla()">${t('loc_btn')}</span>
+        <span class="vchip" onclick="openMap()">${t('map_btn')}</span>
+      </div>`;
+    addrHtml = `
+      <div class="flabel">${t('manzil')} — ${t('loc_q')}</div>
+      ${locState}`;
+  }
+
+  // to'lov bloki — HAR DOIM tanlov (naqd/karta), olish usuliga qarab izohi o'zgaradi
+  const cashOk = !(ordMode==='deliv' && total > NAQD_LIMIT);  // yetkazishda 500k+ da naqd yo'q
+  let payInfo;
+  if(ordMode==='pickup') payInfo = t('p_store_i');
+  else { payInfo = pay==='cash' ? t('p_cash_i') : t('p_card_i'); if(!cashOk) payInfo += '<br>⚠️ '+t('cash_lim'); }
+  const payHtml = `
+      <div class="flabel">${t('tolov')}</div>
+      <div>
+        <span class="vchip ${pay==='cash'?'sel':''}" style="${cashOk?'':'opacity:.45'}" onclick="pickPay('cash')">${t('p_cash')}</span>
+        <span class="vchip ${pay==='card'?'sel':''}" onclick="pickPay('card')">${t('p_card')}</span>
+      </div>
+      <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">${payInfo}</div>`;
+
+  const paintHtml = PAINT ? `
+    <div class="paintcart">
+      <div class="pcsw" style="background:${PAINT.hex}"></div>
+      <div style="flex:1;font-size:13px;line-height:1.4">
+        <b>${t('paint_title')}</b><br>
+        ${esc(PAINT.name)} · <code>${PAINT.code}</code><br>
+        <span style="color:var(--hint)">${PAINT.liters} L · ${esc(PAINT.product)} · ${PAINT.area} m²</span><br>
+        <span style="color:var(--accent-dark);font-weight:700">${t('paint_price')}</span>
+      </div>
+      <button class="vchip" style="margin:0" onclick="paintOchir()">✖️</button>
+    </div>` : '';
+
+  body.innerHTML = `
+    <div class="cartlist">${rows}</div>
+    <div class="cartbox">
+      ${paintHtml}
+      <div class="total"><span>${t('jami')}</span><span>${fmt(total)}</span></div>
+      <div class="flabel">${t('ism')}</div>
+      <input class="finput" id="o-name" value="${esc(defName)}" placeholder="${t('ism_ph')}">
+      <div style="font-size:11.5px;color:var(--hint);margin-top:4px">${t('ism_hint')}</div>
+      <div class="flabel">${t('tel')}</div>
+      <input class="finput" id="o-tel" type="tel" value="${esc(defTel)}" placeholder="+998 __ ___-__-__">
+      ${(tg && tg.requestContact && !defTel) ? `<span class="vchip" onclick="telUlash()">${t('tel_ulash')}</span>` : ''}
+      <div class="flabel">${t('olish')}</div>
+      <div>
+        <span class="vchip ${ordMode==='pickup'?'sel':''}" onclick="ordMode='pickup';renderCart()">${t('d_pickup')}</span>
+        <span class="vchip ${ordMode==='deliv'?'sel':''}" onclick="ordMode='deliv';renderCart()">${t('d_deliv')}</span>
+      </div>
+      <div style="font-size:12.5px;color:var(--hint);margin-top:6px;line-height:1.5">${ordMode==='pickup'?t('d_pickup_i'):t('d_deliv_i')}</div>
+      <div class="flabel">${ordMode==='pickup'?t('filial_t'):t('filial_deliv')}</div>
+      <div>${BRANCHES.map((b,i)=>`<span class="vchip ${ordBranch===i?'sel':''}" onclick="ordBranch=${i};renderCart()">${b[LANG]||b.uz}</span>`).join('')}</div>
+      ${addrHtml}
+      ${payHtml}
+      <button class="bigbtn" onclick="order(${total})">${t('buyurtma')}</button>
+    </div>`;
+}
+
+/* GPS orqali joylashuv.
+   ACC_GOOD dan yaxshi bo'lsa — ishonamiz; past bo'lsa (masalan kompyuterda IP orqali
+   100 km xato) — avtomatik kartani ochamiz, mijoz pinni aniq joyga qo'yadi. */
+const ACC_GOOD = 150;    // metr
+const ACC_JUNK = 5000;   // bundan yomon = IP-geolokatsiya, koordinataga ishonmaymiz
+function geoAniqla(){
+  if(!navigator.geolocation){ toast(t('loc_err')); openMap(); return; }
+  geoBusy=true; renderCart();
+  let best=null, done=false;
+  const watch = navigator.geolocation.watchPosition(
+    pos=>{
+      const acc = pos.coords.accuracy || 99999;
+      if(!best || acc < best.acc) best = {lat:pos.coords.latitude, lon:pos.coords.longitude, acc};
+      if(acc <= ACC_GOOD && !done){ finish(); }   // yetarli aniq — darrov to'xtaymiz
+    },
+    ()=>{ if(!done){ finish(true); } },
+    {enableHighAccuracy:true, timeout:15000, maximumAge:0}
+  );
+  // 12 soniyada eng yaxshi natijani olamiz
+  const timer = setTimeout(()=>finish(), 12000);
+  function finish(err){
+    if(done) return; done=true;
+    clearTimeout(timer);
+    try{ navigator.geolocation.clearWatch(watch); }catch(e){}
+    geoBusy=false;
+    if(err || !best){ renderCart(); toast(t('loc_err')); openMap(); return; }
+    ordLoc = {lat:best.lat, lon:best.lon, acc:best.acc};
+    ordLocSrc='gps';
+    if(best.acc > ACC_GOOD){        // aniqlik past — kartada tasdiqlatamiz
+      toast(t('loc_low'));
+      openMap();
+    } else {
+      renderCart();
+    }
+  }
+}
+
+/* Kartadan tanlash (Leaflet — kerak bo'lganda yuklanadi) */
+let _map=null, _pin=null;
+function openMap(){
+  el('mapmodal').classList.add('show');
+  if(window.L){ initMap(); return; }
+  const css=document.createElement('link'); css.rel='stylesheet';
+  css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(css);
+  const s=document.createElement('script');
+  s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload=initMap;
+  document.body.appendChild(s);
+}
+function initMap(){
+  // GPS aniqligi juda past bo'lsa (IP orqali) koordinataga ishonmaymiz — Qo'qon markazidan boshlaymiz
+  const trust = ordLoc && !(ordLocSrc==='gps' && ordLoc.acc > ACC_JUNK);
+  const start = trust ? [ordLoc.lat, ordLoc.lon] : [40.5286, 70.9425]; // Qo'qon markazi
+  if(!_map){
+    _map = L.map('mapbox').setView(start, trust?16:13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {maxZoom:19, attribution:'© OpenStreetMap'}).addTo(_map);
+    _pin = L.marker(start, {draggable:true}).addTo(_map);
+    _map.on('click', e=>_pin.setLatLng(e.latlng));
+  } else {
+    _map.setView(start, trust?16:13); _pin.setLatLng(start);
+  }
+  setTimeout(()=>_map.invalidateSize(), 150);
+}
+function mapTasdiq(){
+  if(!_pin) return;
+  const ll = _pin.getLatLng();
+  ordLoc = {lat:ll.lat, lon:ll.lng, acc:0, note:el('map-note').value.trim()};
+  ordLocSrc='map';
+  closeMap(); renderCart();
+}
+function closeMap(){ el('mapmodal').classList.remove('show'); }
+el('mapmodal').addEventListener('click', e=>{ if(e.target.id==='mapmodal') closeMap(); });
+
+/* Telegram'dan telefon raqamini so'rash */
+function telUlash(){
+  if(!(tg && tg.requestContact)){ toast('Telegram ichida ishlaydi'); return; }
+  try{
+    tg.requestContact((ok, ev)=>{
+      let ph='';
+      try{ ph = ev && ev.responseUnsafe && ev.responseUnsafe.contact ? ev.responseUnsafe.contact.phone_number : ''; }catch(e){}
+      if(ok && ph){
+        if(!ph.startsWith('+')) ph='+'+ph;
+        saveProf({tel:ph});
+        const inp=el('o-tel')||el('p-tel'); if(inp) inp.value=ph;
+        toast(t('saqlandi')); renderCart(); renderProfile();
+      } else if(!ok){ toast('✖️'); }
+    });
+  }catch(e){ toast('Telegram ichida ishlaydi'); }
+}
+
+function order(total){
+  const name = el('o-name').value.trim();
+  const tel = el('o-tel').value.trim();
+  if(!name){ toast(t('xato_ism')); return; }
+  if(!tel){ toast(t('xato_tel')); return; }
+  if(ordMode==='deliv' && !ordLoc){ toast(t('xato_manzil')); return; }
+  const pay = payFor(total);
+  const items = Object.keys(cart).map(id=>{
+    const p=prodById(id);
+    return {id, sku:p.sku, name:p.name, qty:cart[id], price:p.price};
+  });
+  const payload = {
+    type:'order', shop:'domstroy', name, tel, total,
+    mode: ordMode,
+    branch_i: ordBranch,                 // filial indeksi — guruh marshrutlash uchun
+    branch: BRANCHES[ordBranch].uz,      // filial nomi (har doim)
+    lat: ordMode==='deliv' && ordLoc ? ordLoc.lat : null,
+    lon: ordMode==='deliv' && ordLoc ? ordLoc.lon : null,
+    loc_src: ordMode==='deliv' ? ordLocSrc : null,
+    loc_note: ordMode==='deliv' && ordLoc && ordLoc.note ? ordLoc.note : null,
+    payment: pay,                        // 'cash' | 'card'
+    pay_at_store: ordMode==='pickup',    // olib ketishda to'lov do'konda
+    vehicle: vehicleFor(total),
+    items,
+    paint: PAINT,                        // tanlangan rang (kolerovka) — bo'lsa
+  };
+  if (tg && tg.sendData) {
+    try { tg.sendData(JSON.stringify(payload)); } catch(e) {}
+  }
+  // profil + tarixga saqlash (keyingi buyurtmada avto-to'ldiriladi)
+  saveProf({name, tel, addr: ordMode==='deliv' ? ordLoc : (loadProf().addr||null)});
+  pushHist({ts:Date.now(), total, n:items.reduce((a,i)=>a+i.qty,0)+(PAINT?1:0), mode:ordMode, payment:payload.payment});
+  cart={}; PAINT=null; SEL=null; updateBadge();
+  el('cartBody').innerHTML = `<div class="empty" style="padding-top:60px">
+    <div style="font-size:44px">🎉</div><br>
+    <b style="font-size:17px;color:var(--text)">${t('ord_ok')}</b><br><br>
+    ${t('ord_note')}<br><br>
+    <span style="font-size:12px">${t('ord_demo')}</span><br><br>
+    <button class="bigbtn ghost" style="max-width:280px" onclick="nav('shop')">${t('davom')}</button>
+  </div>`;
+  renderProfile();
+}
+
+/* kabinet */
+function renderProfile(){
+  const body = el('profBody');
+  if(!body) return;
+  const prof = loadProf();
+  const name = prof.name || '';   // Telegram taxallusi emas
+  const hist = loadHist();
+  const histHtml = hist.length
+    ? hist.map(h=>{
+        const d = new Date(h.ts);
+        const dd = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+        return `<div class="row">
+          <span class="k">${dd} · ${h.n} ${t('dona_s')}</span>
+          <span class="v">${fmt(h.total)}<br><span style="font-size:11px;color:var(--green);font-weight:600">${t('holat')}</span></span>
+        </div>`;
+      }).join('')
+    : `<div style="color:var(--hint);font-size:13.5px;padding:6px 0">${t('tarix_bosh')}</div>`;
+  body.innerHTML = `
+    <div class="panel">
+      <h3>${t('profil')}</h3>
+      <div class="flabel">${t('ism')}</div>
+      <input class="finput" id="p-name" value="${esc(name)}" placeholder="${t('ism_ph')}">
+      <div style="font-size:11.5px;color:var(--hint);margin-top:4px">${t('ism_hint')}</div>
+      <div class="flabel">${t('tel')}</div>
+      <input class="finput" id="p-tel" type="tel" value="${esc(prof.tel||'')}" placeholder="+998 __ ___-__-__">
+      ${(tg && tg.requestContact) ? `<span class="vchip" onclick="telUlash()">${t('tel_ulash')}</span>` : ''}
+      <button class="bigbtn" onclick="profSaqla()">${t('saqlash')}</button>
+    </div>
+    <div class="panel">
+      <h3>${t('saved_addr')}</h3>
+      <div style="color:var(--hint);font-size:13px;line-height:1.5">${
+        prof.addr ? `${prof.addr.lat.toFixed(5)}, ${prof.addr.lon.toFixed(5)}${prof.addr.note?' · '+esc(prof.addr.note):''}` : t('addr_yoq')
+      }</div>
+    </div>
+    <div class="panel">
+      <h3>${t('tarix')}</h3>
+      ${histHtml}
+    </div>`;
+}
+function profSaqla(){
+  saveProf({name: el('p-name').value.trim(), tel: el('p-tel').value.trim()});
+  toast(t('saqlandi')); renderCart();
+}
+
+/* filiallar */
+function renderBranches(){
+  el('brBody').innerHTML = BRANCHES.map(b=>`
+    <div class="branch">
+      <div class="ic">🏪</div>
+      <div style="flex:1">
+        <div class="bt">${b[LANG]||b.uz}</div>
+        <div class="ba">${LANG==='ru'?b.a_ru:b.a_uz}</div>
+      </div>
+      <a href="tel:${b.tel}" style="text-decoration:none;font-size:20px">📞</a>
+    </div>`).join('');
+}
+
+/* aloqa */
+function renderInfo(){
+  el('infBody').innerHTML = `
+    <div class="promo"><div class="pt">${t('promo_t')}</div><div class="pd">${t('promo_d')}</div></div>
+    <div class="panel">
+      <h3>Дом Строй</h3>
+      <div style="font-size:13.5px;color:var(--hint);line-height:1.55">${t('about')}</div>
+    </div>
+    <div class="panel">
+      <div class="row"><span class="k">☎️</span><span class="v"><a href="tel:+998735412222">+998 73 541-22-22</a></span></div>
+      <div class="row"><span class="k">☎️</span><span class="v"><a href="tel:+998994370701">+998 99 437-07-01</a></span></div>
+      <div class="row"><span class="k">Telegram</span><span class="v"><a href="https://t.me/domstroyofficial">@domstroyofficial</a></span></div>
+      <div class="row"><span class="k">Instagram</span><span class="v"><a href="https://www.instagram.com/domstroy_official/">@domstroy_official</a></span></div>
+      <div class="row"><span class="k">Dizayn</span><span class="v"><a href="https://www.instagram.com/domstroy_designstudio/">@domstroy_designstudio</a></span></div>
+      <div class="row"><span class="k">Showroom</span><span class="v"><a href="https://www.instagram.com/domstroy_showroom/">@domstroy_showroom</a></span></div>
+      <div class="row"><span class="k">Sayt</span><span class="v"><a href="https://domstroymarket.uz">domstroymarket.uz</a></span></div>
+    </div>`;
+}
+
+/* ═══════════ RANG TANLASH ═══════════ */
 function rgb2lab(r,g,b){
   r/=255; g/=255; b/=255;
   r = r>0.04045 ? Math.pow((r+0.055)/1.055,2.4) : r/12.92;
   g = g>0.04045 ? Math.pow((g+0.055)/1.055,2.4) : g/12.92;
   b = b>0.04045 ? Math.pow((b+0.055)/1.055,2.4) : b/12.92;
   let x=(r*0.4124+g*0.3576+b*0.1805)/0.95047;
-  let y=(r*0.2126+g*0.7152+b*0.0722)/1.00000;
+  let y=(r*0.2126+g*0.7152+b*0.0722);
   let z=(r*0.0193+g*0.1192+b*0.9505)/1.08883;
   const f=t=> t>0.008856 ? Math.cbrt(t) : (7.787*t+16/116);
   x=f(x); y=f(y); z=f(z);
@@ -173,7 +1051,7 @@ function rgb2lab(r,g,b){
 function lab2rgb(L,a,bb){
   let y=(L+16)/116, x=a/500+y, z=y-bb/200;
   const f=t=>{ const t3=t*t*t; return t3>0.008856 ? t3 : (t-16/116)/7.787; };
-  x=f(x)*0.95047; y=f(y)*1.00000; z=f(z)*1.08883;
+  x=f(x)*0.95047; y=f(y); z=f(z)*1.08883;
   let r= x* 3.2406 + y*-1.5372 + z*-0.4986;
   let g= x*-0.9689 + y* 1.8758 + z* 0.0415;
   let b= x* 0.0557 + y*-0.2040 + z* 1.0570;
@@ -183,7 +1061,7 @@ function lab2rgb(L,a,bb){
 function inGamut(L,a,b){
   let y=(L+16)/116, x=a/500+y, z=y-b/200;
   const f=t=>{ const t3=t*t*t; return t3>0.008856 ? t3 : (t-16/116)/7.787; };
-  x=f(x)*0.95047; y=f(y)*1.00000; z=f(z)*1.08883;
+  x=f(x)*0.95047; y=f(y); z=f(z)*1.08883;
   const r= x*3.2406+y*-1.5372+z*-0.4986, g= x*-0.9689+y*1.8758+z*0.0415, bl= x*0.0557+y*-0.2040+z*1.0570;
   return r>=-0.001&&r<=1.001&&g>=-0.001&&g<=1.001&&bl>=-0.001&&bl<=1.001;
 }
@@ -191,8 +1069,7 @@ function inGamut(L,a,b){
 function deltaE2000(L1,a1,b1,L2,a2,b2){
   const rad=Math.PI/180, deg=180/Math.PI;
   const C1=Math.hypot(a1,b1), C2=Math.hypot(a2,b2), Cb=(C1+C2)/2;
-  const Cb7=Math.pow(Cb,7);
-  const G=0.5*(1-Math.sqrt(Cb7/(Cb7+6103515625)));
+  const G=0.5*(1-Math.sqrt(Math.pow(Cb,7)/(Math.pow(Cb,7)+6103515625)));
   const ap1=(1+G)*a1, ap2=(1+G)*a2;
   const Cp1=Math.hypot(ap1,b1), Cp2=Math.hypot(ap2,b2);
   let hp1=Math.atan2(b1,ap1)*deg; if(hp1<0)hp1+=360;
@@ -206,58 +1083,92 @@ function deltaE2000(L1,a1,b1,L2,a2,b2){
   let hpb;
   if(Cp1*Cp2===0){ hpb=hp1+hp2; }
   else{ hpb=(hp1+hp2)/2;
-    if(Math.abs(hp1-hp2)>180){ hpb = (hp1+hp2<360) ? (hp1+hp2+360)/2 : (hp1+hp2-360)/2; } }
+    if(Math.abs(hp1-hp2)>180){ hpb=(hp1+hp2<360)?(hp1+hp2+360)/2:(hp1+hp2-360)/2; } }
   const T=1-0.17*Math.cos((hpb-30)*rad)+0.24*Math.cos(2*hpb*rad)
          +0.32*Math.cos((3*hpb+6)*rad)-0.20*Math.cos((4*hpb-63)*rad);
   const dTh=30*Math.exp(-Math.pow((hpb-275)/25,2));
-  const Cpb7=Math.pow(Cpb,7);
-  const Rc=2*Math.sqrt(Cpb7/(Cpb7+6103515625));
+  const Rc=2*Math.sqrt(Math.pow(Cpb,7)/(Math.pow(Cpb,7)+6103515625));
   const Sl=1+(0.015*Math.pow(Lb-50,2))/Math.sqrt(20+Math.pow(Lb-50,2));
   const Sc=1+0.045*Cpb, Sh=1+0.015*Cpb*T;
   const Rt=-Math.sin(2*dTh*rad)*Rc;
   return Math.sqrt(Math.pow(dL/Sl,2)+Math.pow(dC/Sc,2)+Math.pow(dH/Sh,2)+Rt*(dC/Sc)*(dH/Sh));
 }
-const hex = (r,g,b)=>'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+const chex = (r,g,b)=>'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
 
-/* ─────────── Namuna palitra (30 000+) ─────────── */
-/* Oila nomlari — LAB rang burchagiga kalibrlangan
-   (Lab'da qizil ~40°, sariq ~103°, yashil ~136°, ko'k ~306°) */
+/* Oila nomlari — LAB burchagiga kalibrlangan (qizil ~40°, sariq ~103°, yashil ~136°, ko'k ~306°) */
 const OILA = [
-  [0,'Pushti'],[20,'Marjon'],[40,'Qizil'],[58,'Terrakota'],[73,'To\'q sariq'],
-  [88,'Bej'],[103,'Sariq'],[118,'Zaytun'],[136,'Yashil'],[160,'O\'t rang'],
-  [180,'Nefrit'],[196,'Firuza'],[225,'Moviy'],[260,'Havorang'],[290,'Ko\'k'],
-  [310,'To\'q ko\'k'],[328,'Binafsha'],[345,'Siren'],
+  [0,'Pushti'],[20,'Marjon'],[40,'Qizil'],[58,'Terrakota'],[73,"To'q sariq"],
+  [88,'Bej'],[103,'Sariq'],[118,'Zaytun'],[136,'Yashil'],[160,"O't rang"],
+  [180,'Nefrit'],[196,'Firuza'],[225,'Moviy'],[260,'Havorang'],[290,"Ko'k"],
+  [310,"To'q ko'k"],[328,'Binafsha'],[345,'Siren'],
 ];
+const OILA_RU = {Pushti:'Розовый',Marjon:'Коралловый',Qizil:'Красный',Terrakota:'Терракота',
+  "To'q sariq":'Оранжевый',Bej:'Бежевый',Sariq:'Жёлтый',Zaytun:'Оливковый',Yashil:'Зелёный',
+  "O't rang":'Травяной',Nefrit:'Нефрит',Firuza:'Бирюзовый',Moviy:'Голубой',Havorang:'Лазурный',
+  "Ko'k":'Синий',"To'q ko'k":'Тёмно-синий',Binafsha:'Фиолетовый',Siren:'Сиреневый',Neytral:'Нейтральный'};
 function oilaNomi(h,C){
   if(C<6) return 'Neytral';
   let best=OILA[0], bd=999;
   for(const o of OILA){ const d=Math.abs(((h-o[0]+540)%360)-180); if(d<bd){bd=d;best=o;} }
   return best[1];
 }
+function oilaTr(nom){ return LANG==='ru' ? (OILA_RU[nom]||nom) : nom; }
+
 let PAL=[];
 function buildPalette(){
-  const t0=performance.now();
-  PAL=[];
-  let n=0;
+  if(PAL.length) return;
+  PAL=[]; let n=0;
   const add=(L,a,b,h,C)=>{
-    const [r,g,bl]=lab2rgb(L,a,b);
-    n++;
-    // la/lb — Lab koordinatalari; r/g/b — ekran ranglari (kalitlar aralashmasin!)
-    PAL.push({c:'DS-'+String(n).padStart(5,'0'), n:oilaNomi(h,C)+' '+Math.round(L), L, la:a, lb:b, r, g, b:bl});
+    const [r,g,bl]=lab2rgb(L,a,b); n++;
+    // la/lb — Lab koordinatalari; r/g/b — ekran ranglari
+    PAL.push({c:'DS-'+String(n).padStart(5,'0'), fam:oilaNomi(h,C), Lr:Math.round(L), L, la:a, lb:b, r, g, b:bl});
   };
   for(let L=20; L<=96; L+=2){
-    add(L,0,0,0,0);                       // neytral — har yorug'lik uchun bir marta
+    add(L,0,0,0,0);
     for(let h=0; h<360; h+=4){
       for(let ci=1; ci<=18; ci++){
-        const C = ci*3.6;
-        const a = C*Math.cos(h*Math.PI/180), b = C*Math.sin(h*Math.PI/180);
-        if(!inGamut(L,a,b)) break;        // undan yuqori xroma ham gamutdan tashqarida
+        const C=ci*3.6;
+        const a=C*Math.cos(h*Math.PI/180), b=C*Math.sin(h*Math.PI/180);
+        if(!inGamut(L,a,b)) break;
         add(L,a,b,h,C);
       }
     }
   }
+  PAL.forEach((p,i)=>p.i=i);       // indeks (tanlashda tez ishlash uchun)
+  // oilalarga bo'lish
+  FAM={};
+  for(const p of PAL){ (FAM[p.fam]=FAM[p.fam]||[]).push(p); }
+  FAM_ORDER = ['Neytral', ...OILA.map(o=>o[1])].filter(f=>FAM[f]);
   el('stCount').textContent = PAL.length.toLocaleString('uz-UZ');
-  console.log('palitra', PAL.length, ((performance.now()-t0)|0)+'ms');
+}
+const palNomi = p => oilaTr(p.fam)+' '+p.Lr;
+
+/* Rang oilalari — ko'z bilan tanlash (kod yozish shart emas) */
+let FAM={}, FAM_ORDER=[], activeFam=null;
+function renderFams(){
+  if(!activeFam) activeFam = FAM['Neytral'] ? 'Neytral' : FAM_ORDER[0];
+  el('fams').innerHTML = FAM_ORDER.map((f,idx)=>{
+    const arr=FAM[f], rep=arr[Math.floor(arr.length*0.55)];
+    return `<div class="famchip ${f===activeFam?'on':''}" onclick="pickFam(${idx})">
+      <span class="fdot" style="background:${chex(rep.r,rep.g,rep.b)}"></span>${esc(oilaTr(f))}</div>`;
+  }).join('');
+  el('famName').textContent = oilaTr(activeFam)+' — '+ (FAM[activeFam]?FAM[activeFam].length.toLocaleString('uz-UZ'):0) +' '+ (LANG==='ru'?'оттенков':'tus');
+  renderFan();
+}
+function pickFam(idx){ activeFam=FAM_ORDER[idx]; renderFams(); }
+function renderFan(){
+  let list=[...(FAM[activeFam]||[])];
+  // to'q → och, keyin xromatiklik bo'yicha — tabiiy gradient
+  list.sort((a,b)=> (a.L-b.L) || (Math.hypot(a.la,a.lb)-Math.hypot(b.la,b.lb)));
+  const cap=168;
+  if(list.length>cap){
+    const step=list.length/cap, s=[];
+    for(let i=0;i<cap;i++) s.push(list[Math.floor(i*step)]);
+    list=s;
+  }
+  el('fangrid').innerHTML = list.map(p=>
+    `<div class="fansw ${SEL&&SEL.i===p.i?'sel':''}" style="background:${chex(p.r,p.g,p.b)}" onclick="tanla(${p.i})" title="${p.c}"></div>`
+  ).join('');
 }
 function nearest(L,a,b,k=5){
   const t0=performance.now();
@@ -272,25 +1183,22 @@ function nearest(L,a,b,k=5){
   return res;
 }
 
-/* ─────────── Rasm / kanvas ─────────── */
-const cv=el('cv'), ctx=cv.getContext('2d',{willReadFrequently:true});
-let baseImg=null;      // asl ImageData
-let curImg=null;       // joriy (bo'yalgan) ImageData
-let labCache=null;     // Float32Array — har piksel L,a,b
+/* kanvas */
+let rcv=null, rctx=null, baseImg=null, curImg=null, labCache=null;
 const MAXW=900;
-
-function setCanvasFromSource(src, w, h){
+function redraw(){ if(curImg) rctx.putImageData(curImg,0,0); }
+function setCanvasFromSource(src,w,h){
   let sw=w, sh=h;
   if(sw>MAXW){ sh=Math.round(sh*MAXW/sw); sw=MAXW; }
-  cv.width=sw; cv.height=sh;
-  ctx.drawImage(src,0,0,sw,sh);
-  baseImg=ctx.getImageData(0,0,sw,sh);
+  rcv.width=sw; rcv.height=sh;
+  rctx.drawImage(src,0,0,sw,sh);
+  baseImg=rctx.getImageData(0,0,sw,sh);
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), sw, sh);
-  labCache=null;
+  labCache=null; wallMask=null;
 }
 function ensureLab(){
   if(labCache) return labCache;
-  const d=curImg.data, n=cv.width*cv.height;
+  const d=baseImg.data, n=rcv.width*rcv.height;   // ASL rasmdan (bo'yalgandan emas!)
   labCache=new Float32Array(n*3);
   for(let i=0,j=0;i<n;i++,j+=4){
     const [L,a,b]=rgb2lab(d[j],d[j+1],d[j+2]);
@@ -300,201 +1208,294 @@ function ensureLab(){
 }
 function resetImg(){
   if(!baseImg) return;
-  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), cv.width, cv.height);
-  ctx.putImageData(curImg,0,0);
-  labCache=null;
-  toast('Asliga qaytarildi');
+  if(wallMask) wallMask.fill(0);
+  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), rcv.width, rcv.height);
+  redraw(); toast(t('img_reset'));
 }
-el('file').addEventListener('change', e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const img=new Image();
-  img.onload=()=>{ setCanvasFromSource(img, img.width, img.height); ctx.putImageData(curImg,0,0); toast('Rasm yuklandi'); };
-  img.src=URL.createObjectURL(f);
-});
-
-/* Namuna xona — soya/yorug'lik bilan (algoritmni ko'rsatish uchun) */
 function sampleRoom(){
   const w=880,h=620;
-  cv.width=w; cv.height=h;
-  // orqa devor — vertikal gradient
-  let g=ctx.createLinearGradient(0,0,0,h*0.78);
+  rcv.width=w; rcv.height=h;
+  const c=rctx;
+  let g=c.createLinearGradient(0,0,0,h*0.78);
   g.addColorStop(0,'#dcd6ca'); g.addColorStop(1,'#c9c2b4');
-  ctx.fillStyle=g; ctx.fillRect(0,0,w,h*0.78);
-  // deraza yorug'ligi (devorda dog')
-  const rg=ctx.createRadialGradient(w*0.74,h*0.30,10,w*0.74,h*0.30,w*0.42);
+  c.fillStyle=g; c.fillRect(0,0,w,h*0.78);
+  const rg=c.createRadialGradient(w*0.74,h*0.30,10,w*0.74,h*0.30,w*0.42);
   rg.addColorStop(0,'rgba(255,250,235,.55)'); rg.addColorStop(1,'rgba(255,250,235,0)');
-  ctx.fillStyle=rg; ctx.fillRect(0,0,w,h*0.78);
-  // burchak soyasi
-  const sg=ctx.createLinearGradient(0,0,w*0.22,0);
+  c.fillStyle=rg; c.fillRect(0,0,w,h*0.78);
+  const sg=c.createLinearGradient(0,0,w*0.22,0);
   sg.addColorStop(0,'rgba(0,0,0,.20)'); sg.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.fillStyle=sg; ctx.fillRect(0,0,w*0.22,h*0.78);
-  // pol
-  const fg=ctx.createLinearGradient(0,h*0.78,0,h);
+  c.fillStyle=sg; c.fillRect(0,0,w*0.22,h*0.78);
+  const fg=c.createLinearGradient(0,h*0.78,0,h);
   fg.addColorStop(0,'#8a6a45'); fg.addColorStop(1,'#6d5334');
-  ctx.fillStyle=fg; ctx.fillRect(0,h*0.78,w,h*0.22);
-  for(let x=0;x<w;x+=46){ ctx.strokeStyle='rgba(0,0,0,.10)'; ctx.beginPath(); ctx.moveTo(x,h*0.78); ctx.lineTo(x-30,h); ctx.stroke(); }
-  // plintus
-  ctx.fillStyle='#efece6'; ctx.fillRect(0,h*0.78-12,w,12);
-  // deraza
-  ctx.fillStyle='#f6f7f8'; ctx.fillRect(w*0.60,h*0.13,w*0.28,h*0.36);
-  ctx.fillStyle='#bcd6e8'; ctx.fillRect(w*0.615,h*0.145,w*0.25,h*0.33);
-  ctx.strokeStyle='#f6f7f8'; ctx.lineWidth=7;
-  ctx.beginPath(); ctx.moveTo(w*0.74,h*0.145); ctx.lineTo(w*0.74,h*0.475); ctx.stroke();
-  // divan
-  ctx.fillStyle='#5c6b7a'; ctx.fillRect(w*0.07,h*0.52,w*0.34,h*0.20);
-  ctx.fillStyle='#6b7b8c'; ctx.fillRect(w*0.07,h*0.50,w*0.34,h*0.06);
-  // stol
-  ctx.fillStyle='#7a5a3a'; ctx.fillRect(w*0.46,h*0.66,w*0.16,h*0.05);
-  baseImg=ctx.getImageData(0,0,w,h);
+  c.fillStyle=fg; c.fillRect(0,h*0.78,w,h*0.22);
+  for(let x=0;x<w;x+=46){ c.strokeStyle='rgba(0,0,0,.10)'; c.beginPath(); c.moveTo(x,h*0.78); c.lineTo(x-30,h); c.stroke(); }
+  c.fillStyle='#efece6'; c.fillRect(0,h*0.78-12,w,12);
+  c.fillStyle='#f6f7f8'; c.fillRect(w*0.60,h*0.13,w*0.28,h*0.36);
+  c.fillStyle='#bcd6e8'; c.fillRect(w*0.615,h*0.145,w*0.25,h*0.33);
+  c.strokeStyle='#f6f7f8'; c.lineWidth=7;
+  c.beginPath(); c.moveTo(w*0.74,h*0.145); c.lineTo(w*0.74,h*0.475); c.stroke();
+  c.fillStyle='#5c6b7a'; c.fillRect(w*0.07,h*0.52,w*0.34,h*0.20);
+  c.fillStyle='#6b7b8c'; c.fillRect(w*0.07,h*0.50,w*0.34,h*0.06);
+  c.fillStyle='#7a5a3a'; c.fillRect(w*0.46,h*0.66,w*0.16,h*0.05);
+  baseImg=rctx.getImageData(0,0,w,h);
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), w, h);
-  labCache=null;
-  toast('Namuna xona tayyor');
+  labCache=null; wallMask=null;
 }
 
-/* ─────────── Rejimlar ─────────── */
-let MODE='pick';
-function setMode(m){
-  MODE=m;
+/* rejimlar */
+let RMODE='pick', SEL=null, PAINT=null;
+function setRMode(m){
+  RMODE=m;
   el('m-pick').classList.toggle('on', m==='pick');
   el('m-paint').classList.toggle('on', m==='paint');
   el('paintOpts').style.display = m==='paint' ? 'block' : 'none';
 }
-let SEL=null;   // tanlangan bo'yoq rangi {L,a,b,r,g,b,c,n}
-
-cv.addEventListener('click', e=>{
-  const rect=cv.getBoundingClientRect();
-  const x=Math.floor((e.clientX-rect.left)*cv.width/rect.width);
-  const y=Math.floor((e.clientY-rect.top)*cv.height/rect.height);
-  if(x<0||y<0||x>=cv.width||y>=cv.height) return;
-  if(MODE==='pick') pipetka(x,y); else boya(x,y);
-});
-
 function pipetka(x,y){
-  const d=curImg.data, i=(y*cv.width+x)*4;
+  const d=curImg.data, i=(y*rcv.width+x)*4;
   const r=d[i],g=d[i+1],b=d[i+2];
   const [L,A,B]=rgb2lab(r,g,b);
-  el('picked').style.background=hex(r,g,b);
-  el('pickedTxt').innerHTML=`Rasmdan olindi: <b>${hex(r,g,b)}</b> — eng yaqin bo'yoq ranglari:`;
+  el('picked').style.background=chex(r,g,b);
+  el('pickedTxt').innerHTML=`${t('pick_done')}: <b>${chex(r,g,b)}</b> — ${t('pick_near')}`;
   korsat(nearest(L,A,B,5));
 }
-function qidir(){
-  const q=el('q').value.trim().toLowerCase();
-  if(!q){ el('matches').innerHTML=''; return; }
-  const res=[];
-  for(const p of PAL){
-    if(p.c.toLowerCase().includes(q) || p.n.toLowerCase().includes(q)){
-      res.push({p,d:null});
-      if(res.length>=8) break;
-    }
-  }
-  korsat(res);
-}
 function korsat(list){
-  el('matches').innerHTML = list.map((it,idx)=>{
-    const p=it.p, hx=hex(p.r,p.g,p.b);
-    const de = it.d==null ? '' :
-      `<span class="de ${it.d<2?'good':''}">ΔE ${it.d.toFixed(1)}</span>`;
-    return `<div class="row" onclick="tanla(${PAL.indexOf(p)})">
-      <div class="sw" style="background:${hx}"></div>
-      <div class="rinfo"><b>${p.n}</b><div class="code">${p.c} · ${hx}</div></div>
-      ${de}
-    </div>`;
+  el('matches').innerHTML = list.map(it=>{
+    const p=it.p, hx=chex(p.r,p.g,p.b);
+    const de = it.d==null ? '' : `<span class="de ${it.d<2?'good':''}">ΔE ${it.d.toFixed(1)}</span>`;
+    return `<div class="crow" onclick="tanla(${p.i})">
+      <div class="csw" style="background:${hx}"></div>
+      <div class="cinfo"><b>${esc(palNomi(p))}</b><div class="ccode">${p.c} · ${hx}</div></div>
+      ${de}</div>`;
   }).join('');
 }
 function tanla(i){
   SEL=PAL[i];
-  el('picked').style.background=hex(SEL.r,SEL.g,SEL.b);
-  el('pickedTxt').innerHTML=`Tanlandi: <b>${SEL.n}</b> <span class="tag">${SEL.c}</span> — endi <b>Bo'yash</b> rejimida devorni bosing.`;
-  setMode('paint');
-  hisobla();
-  toast('Rang tanlandi: '+SEL.c);
+  el('picked').style.background=chex(SEL.r,SEL.g,SEL.b);
+  el('pickedTxt').innerHTML=`${t('sel_done')}: <b>${esc(palNomi(SEL))}</b> <code>${SEL.c}</code> · ${chex(SEL.r,SEL.g,SEL.b)} — ${t('sel_next')}`;
+  activeFam=SEL.fam;
+  renderFams();                    // tanlangan tusni oilada belgilaydi
+  setRMode('paint'); hisobla();
+  toast(t('sel_done')+': '+SEL.c);
 }
 
-/* ─────────── Devorni tanlash (flood fill) va bo'yash ─────────── */
-function boya(sx,sy){
-  if(!SEL){ toast('Avval rang tanlang'); return; }
-  const t0=performance.now();
-  const W=cv.width, H=cv.height, N=W*H;
-  const lab=ensureLab();
-  const tol=+el('tol').value;
-  const si=sy*W+sx;
-  const sL=lab[si*3], sA=lab[si*3+1], sB=lab[si*3+2];
-  const mask=new Float32Array(N);
-  const seen=new Uint8Array(N);
-  const stack=new Int32Array(N);
-  let sp=0; stack[sp++]=si; seen[si]=1;
-  while(sp>0){
-    const i=stack[--sp];
-    const dL=lab[i*3]-sL, dA=lab[i*3+1]-sA, dB=lab[i*3+2]-sB;
-    if(Math.sqrt(dL*dL+dA*dA+dB*dB) > tol) continue;
-    mask[i]=1;
-    const x=i%W, y=(i/W)|0;
-    if(x>0   && !seen[i-1]){ seen[i-1]=1; stack[sp++]=i-1; }
-    if(x<W-1 && !seen[i+1]){ seen[i+1]=1; stack[sp++]=i+1; }
-    if(y>0   && !seen[i-W]){ seen[i-W]=1; stack[sp++]=i-W; }
-    if(y<H-1 && !seen[i+W]){ seen[i+W]=1; stack[sp++]=i+W; }
-  }
-  let cnt=0, sumL=0;
-  for(let i=0;i<N;i++) if(mask[i]){ cnt++; sumL+=lab[i*3]; }
-  if(cnt<40){ toast('Soha juda kichik — aniqlikni oshiring'); return; }
-  // chetlarini yumshatish (2 marta box blur)
-  blurMask(mask,W,H); blurMask(mask,W,H);
-  const meanL=sumL/cnt;
-  const src=baseImg.data, out=curImg.data;
-  const tL=SEL.L, tA=SEL.la, tB=SEL.lb;
-  for(let i=0;i<N;i++){
-    const m=mask[i];
-    if(m<=0.004) continue;
-    // asl yorug'lik/soyani saqlaymiz: L farqini ko'chiramiz
-    const oL=lab[i*3];
-    let nL=tL+(oL-meanL);
-    nL=Math.max(0,Math.min(100,nL));
-    const [r,g,b]=lab2rgb(nL,tA,tB);
-    const j=i*4;
-    out[j]  = src[j]  *(1-m) + r*m;
-    out[j+1]= src[j+1]*(1-m) + g*m;
-    out[j+2]= src[j+2]*(1-m) + b*m;
-  }
-  ctx.putImageData(curImg,0,0);
-  const pct=(cnt/N*100).toFixed(0);
-  toast(`Bo'yaldi — ${pct}% soha · ${Math.round(performance.now()-t0)} ms`);
+/* ── Devorni ajratish: sehrli tanlov + qo'lda cho'tka (istalgan rasm uchun) ── */
+let wallMask=null, ptool='magic', brush=26, stroking=false, lastP=null, rafPending=false;
+function ensureMask(){
+  const N=rcv.width*rcv.height;
+  if(!wallMask || wallMask.length!==N) wallMask=new Float32Array(N);
+  return wallMask;
 }
-function blurMask(m,W,H){
+function clearMask(){ ensureMask().fill(0); renderPaint(); toast(t('sel_cleared')); }
+
+/* Sehrli: chetlarda TO'XTAYDI — o'xshash rangli qo'shni predmetga oqib ketmaydi.
+   Mavjud tanlovga QO'SHADI (bir necha bosishда butun devorni yig'ish mumkin). */
+function magicAdd(sx,sy){
+  if(!SEL){ toast(t('wall_need')); return; }
+  const W=rcv.width,H=rcv.height,N=W*H,lab=ensureLab(),m=ensureMask();
+  const tol=+el('tol').value;
+  const edge=Math.max(5, tol*0.55);   // qo'shni pikselga qadam chegarasi (chekka to'siq)
+  const si=sy*W+sx, sL=lab[si*3],sA=lab[si*3+1],sB=lab[si*3+2];
+  const seen=new Uint8Array(N), st=new Int32Array(N);
+  let sp=0; st[sp++]=si; seen[si]=1; let cnt=0;
+  while(sp>0){
+    const i=st[--sp];
+    const dL=lab[i*3]-sL,dA=lab[i*3+1]-sA,dB=lab[i*3+2]-sB;
+    if(Math.sqrt(dL*dL+dA*dA+dB*dB) > tol) continue;   // seed'dan uzoq — rad
+    m[i]=1; cnt++;
+    const x=i%W,y=(i/W)|0, iL=lab[i*3],iA=lab[i*3+1],iB=lab[i*3+2];
+    const tryN=j=>{
+      if(seen[j]) return; seen[j]=1;
+      const s=Math.abs(lab[j*3]-iL)+Math.abs(lab[j*3+1]-iA)+Math.abs(lab[j*3+2]-iB);
+      if(s>edge) return;                                // chekka: predmet chegarasi — to'xta
+      st[sp++]=j;
+    };
+    if(x>0)tryN(i-1); if(x<W-1)tryN(i+1); if(y>0)tryN(i-W); if(y<H-1)tryN(i+W);
+  }
+  if(cnt<20){ toast(t('wall_small')); }
+  renderPaint();
+}
+function paintCircle(cx,cy,add){
+  const W=rcv.width,H=rcv.height,m=ensureMask(),r=brush,r2=r*r;
+  const x0=Math.max(0,cx-r),x1=Math.min(W-1,cx+r),y0=Math.max(0,cy-r),y1=Math.min(H-1,cy+r);
+  const v=add?1:0;
+  for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){
+    const dx=x-cx,dy=y-cy; if(dx*dx+dy*dy<=r2) m[y*W+x]=v;
+  }
+}
+function brushStroke(x0,y0,x1,y1,add){
+  const dist=Math.hypot(x1-x0,y1-y0), steps=Math.max(1,Math.round(dist/(brush*0.4)));
+  for(let i=0;i<=steps;i++){ const tt=i/steps; paintCircle(Math.round(x0+(x1-x0)*tt), Math.round(y0+(y1-y0)*tt), add); }
+  scheduleRender();
+}
+function scheduleRender(){ if(rafPending) return; rafPending=true; requestAnimationFrame(()=>{ rafPending=false; renderPaint(); }); }
+
+/* Tanlangan (mask) sohani bo'yaydi — asl soya/yorug'lik saqlanadi, chetlari yumshoq */
+function renderPaint(){
+  if(!baseImg) return;
+  const W=rcv.width,H=rcv.height,N=W*H,src=baseImg.data,out=curImg.data;
+  const m=ensureMask(), lab=ensureLab();
+  let cnt=0,sum=0; for(let i=0;i<N;i++) if(m[i]>0){cnt++; sum+=lab[i*3];}
+  if(!SEL || cnt===0){ out.set(src); redraw(); return; }
+  const mm=featherMask(m,W,H);
+  const meanL=sum/cnt, tL=SEL.L,tA=SEL.la,tB=SEL.lb;
+  for(let i=0;i<N;i++){
+    const a=mm[i], j=i*4;
+    if(a<=0.004){ out[j]=src[j];out[j+1]=src[j+1];out[j+2]=src[j+2]; continue; }
+    let nL=tL+(lab[i*3]-meanL); nL=Math.max(0,Math.min(100,nL));
+    const [r,g,b]=lab2rgb(nL,tA,tB);
+    out[j]  = src[j]  *(1-a)+r*a;
+    out[j+1]= src[j+1]*(1-a)+g*a;
+    out[j+2]= src[j+2]*(1-a)+b*a;
+  }
+  redraw();
+}
+function featherMask(m,W,H){
   const t=new Float32Array(m.length);
   for(let y=0;y<H;y++) for(let x=0;x<W;x++){
-    const i=y*W+x;
-    let s=m[i], c=1;
+    const i=y*W+x; let s=m[i],c=1;
     if(x>0){s+=m[i-1];c++;} if(x<W-1){s+=m[i+1];c++;}
     if(y>0){s+=m[i-W];c++;} if(y<H-1){s+=m[i+W];c++;}
     t[i]=s/c;
   }
-  m.set(t);
+  return t;
+}
+function setTool(tool){
+  ptool=tool;
+  el('pt-magic').classList.toggle('on', tool==='magic');
+  el('pt-add').classList.toggle('on', tool==='add');
+  el('pt-erase').classList.toggle('on', tool==='erase');
+  el('magicRow').style.display = tool==='magic' ? 'block' : 'none';
+  el('brushRow').style.display = tool==='magic' ? 'none' : 'block';
 }
 
-/* ─────────── Bo'yoq hisobi ─────────── */
+/* bo'yoq hisobi */
+const COVER=[10,11,8,5];
 function hisobla(){
   const L=+el('rl').value||0, W=+el('rw').value||0, H=+el('rh').value||0;
-  const openings=+el('rd').value||0;
-  const cover=+el('prod').value, coats=+el('coats').value;
-  let area = 2*(L+W)*H;                 // devorlar yuzasi
-  area -= openings*1.8;                 // eshik/deraza taxminiy
-  area = Math.max(0, area);
-  const liters = area*coats/cover;
-  const cans = Math.ceil(liters/9);     // 9 L bankalar
-  el('calcRes').innerHTML = `
+  const op=+el('rd').value||0;
+  const pi=+el('prod').value||0, coats=(+el('coats').value||1);
+  const cover=COVER[pi]||10;
+  let area=Math.max(0, 2*(L+W)*H - op*1.8);
+  const liters=area*coats/cover;
+  const cans=Math.ceil(liters/9);
+  el('calcRes').innerHTML=`
     <div class="big">${liters.toFixed(1)} L</div>
     <div class="sm">
-      Devor yuzasi: <b>${area.toFixed(1)} m²</b> · ${coats} qatlam · sarf ~${cover} m²/L<br>
-      Taxminan <b>${cans} ta 9 L banka</b> (yoki mos hajmlar)
-      ${SEL ? `<br>Rang: <b>${SEL.n}</b> · kod <b>${SEL.c}</b> — kolerovka do'konda` : `<br>Rang tanlanmagan`}
+      ${t('area')}: <b>${area.toFixed(1)} m²</b> · ${coats} ${t('layer')} · ${t('usage')} ~${cover} m²/L<br>
+      ~<b>${cans}</b> ${t('cans')}
+      ${SEL ? `<br>${t('sel_done')}: <b>${esc(palNomi(SEL))}</b> · <b>${SEL.c}</b>` : `<br>${t('no_color')}`}
     </div>`;
+  return {area, liters, cans, cover, coats, pi};
+}
+function paintToCart(){
+  if(!SEL){ toast(t('paint_need')); return; }
+  const h=hisobla();
+  PAINT={
+    code:SEL.c, name:palNomi(SEL), hex:chex(SEL.r,SEL.g,SEL.b),
+    liters:+h.liters.toFixed(1), area:+h.area.toFixed(1), coats:h.coats,
+    product:(T[LANG].prods||T.uz.prods)[h.pi], cans:h.cans,
+  };
+  toast(t('paint_added'));
+  updateBadge(); nav('cart');
+}
+function paintOchir(){ PAINT=null; updateBadge(); renderCart(); }
+
+/* rang bo'limini birinchi ochilganda tayyorlash */
+let rangInit=false;
+function renderRang(){
+  if(!rangInit){
+    rcv=el('cv'); rctx=rcv.getContext('2d',{willReadFrequently:true});
+    const cpt=e=>{ const r=rcv.getBoundingClientRect();
+      return [Math.floor((e.clientX-r.left)*rcv.width/r.width), Math.floor((e.clientY-r.top)*rcv.height/r.height)]; };
+    rcv.addEventListener('pointerdown', e=>{
+      const [x,y]=cpt(e); if(x<0||y<0||x>=rcv.width||y>=rcv.height) return;
+      if(RMODE==='pick'){ pipetka(x,y); return; }
+      if(ptool==='magic'){ magicAdd(x,y); return; }
+      if(!SEL){ toast(t('wall_need')); return; }
+      stroking=true; lastP=[x,y];
+      try{ rcv.setPointerCapture(e.pointerId); }catch(_){}
+      brushStroke(x,y,x,y, ptool==='add');
+      e.preventDefault();
+    });
+    rcv.addEventListener('pointermove', e=>{
+      if(!stroking) return;
+      const [x,y]=cpt(e);
+      brushStroke(lastP[0],lastP[1],x,y, ptool==='add');
+      lastP=[x,y]; e.preventDefault();
+    });
+    const endStroke=()=>{ stroking=false; lastP=null; };
+    rcv.addEventListener('pointerup', endStroke);
+    rcv.addEventListener('pointercancel', endStroke);
+    rcv.addEventListener('pointerleave', endStroke);
+    el('rfile').addEventListener('change', e=>{
+      const f=e.target.files[0]; if(!f) return;
+      const img=new Image();
+      img.onload=()=>{ setCanvasFromSource(img,img.width,img.height); redraw(); toast(t('img_loaded')); };
+      img.src=URL.createObjectURL(f);
+    });
+    buildPalette();
+    sampleRoom();
+    rangInit=true;
+  }
+  applyRangLang();
+  renderFams();
+  redraw();
+  hisobla();
+}
+function applyRangLang(){
+  el('rangH').textContent=t('rang_h');
+  el('rbT').textContent=t('rb_t');
+  el('rbD').textContent=t('rb_d');
+  el('rangNote').innerHTML=t('rang_note');
+  el('stCountL').textContent=t('st_count');
+  el('stMsL').textContent=t('st_ms');
+  el('stAccL').textContent=t('st_acc');
+  el('btnUp').textContent=t('btn_up');
+  el('btnSample').textContent=t('btn_sample');
+  el('btnReset').textContent=t('btn_reset');
+  el('mPick').textContent=t('m_pick'); el('mPickS').textContent=t('m_pick_s');
+  el('mPaint').textContent=t('m_paint'); el('mPaintS').textContent=t('m_paint_s');
+  el('tolL').textContent=t('tol_l');
+  el('tolHint').innerHTML=t('tol_hint');
+  el('ptMagic').textContent=t('pt_magic'); el('ptMagicS').textContent=t('pt_magic_s');
+  el('ptAdd').textContent=t('pt_add'); el('ptAddS').textContent=t('pt_add_s');
+  el('ptErase').textContent=t('pt_erase'); el('ptEraseS').textContent=t('pt_erase_s');
+  el('brushL').textContent=t('brush_l');
+  el('clearL').textContent=t('sel_clear');
+  el('selH').textContent=t('sel_h');
+  el('famL').textContent=t('fam_l');
+  if(!SEL) el('pickedTxt').innerHTML=t('pick_hint');
+  if(rangInit) renderFams();      // oila nomlari tilga moslashsin
+  el('calcH').textContent=t('calc_h');
+  el('lblL').textContent=t('lbl_l'); el('lblW').textContent=t('lbl_w');
+  el('lblH').textContent=t('lbl_h'); el('lblD').textContent=t('lbl_d');
+  el('lblProd').textContent=t('lbl_prod'); el('lblCoats').textContent=t('lbl_coats');
+  el('addPaintBtn').textContent=t('add_paint');
+  el('calcNote').textContent=t('calc_note');
+  const ps=el('prod'), pv=ps.value||0;
+  ps.innerHTML=(T[LANG].prods||T.uz.prods).map((s,i)=>`<option value="${i}">${s}</option>`).join('');
+  ps.value=pv;
+  const cs=el('coats'), cvv=cs.value||2;
+  cs.innerHTML=(T[LANG].coats||T.uz.coats).map((s,i)=>`<option value="${i+1}">${s}</option>`).join('');
+  cs.value=cvv;
+  if(rangInit) el('stCount').textContent=PAL.length.toLocaleString('uz-UZ');
 }
 
-/* ─────────── Ishga tushirish ─────────── */
-buildPalette();
-sampleRoom();
-ctx.putImageData(curImg,0,0);
-hisobla();
+/* navigatsiya */
+function nav(v){
+  curView=v;
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  const ok = ['shop','cart','branches','profile','info','rang'];
+  el('v-'+(ok.includes(v)?v:'shop')).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.v===v));
+  window.scrollTo(0,0);
+  if(v==='cart') renderCart();
+  if(v==='profile') renderProfile();
+  if(v==='rang') renderRang();
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.v)));
+
+load();
 </script>
 </body>
 </html>
