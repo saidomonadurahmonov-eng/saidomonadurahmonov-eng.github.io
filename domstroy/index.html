@@ -134,6 +134,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .stockchip{display:inline-block;background:rgba(29,158,117,.12);color:var(--green);font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;margin-top:6px}
 .toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,.92);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:99;display:none}
 .demo-tag{position:fixed;top:8px;right:8px;background:rgba(31,42,55,.85);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:8px;z-index:45;letter-spacing:.5px}
+
+/* ── Rang tanlash ── */
+.rangbanner{margin:12px 16px;background:linear-gradient(135deg,#EF7F1A,#D95E0E);border-radius:16px;padding:14px 16px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:12px}
+.rangbanner .ic{font-size:28px;flex:0 0 auto}
+.rangbanner .t{font-size:14.5px;font-weight:800;line-height:1.25}
+.rangbanner .d{font-size:11.5px;opacity:.93;margin-top:3px;line-height:1.4}
+.notice{background:#FFF4E6;border:1px solid #F5C88A;border-radius:12px;padding:9px 12px;font-size:11.5px;line-height:1.5;color:#7A4E10;margin-bottom:10px}
+.statrow{display:flex;gap:8px;margin-bottom:10px}
+.statrow div{flex:1;background:var(--card2);border-radius:10px;padding:8px 4px;text-align:center}
+.statrow b{display:block;font-size:14px;color:var(--accent-dark)}
+.statrow span{font-size:9.5px;color:var(--hint)}
+.canvaswrap{position:relative;background:#000;border-radius:14px;overflow:hidden;line-height:0}
+.canvaswrap canvas{width:100%;height:auto;display:block;touch-action:manipulation}
+.modes{display:flex;gap:8px;margin-top:10px}
+.mode{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:9px 6px;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--card)}
+.mode.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mode small{display:block;font-weight:400;font-size:10px;opacity:.75;margin-top:2px}
+.swatchbig{width:100%;height:60px;border-radius:12px;border:1px solid var(--line)}
+.crow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.crow:last-child{border-bottom:none}
+.csw{width:38px;height:38px;border-radius:9px;flex:0 0 auto;border:1px solid var(--line)}
+.cinfo{flex:1;font-size:13px;line-height:1.35}
+.cinfo .ccode{color:var(--hint);font-size:11.5px}
+.de{font-size:11px;font-weight:700;padding:3px 7px;border-radius:7px;background:var(--card2);color:var(--hint)}
+.de.good{background:rgba(29,158,117,.13);color:var(--green)}
+.paintbox{background:var(--navy);color:#fff;border-radius:14px;padding:13px;margin-top:12px}
+.paintbox .big{font-size:24px;font-weight:800;color:var(--accent)}
+.paintbox .sm{font-size:11.5px;opacity:.88;line-height:1.5;margin-top:4px}
+.paintcart{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:12px;padding:11px;margin-top:10px}
+.paintcart .pcsw{width:42px;height:42px;border-radius:10px;flex:0 0 auto;border:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -158,6 +188,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <button class="chanbtn" id="chanBtn" onclick="kanalOch()">📢 Telegram kanalimiz — aksiyalar va yangiliklar</button>
   </div>
   <div class="updated" id="updated"></div>
+  <div class="rangbanner" onclick="nav('rang')">
+    <div class="ic">🎨</div>
+    <div>
+      <div class="t" id="rbT">Rang tanlash — devoringizni bo'yab ko'ring</div>
+      <div class="d" id="rbD">Tikkurila · Ottocento · 40 000+ tus · bo'yoq hisobi</div>
+    </div>
+  </div>
   <div id="shelves"></div>
   <div class="section-title" id="catTitle">Kategoriyalar</div>
   <div class="cats" id="cats"></div>
@@ -184,6 +221,62 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div id="infBody"></div>
 </div>
 
+<!-- RANG TANLASH -->
+<div class="view" id="v-rang">
+  <div class="header"><h1 id="rangH">🎨 Rang tanlash</h1></div>
+
+  <div class="panel">
+    <div class="notice" id="rangNote"></div>
+    <div class="statrow">
+      <div><b id="stCount">…</b><span id="stCountL">palitradagi tus</span></div>
+      <div><b id="stMs">…</b><span id="stMsL">qidiruv</span></div>
+      <div><b>ΔE2000</b><span id="stAccL">aniqlik</span></div>
+    </div>
+    <div class="canvaswrap"><canvas id="cv"></canvas></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="vchip" onclick="document.getElementById('rfile').click()" id="btnUp">📷 Rasm yuklash</button>
+      <button class="vchip" onclick="sampleRoom();redraw()" id="btnSample">🏠 Namuna xona</button>
+      <button class="vchip" onclick="resetImg()" id="btnReset">↩︎ Asliga</button>
+    </div>
+    <input type="file" id="rfile" accept="image/*" style="display:none">
+    <div class="modes">
+      <div class="mode on" id="m-pick" onclick="setRMode('pick')">💧 <span id="mPick">Pipetka</span><small id="mPickS">rasmdan rang olish</small></div>
+      <div class="mode" id="m-paint" onclick="setRMode('paint')">🖌 <span id="mPaint">Bo'yash</span><small id="mPaintS">devorni bosing</small></div>
+    </div>
+    <div id="paintOpts" style="display:none">
+      <div class="flabel"><span id="tolL">Devor tanlash aniqligi</span>: <span id="tolV">22</span></div>
+      <input type="range" style="width:100%" id="tol" min="6" max="60" value="22" oninput="document.getElementById('tolV').textContent=this.value">
+      <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:6px" id="tolHint"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 id="selH">Tanlangan rang</h3>
+    <div class="swatchbig" id="picked" style="background:#cfd4da"></div>
+    <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px" id="pickedTxt"></div>
+    <div class="flabel" id="searchL">Palitradan qidirish</div>
+    <input class="finput" type="text" id="cq" oninput="rangQidir()">
+    <div id="matches"></div>
+  </div>
+
+  <div class="panel">
+    <h3 id="calcH">Bo'yoq hisobi</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><div class="flabel" id="lblL">Uzunligi (m)</div><input class="finput" type="number" id="rl" value="5" step="0.1" oninput="hisobla()"></div>
+      <div><div class="flabel" id="lblW">Eni (m)</div><input class="finput" type="number" id="rw" value="4" step="0.1" oninput="hisobla()"></div>
+      <div><div class="flabel" id="lblH">Balandligi (m)</div><input class="finput" type="number" id="rh" value="2.8" step="0.1" oninput="hisobla()"></div>
+      <div><div class="flabel" id="lblD">Eshik/deraza</div><input class="finput" type="number" id="rd" value="3" step="1" oninput="hisobla()"></div>
+    </div>
+    <div class="flabel" id="lblProd">Mahsulot turi</div>
+    <select class="finput" id="prod" onchange="hisobla()"></select>
+    <div class="flabel" id="lblCoats">Qatlam soni</div>
+    <select class="finput" id="coats" onchange="hisobla()"></select>
+    <div class="paintbox" id="calcRes"></div>
+    <button class="bigbtn" id="addPaintBtn" onclick="paintToCart()">🛒 Buyurtmaga qo'shish</button>
+    <div style="font-size:11px;color:var(--hint);line-height:1.5;margin-top:8px" id="calcNote"></div>
+  </div>
+</div>
+
 <!-- KABINET -->
 <div class="view" id="v-profile">
   <div class="header"><h1 id="profH">👤 Kabinet</h1></div>
@@ -193,6 +286,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="nav" id="nav">
   <button data-v="shop" class="active"><span class="ic">🛍</span><span id="nv1">Do'kon</span></button>
   <button data-v="cart"><span class="ic">🛒</span><span id="nv2">Savat</span><span class="badge" id="navBadge" style="display:none">0</span></button>
+  <button data-v="rang"><span class="ic">🎨</span><span id="nv6">Rang</span></button>
   <button data-v="branches"><span class="ic">📍</span><span id="nv3">Filiallar</span></button>
   <button data-v="profile"><span class="ic">👤</span><span id="nv5">Kabinet</span></button>
   <button data-v="info"><span class="ic">ℹ️</span><span id="nv4">Aloqa</span></button>
@@ -276,6 +370,39 @@ const T = {
     tarix:"🧾 Buyurtmalarim", tarix_bosh:"Hali buyurtma bermagansiz",
     holat:"✅ Qabul qilindi", dona_s:"tovar",
     saved_addr:"📍 Saqlangan manzil", addr_yoq:"Manzil hali saqlanmagan",
+    /* rang tanlash */
+    rang_h:"🎨 Rang tanlash", nav_rang:"Rang",
+    rb_t:"Rang tanlash — devoringizni bo'yab ko'ring",
+    rb_d:"Tikkurila · Ottocento · 40 000+ tus · bo'yoq hisobi",
+    rang_note:"<b>Namuna palitra.</b> Ranglar shu yerda avtomatik yaratilgan — haqiqiy Tikkurila / Ottocento kataloglari ulanganda shu tizim o'zgarmasdan ishlaydi.",
+    st_count:"palitradagi tus", st_ms:"qidiruv", st_acc:"aniqlik",
+    btn_up:"📷 Rasm yuklash", btn_sample:"🏠 Namuna xona", btn_reset:"↩︎ Asliga",
+    m_pick:"Pipetka", m_pick_s:"rasmdan rang olish",
+    m_paint:"Bo'yash", m_paint_s:"devorni bosing",
+    tol_l:"Devor tanlash aniqligi",
+    tol_hint:"Devorning bir joyini bosing — dastur shu rangdagi sohani topib, <b>soya va yorug'likni saqlagan holda</b> bo'yaydi.",
+    sel_h:"Tanlangan rang", search_l:"Palitradan qidirish (kod yoki nom)",
+    search_ph:"masalan: 12345 yoki bej",
+    pick_hint:"Pipetka rejimida rasmni bosing yoki pastdan qidiring.",
+    pick_done:"Rasmdan olindi", pick_near:"eng yaqin bo'yoq ranglari:",
+    sel_done:"Tanlandi", sel_next:"endi <b>Bo'yash</b> rejimida devorni bosing.",
+    calc_h:"Bo'yoq hisobi",
+    lbl_l:"Uzunligi (m)", lbl_w:"Eni (m)", lbl_h:"Balandligi (m)", lbl_d:"Eshik/deraza",
+    lbl_prod:"Mahsulot turi", lbl_coats:"Qatlam soni",
+    prods:["Mat emulsiya — ~10 m²/L","Yarim mat emulsiya — ~11 m²/L","Yuviladigan emulsiya — ~8 m²/L","Dekorativ qoplama — ~5 m²/L"],
+    coats:["1 qatlam","2 qatlam","3 qatlam"],
+    area:"Devor yuzasi", layer:"qatlam", usage:"sarf",
+    cans:"ta 9 L banka (yoki mos hajmlar)",
+    no_color:"Rang tanlanmagan",
+    add_paint:"🛒 Buyurtmaga qo'shish",
+    calc_note:"Sarf me'yorlari — namuna qiymatlar; haqiqiy raqamlar mahsulot texnik ma'lumotnomasidan olinadi. Kolerovka do'kondagi tinting mashinasida tayyorlanadi — biz rang kodi, baza va litrni beramiz.",
+    paint_added:"✅ Bo'yoq buyurtmaga qo'shildi",
+    paint_need:"Avval rang tanlang",
+    paint_title:"🎨 Bo'yoq (kolerovka)", paint_price:"narx do'konda aniqlanadi",
+    paint_del:"o'chirish",
+    wall_small:"Soha juda kichik — aniqlikni oshiring",
+    wall_done:"Bo'yaldi", wall_need:"Avval rang tanlang",
+    img_loaded:"Rasm yuklandi", img_reset:"Asliga qaytarildi", room_ready:"Namuna xona tayyor",
     promo_t:"🚗 DomStroy'dan xarid qiling — 4 ta Damasdan birini yutib oling!",
     promo_d:"Har 3 mln so'mlik xaridga kupon. Batafsil: ☎️ 73 541-22-22",
     about:"Дом Строй — 2009-yildan beri Farg'ona vodiysida qurilish mollari savdosi. 6 ta do'kon, showroom va dizayn-studiya.",
@@ -325,6 +452,39 @@ const T = {
     tarix:"🧾 Мои заказы", tarix_bosh:"Заказов пока нет",
     holat:"✅ Принят", dona_s:"товар(ов)",
     saved_addr:"📍 Сохранённый адрес", addr_yoq:"Адрес ещё не сохранён",
+    /* подбор цвета */
+    rang_h:"🎨 Подбор цвета", nav_rang:"Цвет",
+    rb_t:"Подбор цвета — покрасьте свою стену",
+    rb_d:"Tikkurila · Ottocento · 40 000+ оттенков · расчёт краски",
+    rang_note:"<b>Демо-палитра.</b> Цвета сгенерированы здесь — при подключении реальных каталогов Tikkurila / Ottocento система работает без изменений.",
+    st_count:"оттенков", st_ms:"поиск", st_acc:"точность",
+    btn_up:"📷 Загрузить фото", btn_sample:"🏠 Пример комнаты", btn_reset:"↩︎ Сбросить",
+    m_pick:"Пипетка", m_pick_s:"взять цвет с фото",
+    m_paint:"Покраска", m_paint_s:"нажмите на стену",
+    tol_l:"Точность выделения стены",
+    tol_hint:"Нажмите на стену — программа найдёт область этого цвета и покрасит её, <b>сохраняя тени и свет</b>.",
+    sel_h:"Выбранный цвет", search_l:"Поиск по палитре (код или название)",
+    search_ph:"например: 12345 или беж",
+    pick_hint:"Нажмите на фото в режиме пипетки или воспользуйтесь поиском.",
+    pick_done:"Взято с фото", pick_near:"ближайшие цвета краски:",
+    sel_done:"Выбрано", sel_next:"теперь в режиме <b>Покраска</b> нажмите на стену.",
+    calc_h:"Расчёт краски",
+    lbl_l:"Длина (м)", lbl_w:"Ширина (м)", lbl_h:"Высота (м)", lbl_d:"Двери/окна",
+    lbl_prod:"Тип продукта", lbl_coats:"Количество слоёв",
+    prods:["Матовая эмульсия — ~10 м²/л","Полуматовая — ~11 м²/л","Моющаяся — ~8 м²/л","Декоративное покрытие — ~5 м²/л"],
+    coats:["1 слой","2 слоя","3 слоя"],
+    area:"Площадь стен", layer:"слоя", usage:"расход",
+    cans:"банки по 9 л (или подходящие объёмы)",
+    no_color:"Цвет не выбран",
+    add_paint:"🛒 Добавить в заказ",
+    calc_note:"Нормы расхода — примерные; точные значения берутся из техдокументации продукта. Колеровка выполняется на тонировочной машине в магазине — мы передаём код цвета, базу и литраж.",
+    paint_added:"✅ Краска добавлена в заказ",
+    paint_need:"Сначала выберите цвет",
+    paint_title:"🎨 Краска (колеровка)", paint_price:"цена определяется в магазине",
+    paint_del:"удалить",
+    wall_small:"Область слишком мала — увеличьте точность",
+    wall_done:"Покрашено", wall_need:"Сначала выберите цвет",
+    img_loaded:"Фото загружено", img_reset:"Сброшено", room_ready:"Пример комнаты готов",
     promo_t:"🚗 Покупайте в DomStroy — выиграйте один из 4 Damas!",
     promo_d:"Купон за каждую покупку на 3 млн сум. Подробнее: ☎️ 73 541-22-22",
     about:"Дом Строй — продажа стройматериалов в Ферганской долине с 2009 года. 6 магазинов, шоурум и дизайн-студия.",
@@ -371,7 +531,9 @@ function applyLang(){
   el('nv3').textContent = t('nav_br');
   el('nv4').textContent = t('nav_inf');
   el('nv5').textContent = t('nav_kab');
+  el('nv6').textContent = t('nav_rang');
   el('profH').textContent = t('kab_h');
+  if(typeof applyRangLang==='function') applyRangLang();
   el('mapT').textContent = t('map_t');
   el('mapHint').textContent = t('map_hint');
   el('map-note').placeholder = t('mo_ljal');
@@ -496,7 +658,7 @@ function setQ(id, n){
   updateBadge(); renderCart();
 }
 function updateBadge(){
-  const n = Object.values(cart).reduce((a,b)=>a+b,0);
+  const n = Object.values(cart).reduce((a,b)=>a+b,0) + (PAINT?1:0);
   const b = el('navBadge');
   b.style.display = n?'flex':'none'; b.textContent=n;
 }
@@ -526,7 +688,7 @@ function renderCart(){
   const body = el('cartBody');
   if(!body) return;
   const ids = Object.keys(cart);
-  if(!ids.length){
+  if(!ids.length && !PAINT){
     body.innerHTML = `<div class="empty">${t('bosh')}</div>
       <div style="padding:0 16px"><button class="bigbtn ghost" onclick="nav('shop')">${t('davom')}</button></div>`;
     return;
@@ -595,9 +757,22 @@ function renderCart(){
       </div>
       <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">${payInfo}</div>`;
 
+  const paintHtml = PAINT ? `
+    <div class="paintcart">
+      <div class="pcsw" style="background:${PAINT.hex}"></div>
+      <div style="flex:1;font-size:13px;line-height:1.4">
+        <b>${t('paint_title')}</b><br>
+        ${esc(PAINT.name)} · <code>${PAINT.code}</code><br>
+        <span style="color:var(--hint)">${PAINT.liters} L · ${esc(PAINT.product)} · ${PAINT.area} m²</span><br>
+        <span style="color:var(--accent-dark);font-weight:700">${t('paint_price')}</span>
+      </div>
+      <button class="vchip" style="margin:0" onclick="paintOchir()">✖️</button>
+    </div>` : '';
+
   body.innerHTML = `
     <div class="cartlist">${rows}</div>
     <div class="cartbox">
+      ${paintHtml}
       <div class="total"><span>${t('jami')}</span><span>${fmt(total)}</span></div>
       <div class="flabel">${t('ism')}</div>
       <input class="finput" id="o-name" value="${esc(defName)}" placeholder="${t('ism_ph')}">
@@ -735,14 +910,15 @@ function order(total){
     pay_at_store: ordMode==='pickup',    // olib ketishda to'lov do'konda
     vehicle: vehicleFor(total),
     items,
+    paint: PAINT,                        // tanlangan rang (kolerovka) — bo'lsa
   };
   if (tg && tg.sendData) {
     try { tg.sendData(JSON.stringify(payload)); } catch(e) {}
   }
   // profil + tarixga saqlash (keyingi buyurtmada avto-to'ldiriladi)
   saveProf({name, tel, addr: ordMode==='deliv' ? ordLoc : (loadProf().addr||null)});
-  pushHist({ts:Date.now(), total, n:items.reduce((a,i)=>a+i.qty,0), mode:ordMode, payment:payload.payment});
-  cart={}; updateBadge();
+  pushHist({ts:Date.now(), total, n:items.reduce((a,i)=>a+i.qty,0)+(PAINT?1:0), mode:ordMode, payment:payload.payment});
+  cart={}; PAINT=null; SEL=null; updateBadge();
   el('cartBody').innerHTML = `<div class="empty" style="padding-top:60px">
     <div style="font-size:44px">🎉</div><br>
     <b style="font-size:17px;color:var(--text)">${t('ord_ok')}</b><br><br>
@@ -829,16 +1005,381 @@ function renderInfo(){
     </div>`;
 }
 
+/* ═══════════ RANG TANLASH ═══════════ */
+function rgb2lab(r,g,b){
+  r/=255; g/=255; b/=255;
+  r = r>0.04045 ? Math.pow((r+0.055)/1.055,2.4) : r/12.92;
+  g = g>0.04045 ? Math.pow((g+0.055)/1.055,2.4) : g/12.92;
+  b = b>0.04045 ? Math.pow((b+0.055)/1.055,2.4) : b/12.92;
+  let x=(r*0.4124+g*0.3576+b*0.1805)/0.95047;
+  let y=(r*0.2126+g*0.7152+b*0.0722);
+  let z=(r*0.0193+g*0.1192+b*0.9505)/1.08883;
+  const f=t=> t>0.008856 ? Math.cbrt(t) : (7.787*t+16/116);
+  x=f(x); y=f(y); z=f(z);
+  return [116*y-16, 500*(x-y), 200*(y-z)];
+}
+function lab2rgb(L,a,bb){
+  let y=(L+16)/116, x=a/500+y, z=y-bb/200;
+  const f=t=>{ const t3=t*t*t; return t3>0.008856 ? t3 : (t-16/116)/7.787; };
+  x=f(x)*0.95047; y=f(y); z=f(z)*1.08883;
+  let r= x* 3.2406 + y*-1.5372 + z*-0.4986;
+  let g= x*-0.9689 + y* 1.8758 + z* 0.0415;
+  let b= x* 0.0557 + y*-0.2040 + z* 1.0570;
+  const h=c=>{ c = c>0.0031308 ? 1.055*Math.pow(c,1/2.4)-0.055 : 12.92*c; return Math.max(0,Math.min(255,Math.round(c*255))); };
+  return [h(r),h(g),h(b)];
+}
+function inGamut(L,a,b){
+  let y=(L+16)/116, x=a/500+y, z=y-b/200;
+  const f=t=>{ const t3=t*t*t; return t3>0.008856 ? t3 : (t-16/116)/7.787; };
+  x=f(x)*0.95047; y=f(y); z=f(z)*1.08883;
+  const r= x*3.2406+y*-1.5372+z*-0.4986, g= x*-0.9689+y*1.8758+z*0.0415, bl= x*0.0557+y*-0.2040+z*1.0570;
+  return r>=-0.001&&r<=1.001&&g>=-0.001&&g<=1.001&&bl>=-0.001&&bl<=1.001;
+}
+/* CIEDE2000 — Sharma etalon ma'lumotlarida tekshirilgan */
+function deltaE2000(L1,a1,b1,L2,a2,b2){
+  const rad=Math.PI/180, deg=180/Math.PI;
+  const C1=Math.hypot(a1,b1), C2=Math.hypot(a2,b2), Cb=(C1+C2)/2;
+  const G=0.5*(1-Math.sqrt(Math.pow(Cb,7)/(Math.pow(Cb,7)+6103515625)));
+  const ap1=(1+G)*a1, ap2=(1+G)*a2;
+  const Cp1=Math.hypot(ap1,b1), Cp2=Math.hypot(ap2,b2);
+  let hp1=Math.atan2(b1,ap1)*deg; if(hp1<0)hp1+=360;
+  let hp2=Math.atan2(b2,ap2)*deg; if(hp2<0)hp2+=360;
+  if(Cp1===0)hp1=0; if(Cp2===0)hp2=0;
+  const dL=L2-L1, dC=Cp2-Cp1;
+  let dhp=0;
+  if(Cp1*Cp2!==0){ dhp=hp2-hp1; if(dhp>180)dhp-=360; else if(dhp<-180)dhp+=360; }
+  const dH=2*Math.sqrt(Cp1*Cp2)*Math.sin(dhp/2*rad);
+  const Lb=(L1+L2)/2, Cpb=(Cp1+Cp2)/2;
+  let hpb;
+  if(Cp1*Cp2===0){ hpb=hp1+hp2; }
+  else{ hpb=(hp1+hp2)/2;
+    if(Math.abs(hp1-hp2)>180){ hpb=(hp1+hp2<360)?(hp1+hp2+360)/2:(hp1+hp2-360)/2; } }
+  const T=1-0.17*Math.cos((hpb-30)*rad)+0.24*Math.cos(2*hpb*rad)
+         +0.32*Math.cos((3*hpb+6)*rad)-0.20*Math.cos((4*hpb-63)*rad);
+  const dTh=30*Math.exp(-Math.pow((hpb-275)/25,2));
+  const Rc=2*Math.sqrt(Math.pow(Cpb,7)/(Math.pow(Cpb,7)+6103515625));
+  const Sl=1+(0.015*Math.pow(Lb-50,2))/Math.sqrt(20+Math.pow(Lb-50,2));
+  const Sc=1+0.045*Cpb, Sh=1+0.015*Cpb*T;
+  const Rt=-Math.sin(2*dTh*rad)*Rc;
+  return Math.sqrt(Math.pow(dL/Sl,2)+Math.pow(dC/Sc,2)+Math.pow(dH/Sh,2)+Rt*(dC/Sc)*(dH/Sh));
+}
+const chex = (r,g,b)=>'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+
+/* Oila nomlari — LAB burchagiga kalibrlangan (qizil ~40°, sariq ~103°, yashil ~136°, ko'k ~306°) */
+const OILA = [
+  [0,'Pushti'],[20,'Marjon'],[40,'Qizil'],[58,'Terrakota'],[73,"To'q sariq"],
+  [88,'Bej'],[103,'Sariq'],[118,'Zaytun'],[136,'Yashil'],[160,"O't rang"],
+  [180,'Nefrit'],[196,'Firuza'],[225,'Moviy'],[260,'Havorang'],[290,"Ko'k"],
+  [310,"To'q ko'k"],[328,'Binafsha'],[345,'Siren'],
+];
+const OILA_RU = {Pushti:'Розовый',Marjon:'Коралловый',Qizil:'Красный',Terrakota:'Терракота',
+  "To'q sariq":'Оранжевый',Bej:'Бежевый',Sariq:'Жёлтый',Zaytun:'Оливковый',Yashil:'Зелёный',
+  "O't rang":'Травяной',Nefrit:'Нефрит',Firuza:'Бирюзовый',Moviy:'Голубой',Havorang:'Лазурный',
+  "Ko'k":'Синий',"To'q ko'k":'Тёмно-синий',Binafsha:'Фиолетовый',Siren:'Сиреневый',Neytral:'Нейтральный'};
+function oilaNomi(h,C){
+  if(C<6) return 'Neytral';
+  let best=OILA[0], bd=999;
+  for(const o of OILA){ const d=Math.abs(((h-o[0]+540)%360)-180); if(d<bd){bd=d;best=o;} }
+  return best[1];
+}
+function oilaTr(nom){ return LANG==='ru' ? (OILA_RU[nom]||nom) : nom; }
+
+let PAL=[];
+function buildPalette(){
+  if(PAL.length) return;
+  PAL=[]; let n=0;
+  const add=(L,a,b,h,C)=>{
+    const [r,g,bl]=lab2rgb(L,a,b); n++;
+    // la/lb — Lab koordinatalari; r/g/b — ekran ranglari
+    PAL.push({c:'DS-'+String(n).padStart(5,'0'), fam:oilaNomi(h,C), Lr:Math.round(L), L, la:a, lb:b, r, g, b:bl});
+  };
+  for(let L=20; L<=96; L+=2){
+    add(L,0,0,0,0);
+    for(let h=0; h<360; h+=4){
+      for(let ci=1; ci<=18; ci++){
+        const C=ci*3.6;
+        const a=C*Math.cos(h*Math.PI/180), b=C*Math.sin(h*Math.PI/180);
+        if(!inGamut(L,a,b)) break;
+        add(L,a,b,h,C);
+      }
+    }
+  }
+  el('stCount').textContent = PAL.length.toLocaleString('uz-UZ');
+}
+const palNomi = p => oilaTr(p.fam)+' '+p.Lr;
+function nearest(L,a,b,k=5){
+  const t0=performance.now();
+  const res=[];
+  for(let i=0;i<PAL.length;i++){
+    const p=PAL[i];
+    const d=deltaE2000(L,a,b,p.L,p.la,p.lb);
+    if(res.length<k){ res.push({p,d}); res.sort((x,y)=>x.d-y.d); }
+    else if(d<res[k-1].d){ res[k-1]={p,d}; res.sort((x,y)=>x.d-y.d); }
+  }
+  el('stMs').textContent = Math.max(1,Math.round(performance.now()-t0))+' ms';
+  return res;
+}
+
+/* kanvas */
+let rcv=null, rctx=null, baseImg=null, curImg=null, labCache=null;
+const MAXW=900;
+function redraw(){ if(curImg) rctx.putImageData(curImg,0,0); }
+function setCanvasFromSource(src,w,h){
+  let sw=w, sh=h;
+  if(sw>MAXW){ sh=Math.round(sh*MAXW/sw); sw=MAXW; }
+  rcv.width=sw; rcv.height=sh;
+  rctx.drawImage(src,0,0,sw,sh);
+  baseImg=rctx.getImageData(0,0,sw,sh);
+  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), sw, sh);
+  labCache=null;
+}
+function ensureLab(){
+  if(labCache) return labCache;
+  const d=curImg.data, n=rcv.width*rcv.height;
+  labCache=new Float32Array(n*3);
+  for(let i=0,j=0;i<n;i++,j+=4){
+    const [L,a,b]=rgb2lab(d[j],d[j+1],d[j+2]);
+    labCache[i*3]=L; labCache[i*3+1]=a; labCache[i*3+2]=b;
+  }
+  return labCache;
+}
+function resetImg(){
+  if(!baseImg) return;
+  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), rcv.width, rcv.height);
+  redraw(); labCache=null; toast(t('img_reset'));
+}
+function sampleRoom(){
+  const w=880,h=620;
+  rcv.width=w; rcv.height=h;
+  const c=rctx;
+  let g=c.createLinearGradient(0,0,0,h*0.78);
+  g.addColorStop(0,'#dcd6ca'); g.addColorStop(1,'#c9c2b4');
+  c.fillStyle=g; c.fillRect(0,0,w,h*0.78);
+  const rg=c.createRadialGradient(w*0.74,h*0.30,10,w*0.74,h*0.30,w*0.42);
+  rg.addColorStop(0,'rgba(255,250,235,.55)'); rg.addColorStop(1,'rgba(255,250,235,0)');
+  c.fillStyle=rg; c.fillRect(0,0,w,h*0.78);
+  const sg=c.createLinearGradient(0,0,w*0.22,0);
+  sg.addColorStop(0,'rgba(0,0,0,.20)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+  c.fillStyle=sg; c.fillRect(0,0,w*0.22,h*0.78);
+  const fg=c.createLinearGradient(0,h*0.78,0,h);
+  fg.addColorStop(0,'#8a6a45'); fg.addColorStop(1,'#6d5334');
+  c.fillStyle=fg; c.fillRect(0,h*0.78,w,h*0.22);
+  for(let x=0;x<w;x+=46){ c.strokeStyle='rgba(0,0,0,.10)'; c.beginPath(); c.moveTo(x,h*0.78); c.lineTo(x-30,h); c.stroke(); }
+  c.fillStyle='#efece6'; c.fillRect(0,h*0.78-12,w,12);
+  c.fillStyle='#f6f7f8'; c.fillRect(w*0.60,h*0.13,w*0.28,h*0.36);
+  c.fillStyle='#bcd6e8'; c.fillRect(w*0.615,h*0.145,w*0.25,h*0.33);
+  c.strokeStyle='#f6f7f8'; c.lineWidth=7;
+  c.beginPath(); c.moveTo(w*0.74,h*0.145); c.lineTo(w*0.74,h*0.475); c.stroke();
+  c.fillStyle='#5c6b7a'; c.fillRect(w*0.07,h*0.52,w*0.34,h*0.20);
+  c.fillStyle='#6b7b8c'; c.fillRect(w*0.07,h*0.50,w*0.34,h*0.06);
+  c.fillStyle='#7a5a3a'; c.fillRect(w*0.46,h*0.66,w*0.16,h*0.05);
+  baseImg=rctx.getImageData(0,0,w,h);
+  curImg=new ImageData(new Uint8ClampedArray(baseImg.data), w, h);
+  labCache=null;
+}
+
+/* rejimlar */
+let RMODE='pick', SEL=null, PAINT=null;
+function setRMode(m){
+  RMODE=m;
+  el('m-pick').classList.toggle('on', m==='pick');
+  el('m-paint').classList.toggle('on', m==='paint');
+  el('paintOpts').style.display = m==='paint' ? 'block' : 'none';
+}
+function pipetka(x,y){
+  const d=curImg.data, i=(y*rcv.width+x)*4;
+  const r=d[i],g=d[i+1],b=d[i+2];
+  const [L,A,B]=rgb2lab(r,g,b);
+  el('picked').style.background=chex(r,g,b);
+  el('pickedTxt').innerHTML=`${t('pick_done')}: <b>${chex(r,g,b)}</b> — ${t('pick_near')}`;
+  korsat(nearest(L,A,B,5));
+}
+function rangQidir(){
+  const q=el('cq').value.trim().toLowerCase();
+  if(!q){ el('matches').innerHTML=''; return; }
+  const res=[];
+  for(const p of PAL){
+    if(p.c.toLowerCase().includes(q) || palNomi(p).toLowerCase().includes(q)){
+      res.push({p,d:null});
+      if(res.length>=8) break;
+    }
+  }
+  korsat(res);
+}
+function korsat(list){
+  el('matches').innerHTML = list.map(it=>{
+    const p=it.p, hx=chex(p.r,p.g,p.b);
+    const de = it.d==null ? '' : `<span class="de ${it.d<2?'good':''}">ΔE ${it.d.toFixed(1)}</span>`;
+    return `<div class="crow" onclick="tanla(${PAL.indexOf(p)})">
+      <div class="csw" style="background:${hx}"></div>
+      <div class="cinfo"><b>${esc(palNomi(p))}</b><div class="ccode">${p.c} · ${hx}</div></div>
+      ${de}</div>`;
+  }).join('');
+}
+function tanla(i){
+  SEL=PAL[i];
+  el('picked').style.background=chex(SEL.r,SEL.g,SEL.b);
+  el('pickedTxt').innerHTML=`${t('sel_done')}: <b>${esc(palNomi(SEL))}</b> · <code>${SEL.c}</code> — ${t('sel_next')}`;
+  setRMode('paint'); hisobla();
+  toast(t('sel_done')+': '+SEL.c);
+}
+
+/* devorni bo'yash */
+function boya(sx,sy){
+  if(!SEL){ toast(t('wall_need')); return; }
+  const t0=performance.now();
+  const W=rcv.width, H=rcv.height, N=W*H;
+  const lab=ensureLab();
+  const tol=+el('tol').value;
+  const si=sy*W+sx;
+  const sL=lab[si*3], sA=lab[si*3+1], sB=lab[si*3+2];
+  const mask=new Float32Array(N), seen=new Uint8Array(N), stack=new Int32Array(N);
+  let sp=0; stack[sp++]=si; seen[si]=1;
+  while(sp>0){
+    const i=stack[--sp];
+    const dL=lab[i*3]-sL, dA=lab[i*3+1]-sA, dB=lab[i*3+2]-sB;
+    if(Math.sqrt(dL*dL+dA*dA+dB*dB) > tol) continue;
+    mask[i]=1;
+    const x=i%W, y=(i/W)|0;
+    if(x>0   && !seen[i-1]){ seen[i-1]=1; stack[sp++]=i-1; }
+    if(x<W-1 && !seen[i+1]){ seen[i+1]=1; stack[sp++]=i+1; }
+    if(y>0   && !seen[i-W]){ seen[i-W]=1; stack[sp++]=i-W; }
+    if(y<H-1 && !seen[i+W]){ seen[i+W]=1; stack[sp++]=i+W; }
+  }
+  let cnt=0, sumL=0;
+  for(let i=0;i<N;i++) if(mask[i]){ cnt++; sumL+=lab[i*3]; }
+  if(cnt<40){ toast(t('wall_small')); return; }
+  blurMask(mask,W,H); blurMask(mask,W,H);
+  const meanL=sumL/cnt, src=baseImg.data, out=curImg.data;
+  const tL=SEL.L, tA=SEL.la, tB=SEL.lb;
+  for(let i=0;i<N;i++){
+    const m=mask[i];
+    if(m<=0.004) continue;
+    let nL=tL+(lab[i*3]-meanL);          // asl soya/yorug'likni saqlaymiz
+    nL=Math.max(0,Math.min(100,nL));
+    const [r,g,b]=lab2rgb(nL,tA,tB);
+    const j=i*4;
+    out[j]  = src[j]  *(1-m) + r*m;
+    out[j+1]= src[j+1]*(1-m) + g*m;
+    out[j+2]= src[j+2]*(1-m) + b*m;
+  }
+  redraw();
+  toast(`${t('wall_done')} — ${(cnt/N*100).toFixed(0)}% · ${Math.round(performance.now()-t0)} ms`);
+}
+function blurMask(m,W,H){
+  const tmp=new Float32Array(m.length);
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    const i=y*W+x; let s=m[i], c=1;
+    if(x>0){s+=m[i-1];c++;} if(x<W-1){s+=m[i+1];c++;}
+    if(y>0){s+=m[i-W];c++;} if(y<H-1){s+=m[i+W];c++;}
+    tmp[i]=s/c;
+  }
+  m.set(tmp);
+}
+
+/* bo'yoq hisobi */
+const COVER=[10,11,8,5];
+function hisobla(){
+  const L=+el('rl').value||0, W=+el('rw').value||0, H=+el('rh').value||0;
+  const op=+el('rd').value||0;
+  const pi=+el('prod').value||0, coats=(+el('coats').value||1);
+  const cover=COVER[pi]||10;
+  let area=Math.max(0, 2*(L+W)*H - op*1.8);
+  const liters=area*coats/cover;
+  const cans=Math.ceil(liters/9);
+  el('calcRes').innerHTML=`
+    <div class="big">${liters.toFixed(1)} L</div>
+    <div class="sm">
+      ${t('area')}: <b>${area.toFixed(1)} m²</b> · ${coats} ${t('layer')} · ${t('usage')} ~${cover} m²/L<br>
+      ~<b>${cans}</b> ${t('cans')}
+      ${SEL ? `<br>${t('sel_done')}: <b>${esc(palNomi(SEL))}</b> · <b>${SEL.c}</b>` : `<br>${t('no_color')}`}
+    </div>`;
+  return {area, liters, cans, cover, coats, pi};
+}
+function paintToCart(){
+  if(!SEL){ toast(t('paint_need')); return; }
+  const h=hisobla();
+  PAINT={
+    code:SEL.c, name:palNomi(SEL), hex:chex(SEL.r,SEL.g,SEL.b),
+    liters:+h.liters.toFixed(1), area:+h.area.toFixed(1), coats:h.coats,
+    product:(T[LANG].prods||T.uz.prods)[h.pi], cans:h.cans,
+  };
+  toast(t('paint_added'));
+  updateBadge(); nav('cart');
+}
+function paintOchir(){ PAINT=null; updateBadge(); renderCart(); }
+
+/* rang bo'limini birinchi ochilganda tayyorlash */
+let rangInit=false;
+function renderRang(){
+  if(!rangInit){
+    rcv=el('cv'); rctx=rcv.getContext('2d',{willReadFrequently:true});
+    rcv.addEventListener('click', e=>{
+      const rect=rcv.getBoundingClientRect();
+      const x=Math.floor((e.clientX-rect.left)*rcv.width/rect.width);
+      const y=Math.floor((e.clientY-rect.top)*rcv.height/rect.height);
+      if(x<0||y<0||x>=rcv.width||y>=rcv.height) return;
+      if(RMODE==='pick') pipetka(x,y); else boya(x,y);
+    });
+    el('rfile').addEventListener('change', e=>{
+      const f=e.target.files[0]; if(!f) return;
+      const img=new Image();
+      img.onload=()=>{ setCanvasFromSource(img,img.width,img.height); redraw(); toast(t('img_loaded')); };
+      img.src=URL.createObjectURL(f);
+    });
+    buildPalette();
+    sampleRoom();
+    rangInit=true;
+  }
+  applyRangLang();
+  redraw();
+  hisobla();
+}
+function applyRangLang(){
+  el('rangH').textContent=t('rang_h');
+  el('rbT').textContent=t('rb_t');
+  el('rbD').textContent=t('rb_d');
+  el('rangNote').innerHTML=t('rang_note');
+  el('stCountL').textContent=t('st_count');
+  el('stMsL').textContent=t('st_ms');
+  el('stAccL').textContent=t('st_acc');
+  el('btnUp').textContent=t('btn_up');
+  el('btnSample').textContent=t('btn_sample');
+  el('btnReset').textContent=t('btn_reset');
+  el('mPick').textContent=t('m_pick'); el('mPickS').textContent=t('m_pick_s');
+  el('mPaint').textContent=t('m_paint'); el('mPaintS').textContent=t('m_paint_s');
+  el('tolL').textContent=t('tol_l');
+  el('tolHint').innerHTML=t('tol_hint');
+  el('selH').textContent=t('sel_h');
+  el('searchL').textContent=t('search_l');
+  el('cq').placeholder=t('search_ph');
+  if(!SEL) el('pickedTxt').innerHTML=t('pick_hint');
+  el('calcH').textContent=t('calc_h');
+  el('lblL').textContent=t('lbl_l'); el('lblW').textContent=t('lbl_w');
+  el('lblH').textContent=t('lbl_h'); el('lblD').textContent=t('lbl_d');
+  el('lblProd').textContent=t('lbl_prod'); el('lblCoats').textContent=t('lbl_coats');
+  el('addPaintBtn').textContent=t('add_paint');
+  el('calcNote').textContent=t('calc_note');
+  const ps=el('prod'), pv=ps.value||0;
+  ps.innerHTML=(T[LANG].prods||T.uz.prods).map((s,i)=>`<option value="${i}">${s}</option>`).join('');
+  ps.value=pv;
+  const cs=el('coats'), cvv=cs.value||2;
+  cs.innerHTML=(T[LANG].coats||T.uz.coats).map((s,i)=>`<option value="${i+1}">${s}</option>`).join('');
+  cs.value=cvv;
+  if(rangInit) el('stCount').textContent=PAL.length.toLocaleString('uz-UZ');
+}
+
 /* navigatsiya */
 function nav(v){
   curView=v;
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-  const ok = ['shop','cart','branches','profile','info'];
+  const ok = ['shop','cart','branches','profile','info','rang'];
   el('v-'+(ok.includes(v)?v:'shop')).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.v===v));
   window.scrollTo(0,0);
   if(v==='cart') renderCart();
   if(v==='profile') renderProfile();
+  if(v==='rang') renderRang();
 }
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.v)));
 
