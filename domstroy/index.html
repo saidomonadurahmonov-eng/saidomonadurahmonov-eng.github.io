@@ -171,9 +171,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .famchip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 .famchip .fdot{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.15);flex:0 0 auto}
 .famname{font-size:12.5px;color:var(--hint);margin:2px 0 6px}
-.fangrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:5px;margin-top:2px}
+.fangrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:5px;margin-top:2px;touch-action:pan-y}
 .fansw{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);cursor:pointer}
 .fansw.sel{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.fanpager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px}
+.fanpager button{width:40px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:19px;font-weight:700;cursor:pointer;color:var(--navy)}
+.fanpager button:disabled{opacity:.35;cursor:default}
+.fanpager span{font-size:13px;color:var(--hint);font-weight:700;min-width:66px;text-align:center}
+.fanhint{text-align:center;font-size:11px;color:var(--hint);margin-top:5px}
 .selcode{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:13px}
 .selcode code{background:var(--card2);padding:3px 9px;border-radius:8px;font-weight:700;font-size:13px;color:var(--accent-dark)}
 </style>
@@ -283,6 +288,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="fams" id="fams"></div>
     <div class="famname" id="famName"></div>
     <div class="fangrid" id="fangrid"></div>
+    <div class="fanpager">
+      <button id="fanPrev" onclick="famFlip(-1)">‹</button>
+      <span id="fanPageInfo">1 / 1</span>
+      <button id="fanNext" onclick="famFlip(1)">›</button>
+    </div>
+    <div class="fanhint" id="fanHint"></div>
   </div>
 
   <div class="panel">
@@ -1144,7 +1155,16 @@ function buildPalette(){
 const palNomi = p => oilaTr(p.fam)+' '+p.Lr;
 
 /* Rang oilalari — ko'z bilan tanlash (kod yozish shart emas) */
-let FAM={}, FAM_ORDER=[], activeFam=null;
+let FAM={}, FAM_ORDER=[], activeFam=null, famPage=0, famSorted={}, justSwiped=false;
+const FAN_PAGE=168;   // har sahifada tus (≈21 qator × 8 ustun)
+
+function sortedFam(f){
+  if(!famSorted[f]){
+    // to'q → och, keyin xromatiklik bo'yicha — tabiiy gradient
+    famSorted[f]=[...(FAM[f]||[])].sort((a,b)=> (a.L-b.L) || (Math.hypot(a.la,a.lb)-Math.hypot(b.la,b.lb)));
+  }
+  return famSorted[f];
+}
 function renderFams(){
   if(!activeFam) activeFam = FAM['Neytral'] ? 'Neytral' : FAM_ORDER[0];
   el('fams').innerHTML = FAM_ORDER.map((f,idx)=>{
@@ -1155,21 +1175,28 @@ function renderFams(){
   el('famName').textContent = oilaTr(activeFam)+' — '+ (FAM[activeFam]?FAM[activeFam].length.toLocaleString('uz-UZ'):0) +' '+ (LANG==='ru'?'оттенков':'tus');
   renderFan();
 }
-function pickFam(idx){ activeFam=FAM_ORDER[idx]; renderFams(); }
+function pickFam(idx){ activeFam=FAM_ORDER[idx]; famPage=0; renderFams(); }
 function renderFan(){
-  let list=[...(FAM[activeFam]||[])];
-  // to'q → och, keyin xromatiklik bo'yicha — tabiiy gradient
-  list.sort((a,b)=> (a.L-b.L) || (Math.hypot(a.la,a.lb)-Math.hypot(b.la,b.lb)));
-  const cap=168;
-  if(list.length>cap){
-    const step=list.length/cap, s=[];
-    for(let i=0;i<cap;i++) s.push(list[Math.floor(i*step)]);
-    list=s;
-  }
-  el('fangrid').innerHTML = list.map(p=>
-    `<div class="fansw ${SEL&&SEL.i===p.i?'sel':''}" style="background:${chex(p.r,p.g,p.b)}" onclick="tanla(${p.i})" title="${p.c}"></div>`
+  const list=sortedFam(activeFam);
+  const pages=Math.max(1, Math.ceil(list.length/FAN_PAGE));
+  famPage=Math.max(0, Math.min(famPage, pages-1));
+  const slice=list.slice(famPage*FAN_PAGE, (famPage+1)*FAN_PAGE);
+  el('fangrid').innerHTML = slice.map(p=>
+    `<div class="fansw ${SEL&&SEL.i===p.i?'sel':''}" style="background:${chex(p.r,p.g,p.b)}" onclick="fanPick(${p.i})" title="${p.c}"></div>`
   ).join('');
+  el('fanPageInfo').textContent = (famPage+1)+' / '+pages;
+  el('fanPrev').disabled = famPage<=0;
+  el('fanNext').disabled = famPage>=pages-1;
+  el('fanHint').textContent = LANG==='ru'
+    ? '‹ › или свайп — все оттенки семьи' : '‹ › yoki suring — oiladagi barcha tuslar';
 }
+function famFlip(d){
+  const pages=Math.ceil(sortedFam(activeFam).length/FAN_PAGE);
+  const np=Math.max(0, Math.min(famPage+d, pages-1));
+  if(np===famPage) return;
+  famPage=np; renderFan();
+}
+function fanPick(i){ if(justSwiped) return; tanla(i); }   // swipe paytida tasodifan tanlamaslik
 function nearest(L,a,b,k=5){
   const t0=performance.now();
   const res=[];
@@ -1273,6 +1300,8 @@ function tanla(i){
   el('picked').style.background=chex(SEL.r,SEL.g,SEL.b);
   el('pickedTxt').innerHTML=`${t('sel_done')}: <b>${esc(palNomi(SEL))}</b> <code>${SEL.c}</code> · ${chex(SEL.r,SEL.g,SEL.b)} — ${t('sel_next')}`;
   activeFam=SEL.fam;
+  const sidx=sortedFam(SEL.fam).indexOf(SEL);
+  famPage = sidx>=0 ? Math.floor(sidx/FAN_PAGE) : 0;   // tanlangan tus turgan sahifa
   renderFams();                    // tanlangan tusni oilada belgilaydi
   setRMode('paint'); hisobla();
   toast(t('sel_done')+': '+SEL.c);
@@ -1427,6 +1456,20 @@ function renderRang(){
     rcv.addEventListener('pointerup', endStroke);
     rcv.addEventListener('pointercancel', endStroke);
     rcv.addEventListener('pointerleave', endStroke);
+    // Rang panjarasi — gorizontal swipe bilan sahifalash
+    const fg=el('fangrid'); let sx=null, sy=null;
+    fg.addEventListener('pointerdown', e=>{ sx=e.clientX; sy=e.clientY; justSwiped=false; });
+    const swEnd=e=>{
+      if(sx==null) return;
+      const dx=e.clientX-sx, dy=e.clientY-sy;
+      if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)){
+        justSwiped=true; famFlip(dx<0?1:-1);
+        setTimeout(()=>{ justSwiped=false; }, 350);
+      }
+      sx=null; sy=null;
+    };
+    fg.addEventListener('pointerup', swEnd);
+    fg.addEventListener('pointercancel', ()=>{ sx=null; sy=null; });
     el('rfile').addEventListener('change', e=>{
       const f=e.target.files[0]; if(!f) return;
       const img=new Image();
