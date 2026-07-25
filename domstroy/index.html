@@ -447,13 +447,13 @@ const T = {
     calc_h:"Bo'yoq hisobi",
     lbl_l:"Uzunligi (m)", lbl_w:"Eni (m)", lbl_h:"Balandligi (m)", lbl_d:"Eshik/deraza",
     lbl_prod:"Mahsulot turi", lbl_coats:"Qatlam soni",
-    prods:["Mat emulsiya — ~10 m²/L","Yarim mat emulsiya — ~11 m²/L","Yuviladigan emulsiya — ~8 m²/L","Dekorativ qoplama — ~5 m²/L"],
+    prods:["Oddiy emulsiya (vedro) — ~5 m²/kg","Mat emulsiya — ~10 m²/L","Yuviladigan emulsiya — ~8 m²/L","Dekorativ qoplama — ~5 m²/L"],
     coats:["1 qatlam","2 qatlam","3 qatlam"],
     area:"Devor yuzasi", layer:"qatlam", usage:"sarf",
     cans:"ta 9 L banka (yoki mos hajmlar)",
     no_color:"Rang tanlanmagan",
     add_paint:"🛒 Buyurtmaga qo'shish",
-    calc_note:"Sarf me'yorlari — namuna qiymatlar; haqiqiy raqamlar mahsulot texnik ma'lumotnomasidan olinadi. Kolerovka do'kondagi tinting mashinasida tayyorlanadi — biz rang kodi, baza va litrni beramiz.",
+    calc_note:"Sarf me'yorlari — namuna qiymatlar; haqiqiy raqamlar mahsulot texnik ma'lumotnomasidan olinadi. Pigment retsepti (nima qancha qo'shilishi) tinting mashina bazasidan olinadi — biz rang kodi, baza va miqdorni uzatamiz.",
     paint_added:"✅ Bo'yoq buyurtmaga qo'shildi",
     paint_need:"Avval rang tanlang",
     paint_title:"🎨 Bo'yoq (kolerovka)", paint_price:"narx do'konda aniqlanadi",
@@ -540,13 +540,13 @@ const T = {
     calc_h:"Расчёт краски",
     lbl_l:"Длина (м)", lbl_w:"Ширина (м)", lbl_h:"Высота (м)", lbl_d:"Двери/окна",
     lbl_prod:"Тип продукта", lbl_coats:"Количество слоёв",
-    prods:["Матовая эмульсия — ~10 м²/л","Полуматовая — ~11 м²/л","Моющаяся — ~8 м²/л","Декоративное покрытие — ~5 м²/л"],
+    prods:["Обычная эмульсия (ведро) — ~5 м²/кг","Матовая эмульсия — ~10 м²/л","Моющаяся — ~8 м²/л","Декоративное покрытие — ~5 м²/л"],
     coats:["1 слой","2 слоя","3 слоя"],
     area:"Площадь стен", layer:"слоя", usage:"расход",
     cans:"банки по 9 л (или подходящие объёмы)",
     no_color:"Цвет не выбран",
     add_paint:"🛒 Добавить в заказ",
-    calc_note:"Нормы расхода — примерные; точные значения берутся из техдокументации продукта. Колеровка выполняется на тонировочной машине в магазине — мы передаём код цвета, базу и литраж.",
+    calc_note:"Нормы расхода — примерные; точные значения берутся из техдокументации продукта. Рецепт пигментов (что и сколько) берётся из базы тонировочной машины — мы передаём код цвета, базу и количество.",
     paint_added:"✅ Краска добавлена в заказ",
     paint_need:"Сначала выберите цвет",
     paint_title:"🎨 Краска (колеровка)", paint_price:"цена определяется в магазине",
@@ -832,7 +832,7 @@ function renderCart(){
       <div style="flex:1;font-size:13px;line-height:1.4">
         <b>${t('paint_title')}</b><br>
         ${esc(PAINT.name)} · <code>${PAINT.code}</code><br>
-        <span style="color:var(--hint)">${PAINT.liters} L · ${esc(PAINT.product)} · ${PAINT.area} m²</span><br>
+        <span style="color:var(--hint)">${PAINT.amount} ${PAINT.unit} (${esc(PAINT.packs)}) · ${PAINT.area} m²</span><br>
         <span style="color:var(--accent-dark);font-weight:700">${t('paint_price')}</span>
       </div>
       <button class="vchip" style="margin:0" onclick="paintOchir()">✖️</button>
@@ -1602,32 +1602,55 @@ function cleanMask(m){
   }
 }
 
-/* bo'yoq hisobi */
-const COVER=[10,11,8,5];
+/* bo'yoq hisobi — mahsulot turi birlik (kg/L) va idish o'lchamlarini belgilaydi */
+const PROD_SPEC=[
+  {cover:5,  unit:'kg', packs:[30,25,20]},   // oddiy emulsiya — vedrolarda
+  {cover:10, unit:'L',  packs:[9,2.7,0.9]},  // mat emulsiya (Tikkurila uslubi)
+  {cover:8,  unit:'L',  packs:[9,2.7,0.9]},  // yuviladigan
+  {cover:5,  unit:'L',  packs:[2.7,0.9]},    // dekorativ qoplama
+];
+/* Kerakli miqdorni idishlarga taqsimlash: avval katta idishlar,
+   qoldiqqa — uni yopadigan eng kichik idish */
+function packPlan(need, packs){
+  const out=new Map(); let rem=need;
+  const big=packs[0];
+  const nBig=Math.floor(rem/big+1e-9);
+  if(nBig>0){ out.set(big,nBig); rem-=nBig*big; }
+  if(rem>1e-6){
+    let best=packs[0];
+    for(const p of packs){ if(p>=rem-1e-6) best=p; }
+    out.set(best,(out.get(best)||0)+1);
+  }
+  return out;
+}
+const packStr=(plan,unit)=>[...plan.entries()].map(([p,n])=>`${p} ${unit} × ${n}`).join(' + ');
+
 function hisobla(){
   const L=+el('rl').value||0, W=+el('rw').value||0, H=+el('rh').value||0;
   const op=+el('rd').value||0;
   const pi=+el('prod').value||0, coats=(+el('coats').value||1);
-  const cover=COVER[pi]||10;
+  const spec=PROD_SPEC[pi]||PROD_SPEC[0];
   let area=Math.max(0, 2*(L+W)*H - op*1.8);
-  const liters=area*coats/cover;
-  const cans=Math.ceil(liters/9);
+  const amount=area*coats/spec.cover;
+  const plan=packPlan(amount, spec.packs);
+  const packs=packStr(plan, spec.unit);
   el('calcRes').innerHTML=`
-    <div class="big">${liters.toFixed(1)} L</div>
+    <div class="big">${amount.toFixed(1)} ${spec.unit}</div>
     <div class="sm">
-      ${t('area')}: <b>${area.toFixed(1)} m²</b> · ${coats} ${t('layer')} · ${t('usage')} ~${cover} m²/L<br>
-      ~<b>${cans}</b> ${t('cans')}
+      ${t('area')}: <b>${area.toFixed(1)} m²</b> · ${coats} ${t('layer')} · ${t('usage')} ~${spec.cover} m²/${spec.unit}<br>
+      🪣 <b>${packs}</b>
       ${SEL ? `<br>${t('sel_done')}: <b>${esc(palNomi(SEL))}</b> · <b>${SEL.c}</b>` : `<br>${t('no_color')}`}
     </div>`;
-  return {area, liters, cans, cover, coats, pi};
+  return {area, amount, unit:spec.unit, packs, cover:spec.cover, coats, pi};
 }
 function paintToCart(){
   if(!SEL){ toast(t('paint_need')); return; }
   const h=hisobla();
   PAINT={
     code:SEL.c, name:palNomi(SEL), hex:chex(SEL.r,SEL.g,SEL.b),
-    liters:+h.liters.toFixed(1), area:+h.area.toFixed(1), coats:h.coats,
-    product:(T[LANG].prods||T.uz.prods)[h.pi], cans:h.cans,
+    amount:+h.amount.toFixed(1), unit:h.unit, packs:h.packs,
+    area:+h.area.toFixed(1), coats:h.coats,
+    product:(T[LANG].prods||T.uz.prods)[h.pi],
   };
   toast(t('paint_added'));
   updateBadge(); nav('cart');
