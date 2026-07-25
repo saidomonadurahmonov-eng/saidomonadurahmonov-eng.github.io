@@ -255,7 +255,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <button class="vchip" onclick="sampleRoom();redraw()" id="btnSample">🏠 Namuna xona</button>
       <button class="vchip" onclick="resetImg()" id="btnReset">↩︎ Asliga</button>
     </div>
-    <input type="file" id="rfile" accept="image/*" style="display:none">
+    <input type="file" id="rfile" accept="image/*,.heic,.heif" style="display:none">
     <div class="modes">
       <div class="mode on" id="m-pick" onclick="setRMode('pick')">💧 <span id="mPick">Pipetka</span><small id="mPickS">rasmdan rang olish</small></div>
       <div class="mode" id="m-paint" onclick="setRMode('paint')">🖌 <span id="mPaint">Bo'yash</span><small id="mPaintS">devorni bosing</small></div>
@@ -460,7 +460,10 @@ const T = {
     paint_del:"o'chirish",
     wall_small:"Soha juda kichik — aniqlikni oshiring",
     wall_done:"Bo'yaldi", wall_need:"Avval rang tanlang",
-    img_loaded:"Rasm yuklandi", img_reset:"Asliga qaytarildi", room_ready:"Namuna xona tayyor",
+    img_loaded:"✅ Rasm yuklandi", img_reset:"Asliga qaytarildi", room_ready:"Namuna xona tayyor",
+    img_wait:"⏳ Rasm ochilmoqda…",
+    heic_conv:"📱 iPhone (HEIC) rasmi — o'girilmoqda…",
+    img_err:"Rasm o'qilmadi — JPG yoki PNG yuborib ko'ring",
     promo_t:"🚗 DomStroy'dan xarid qiling — 4 ta Damasdan birini yutib oling!",
     promo_d:"Har 3 mln so'mlik xaridga kupon. Batafsil: ☎️ 73 541-22-22",
     about:"Дом Строй — 2009-yildan beri Farg'ona vodiysida qurilish mollari savdosi. 6 ta do'kon, showroom va dizayn-studiya.",
@@ -553,7 +556,10 @@ const T = {
     paint_del:"удалить",
     wall_small:"Область слишком мала — увеличьте точность",
     wall_done:"Покрашено", wall_need:"Сначала выберите цвет",
-    img_loaded:"Фото загружено", img_reset:"Сброшено", room_ready:"Пример комнаты готов",
+    img_loaded:"✅ Фото загружено", img_reset:"Сброшено", room_ready:"Пример комнаты готов",
+    img_wait:"⏳ Открываем фото…",
+    heic_conv:"📱 Фото iPhone (HEIC) — конвертируем…",
+    img_err:"Не удалось открыть фото — попробуйте JPG или PNG",
     promo_t:"🚗 Покупайте в DomStroy — выиграйте один из 4 Damas!",
     promo_d:"Купон за каждую покупку на 3 млн сум. Подробнее: ☎️ 73 541-22-22",
     about:"Дом Строй — продажа стройматериалов в Ферганской долине с 2009 года. 6 магазинов, шоурум и дизайн-студия.",
@@ -1289,6 +1295,39 @@ function resetImg(){
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), rcv.width, rcv.height);
   redraw(); toast(t('img_reset'));
 }
+
+/* Rasm yuklash — JPG/PNG/WebP/HEIC. 3 pog'ona:
+   1) createImageBitmap (tez, EXIF to'g'ri), 2) <img> element,
+   3) HEIC bo'lsa — lokal heic2any dekoder (iPhone rasmlari uchun).
+   Har qanday holatda foydalanuvchi javob oladi — jim qolib ketmaydi. */
+async function loadUserImage(f){
+  toast(t('img_wait'));
+  try{
+    const bmp = await createImageBitmap(f);
+    setCanvasFromSource(bmp, bmp.width, bmp.height); redraw();
+    toast(t('img_loaded')); return;
+  }catch(e){}
+  const ok = await new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{ setCanvasFromSource(img, img.naturalWidth||img.width, img.naturalHeight||img.height); redraw(); res(true); };
+    img.onerror=()=>res(false);
+    img.src=URL.createObjectURL(f);
+  });
+  if(ok){ toast(t('img_loaded')); return; }
+  // HEIC/HEIF (iPhone) — brauzer o'qiy olmadi, o'zimiz o'giramiz
+  try{
+    toast(t('heic_conv'));
+    if(!window.heic2any) await loadScript('vendor/heic2any.min.js');
+    let blob = await heic2any({blob:f, toType:'image/jpeg', quality:0.92});
+    if(Array.isArray(blob)) blob=blob[0];
+    const bmp2 = await createImageBitmap(blob);
+    setCanvasFromSource(bmp2, bmp2.width, bmp2.height); redraw();
+    toast(t('img_loaded'));
+  }catch(e){
+    console.error('rasm o\'qilmadi:', e);
+    toast(t('img_err'));
+  }
+}
 function sampleRoom(){
   const w=880,h=620;
   rcv.width=w; rcv.height=h;
@@ -1700,9 +1739,8 @@ function renderRang(){
     fg.addEventListener('pointercancel', ()=>{ sx=null; sy=null; });
     el('rfile').addEventListener('change', e=>{
       const f=e.target.files[0]; if(!f) return;
-      const img=new Image();
-      img.onload=()=>{ setCanvasFromSource(img,img.width,img.height); redraw(); toast(t('img_loaded')); };
-      img.src=URL.createObjectURL(f);
+      loadUserImage(f);
+      e.target.value='';   // xuddi shu faylni qayta tanlash ham ishlasin
     });
     sampleRoom();
     rangInit=true;
