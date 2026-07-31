@@ -146,7 +146,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .statrow b{display:block;font-size:14px;color:var(--accent-dark)}
 .statrow span{font-size:9.5px;color:var(--hint)}
 .canvaswrap{position:relative;background:#000;border-radius:14px;overflow:hidden;line-height:0}
-.canvaswrap canvas{width:100%;height:auto;display:block;touch-action:none}
+.canvaswrap canvas{width:100%;height:auto;display:block;touch-action:pan-y}
+.sdot{width:12px;height:12px;border-radius:50%;display:none;margin-left:6px;vertical-align:-1px;border:1px solid rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(0,0,0,.2)}
 .modes{display:flex;gap:8px;margin-top:10px}
 .mode{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:12px;padding:9px 6px;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--card)}
 .mode.on{background:var(--navy);color:#fff;border-color:var(--navy)}
@@ -263,12 +264,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div id="paintOpts" style="display:none">
       <button class="bigbtn" id="aiBtn" onclick="aiAuto()" style="margin-top:10px">🤖 Avto AI — devorni o'zi topadi</button>
       <div id="aiStatus" style="display:none;font-size:12.5px;color:var(--accent-dark);font-weight:700;margin-top:8px;text-align:center"></div>
-      <div id="aiRow" style="display:none;margin-top:8px">
+      <div id="aiRow" style="margin-top:8px">
         <div class="flabel" id="aiPickL">Qaysi yuzani bo'yaymiz?</div>
         <div>
-          <span class="vchip sel" id="sf-wall" onclick="applySurface('wall')">🧱 Devor</span>
-          <span class="vchip" id="sf-ceiling" onclick="applySurface('ceiling')">⬜ Shift</span>
-          <span class="vchip" id="sf-floor" onclick="applySurface('floor')">🟫 Pol</span>
+          <span class="vchip sel" id="sf-wall" onclick="applySurface('wall')"><span id="sfl-wall">🧱 Devor</span><i class="sdot" id="sd-wall"></i></span>
+          <span class="vchip" id="sf-ceiling" onclick="applySurface('ceiling')"><span id="sfl-ceiling">⬜ Shift</span><i class="sdot" id="sd-ceiling"></i></span>
+          <span class="vchip" id="sf-floor" onclick="applySurface('floor')"><span id="sfl-floor">🟫 Pol</span><i class="sdot" id="sd-floor"></i></span>
         </div>
       </div>
       <div class="modes" style="margin-top:8px">
@@ -284,6 +285,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="flabel"><span id="brushL">Cho'tka o'lchami</span>: <span id="brushV">26</span></div>
         <input type="range" style="width:100%" id="brushSize" min="8" max="70" value="26" oninput="brush=+this.value;document.getElementById('brushV').textContent=this.value">
       </div>
+      <button class="vchip" id="undoBtn" onclick="doUndoLayer()" style="margin-top:8px">↶ <span id="undoL">Shu yuzani ortga</span></button>
+      <button class="vchip" id="undoAllBtn" onclick="doUndo()" style="margin-top:8px">⟲ <span id="undoAllL">Oxirgi amal</span></button>
       <button class="vchip" id="clearBtn" onclick="clearMask()" style="margin-top:8px">🗑 <span id="clearL">Tozalash</span></button>
       <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px" id="tolHint"></div>
     </div>
@@ -293,6 +296,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <h3 id="selH">Tanlangan rang</h3>
     <div class="swatchbig" id="picked" style="background:#cfd4da"></div>
     <div style="font-size:11.5px;color:var(--hint);line-height:1.5;margin-top:8px" id="pickedTxt"></div>
+    <div id="layerList"></div>
     <div id="matches"></div>
     <div class="flabel" id="famL">Rang oilasi</div>
     <div class="fams" id="fams"></div>
@@ -432,13 +436,17 @@ const T = {
     pt_magic:"Sehrli", pt_magic_s:"1 bosish", pt_add:"Qo'shish", pt_add_s:"surtib qo'shish",
     pt_erase:"O'chirish", pt_erase_s:"ortiqchani ol", brush_l:"Cho'tka o'lchami",
     sel_clear:"Tozalash", sel_cleared:"Tanlov tozalandi",
-    ai_btn:"🤖 Avto AI — devorni o'zi topadi",
+    undo_l:"Shu yuzani ortga", undo_done:"Oxirgi amal qaytarildi", undo_empty:"Qaytaradigan narsa yo'q",
+    undo_all_l:"Oxirgi amal", undo_layer_done:"Shu yuza bir qadam ortga qaytdi", undo_layer_empty:"Bu yuzada qaytaradigan narsa yo'q",
+    my_colors:"Tanlangan ranglaringiz — yuza bo'yicha:",
+    mask_ready:"✅ Yuza topildi — endi rang tanlang",
+    ai_btn:"🤖 Avto AI — yuzalarni o'zi topadi",
     ai_lib:"⏳ AI yadrosi yuklanmoqda…",
-    ai_model:"⏳ AI modeli yuklanmoqda (bir martalik, ~5 MB)…",
+    ai_model:"⏳ AI modeli yuklanmoqda (bir martalik, ~16 MB)…",
     ai_run:"🤖 AI rasmni tahlil qilyapti…",
     ai_done:"AI yuzalarni topdi", ai_err:"AI ishlamadi — Sehrli yoki cho'tkadan foydalaning",
     ai_none:"Bu yuza rasmda topilmadi",
-    ai_pick:"Qaysi yuzani bo'yaymiz?",
+    ai_pick:"Qaysi yuzani bo'yaymiz? Har yuzaga ALOHIDA rang berish mumkin",
     sf_wall:"🧱 Devor", sf_ceiling:"⬜ Shift", sf_floor:"🟫 Pol",
     sel_h:"Tanlangan rang", fam_l:"Rang oilasini tanlang",
     pick_hint:"Rang oilasini bosing va tusni tanlang — yoki rasmdan pipetka bilan oling.",
@@ -528,13 +536,17 @@ const T = {
     pt_magic:"Волшебное", pt_magic_s:"1 касание", pt_add:"Добавить", pt_add_s:"провести пальцем",
     pt_erase:"Стереть", pt_erase_s:"убрать лишнее", brush_l:"Размер кисти",
     sel_clear:"Очистить", sel_cleared:"Выделение очищено",
-    ai_btn:"🤖 Авто ИИ — сам найдёт стену",
+    undo_l:"Эту поверхность назад", undo_done:"Последнее действие отменено", undo_empty:"Нечего отменять",
+    undo_all_l:"Последний шаг", undo_layer_done:"Поверхность возвращена на шаг назад", undo_layer_empty:"Для этой поверхности нечего отменять",
+    my_colors:"Ваши цвета — по поверхностям:",
+    mask_ready:"✅ Поверхность найдена — теперь выберите цвет",
+    ai_btn:"🤖 Авто ИИ — сам найдёт поверхности",
     ai_lib:"⏳ Загружается ядро ИИ…",
-    ai_model:"⏳ Загружается модель ИИ (однократно, ~5 МБ)…",
+    ai_model:"⏳ Загружается модель ИИ (однократно, ~16 МБ)…",
     ai_run:"🤖 ИИ анализирует фото…",
     ai_done:"ИИ нашёл поверхности", ai_err:"ИИ не сработал — используйте Волшебное или кисть",
     ai_none:"Эта поверхность не найдена на фото",
-    ai_pick:"Какую поверхность красим?",
+    ai_pick:"Какую поверхность красим? Каждой можно дать СВОЙ цвет",
     sf_wall:"🧱 Стена", sf_ceiling:"⬜ Потолок", sf_floor:"🟫 Пол",
     sel_h:"Выбранный цвет", fam_l:"Выберите цветовую семью",
     pick_hint:"Нажмите на семью и выберите оттенок — или возьмите цвет пипеткой с фото.",
@@ -832,12 +844,18 @@ function renderCart(){
       </div>
       <div style="font-size:13px;color:var(--hint);margin-top:8px;line-height:1.5">${payInfo}</div>`;
 
+  /* Kolerovka: bo'yalgan har yuza o'z rangi bilan alohida qatorda */
+  const sfList = (PAINT && PAINT.surfaces && PAINT.surfaces.length)
+    ? PAINT.surfaces.map(s=>`<div style="display:flex;align-items:center;gap:7px;margin-top:3px">
+        <span style="width:15px;height:15px;border-radius:4px;background:${s.hex};border:1px solid var(--line);flex:0 0 auto"></span>
+        <span>${esc(s.label)} — ${esc(s.name)} · <code>${s.code}</code></span></div>`).join('')
+    : (PAINT ? `${esc(PAINT.name)} · <code>${PAINT.code}</code>` : '');
   const paintHtml = PAINT ? `
     <div class="paintcart">
       <div class="pcsw" style="background:${PAINT.hex}"></div>
       <div style="flex:1;font-size:13px;line-height:1.4">
-        <b>${t('paint_title')}</b><br>
-        ${esc(PAINT.name)} · <code>${PAINT.code}</code><br>
+        <b>${t('paint_title')}</b>
+        ${sfList}
         <span style="color:var(--hint)">${PAINT.amount} ${PAINT.unit} (${esc(PAINT.packs)}) · ${PAINT.area} m²</span><br>
         <span style="color:var(--accent-dark);font-weight:700">${t('paint_price')}</span>
       </div>
@@ -1276,8 +1294,8 @@ function setCanvasFromSource(src,w,h){
   rctx.drawImage(src,0,0,sw,sh);
   baseImg=rctx.getImageData(0,0,sw,sh);
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), sw, sh);
-  labCache=null; wallMask=null;
-  segMap=null; const ar=el('aiRow'); if(ar) ar.style.display='none';
+  labCache=null; resetLayers();
+  segMap=null; segProb=null;
 }
 function ensureLab(){
   if(labCache) return labCache;
@@ -1291,7 +1309,7 @@ function ensureLab(){
 }
 function resetImg(){
   if(!baseImg) return;
-  if(wallMask) wallMask.fill(0);
+  resetLayers();
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), rcv.width, rcv.height);
   redraw(); toast(t('img_reset'));
 }
@@ -1328,7 +1346,14 @@ async function loadUserImage(f){
     toast(t('img_err'));
   }
 }
+/* Namuna: haqiqiy xona fotosi (AI haqiqiy suratlarda o'qitilgan); ochilmasa — chizma zaxira */
 function sampleRoom(){
+  const img=new Image();
+  img.onload=()=>{ setCanvasFromSource(img, img.naturalWidth, img.naturalHeight); redraw(); };
+  img.onerror=()=>{ drawSampleRoomFallback(); redraw(); };
+  img.src='sample.jpg';
+}
+function drawSampleRoomFallback(){
   const w=880,h=620;
   rcv.width=w; rcv.height=h;
   const c=rctx;
@@ -1355,8 +1380,8 @@ function sampleRoom(){
   c.fillStyle='#7a5a3a'; c.fillRect(w*0.46,h*0.66,w*0.16,h*0.05);
   baseImg=rctx.getImageData(0,0,w,h);
   curImg=new ImageData(new Uint8ClampedArray(baseImg.data), w, h);
-  labCache=null; wallMask=null;
-  segMap=null; const ar=el('aiRow'); if(ar) ar.style.display='none';
+  labCache=null; resetLayers();
+  segMap=null; segProb=null;
 }
 
 /* rejimlar */
@@ -1366,6 +1391,7 @@ function setRMode(m){
   el('m-pick').classList.toggle('on', m==='pick');
   el('m-paint').classList.toggle('on', m==='paint');
   el('paintOpts').style.display = m==='paint' ? 'block' : 'none';
+  updTouch();
 }
 function pipetka(x,y){
   const d=curImg.data, i=(y*rcv.width+x)*4;
@@ -1394,22 +1420,106 @@ function tanla(i){
   famPage = sidx>=0 ? Math.floor(sidx/FAN_PAGE) : 0;   // tanlangan tus turgan sahifa
   renderFams();                    // tanlangan tusni oilada belgilaydi
   setRMode('paint'); hisobla();
+  const _L=layerOf(activeKind);
+  if(_L.color!==SEL) pushUndo(activeKind);   // rang almashishi ham ortga qaytariladi
+  _L.color=SEL;                              // rang faol qatlamga — har yuzaga o'z rangi
+  updateDots();
+  renderPaint();
   toast(t('sel_done')+': '+SEL.c);
 }
 
-/* ── Devorni ajratish: sehrli tanlov + qo'lda cho'tka (istalgan rasm uchun) ── */
-let wallMask=null, ptool='magic', brush=26, stroking=false, lastP=null, rafPending=false;
-function ensureMask(){
+/* ── QATLAMLAR: devor/shift/pol har biri O'Z maskasi va O'Z rangi bilan — birga ko'rinadi ── */
+let LAYERS={}, activeKind='wall', ptool='magic', brush=26, stroking=false, lastP=null, rafPending=false;
+function layerOf(kind){
   const N=rcv.width*rcv.height;
-  if(!wallMask || wallMask.length!==N) wallMask=new Float32Array(N);
-  return wallMask;
+  let L=LAYERS[kind];
+  if(!L || L.mask.length!==N) L=LAYERS[kind]={mask:new Float32Array(N), color:null, feather:null, meanY:0, has:false};
+  return L;
 }
-function clearMask(){ ensureMask().fill(0); renderPaint(); toast(t('sel_cleared')); }
+function ensureMask(){ const L=layerOf(activeKind); L.feather=null; return L.mask; }
+function setActiveKind(k){
+  activeKind=k;
+  ['wall','ceiling','floor'].forEach(x=>{ const e=el('sf-'+x); if(e) e.classList.toggle('sel', x===k); });
+  if(typeof updUndoBtn==='function') updUndoBtn();
+}
+function updateDots(){
+  ['wall','ceiling','floor'].forEach(x=>{
+    const d=el('sd-'+x); if(!d) return;
+    const L=LAYERS[x];
+    if(L && L.color){ d.style.background=chex(L.color.r,L.color.g,L.color.b); d.style.display='inline-block'; }
+    else d.style.display='none';
+  });
+  renderLayerList();
+}
+/* Tanlangan ranglar ro'yxati — kolerovka kodlari doim ko'z oldida */
+function renderLayerList(){
+  const box=el('layerList'); if(!box) return;
+  const rows=[];
+  for(const kind of ['wall','ceiling','floor']){
+    const L=LAYERS[kind];
+    if(L && L.color && L.has){
+      const hx=chex(L.color.r,L.color.g,L.color.b);
+      rows.push(`<div class="crow" onclick="pickLayerColor('${kind}')">
+        <div class="csw" style="background:${hx}"></div>
+        <div class="cinfo"><b>${t('sf_'+kind)}</b> — ${esc(palNomi(L.color))}<div class="ccode">${L.color.c} · ${hx}</div></div>
+      </div>`);
+    }
+  }
+  box.innerHTML = rows.length ? `<div class="flabel">${t('my_colors')}</div>`+rows.join('') : '';
+}
+function pickLayerColor(kind){
+  const L=LAYERS[kind]; if(!L || !L.color) return;
+  setActiveKind(kind);
+  tanla(L.color.i);
+}
+function resetLayers(){ LAYERS={}; UNDO.length=0; setActiveKind('wall'); updateDots(); updUndoBtn(); }
+function clearMask(){ pushUndo(activeKind); const L=layerOf(activeKind); L.mask.fill(0); L.feather=null; renderPaint(); updateDots(); toast(t('sel_cleared')); }
+
+/* ── ORTGA (undo) — 2 pog'onali ── */
+const UNDO=[], UNDO_MAX=8;
+function pushUndo(kind){
+  const L=layerOf(kind);
+  const q=new Uint8Array(L.mask.length);
+  for(let i=0;i<q.length;i++) q[i]=L.mask[i]*255;
+  UNDO.push({kind, q, color:L.color});
+  if(UNDO.length>UNDO_MAX) UNDO.shift();
+  updUndoBtn();
+}
+function restoreSnap(u){
+  const L=layerOf(u.kind);
+  if(L.mask.length!==u.q.length) return false;
+  for(let i=0;i<u.q.length;i++) L.mask[i]=u.q[i]/255;
+  L.color=u.color; L.feather=null;
+  setActiveKind(u.kind);
+  renderPaint(); updateDots();
+  return true;
+}
+function doUndo(){                       // xronologik oxirgi amal
+  const u=UNDO.pop();
+  if(!u){ toast(t('undo_empty')); updUndoBtn(); return; }
+  if(restoreSnap(u)) toast(t('undo_done'));
+  updUndoBtn();
+}
+function doUndoLayer(){                  // FAQAT faol yuza — qolganlari tegilmaydi
+  for(let i=UNDO.length-1;i>=0;i--){
+    if(UNDO[i].kind===activeKind){
+      const u=UNDO.splice(i,1)[0];
+      if(restoreSnap(u)) toast(t('undo_layer_done'));
+      updUndoBtn();
+      return;
+    }
+  }
+  toast(t('undo_layer_empty'));
+}
+function updUndoBtn(){
+  const b=el('undoBtn'), a=el('undoAllBtn');
+  if(a) a.style.opacity=UNDO.length?'1':'.4';
+  if(b) b.style.opacity=UNDO.some(u=>u.kind===activeKind)?'1':'.4';
+}
 
 /* Sehrli: chetlarda TO'XTAYDI — o'xshash rangli qo'shni predmetga oqib ketmaydi.
    Mavjud tanlovga QO'SHADI (bir necha bosishда butun devorni yig'ish mumkin). */
 function magicAdd(sx,sy){
-  if(!SEL){ toast(t('wall_need')); return; }
   const W=rcv.width,H=rcv.height,N=W*H,lab=ensureLab(),m=ensureMask();
   const tol=+el('tol').value;
   const edge=Math.max(5, tol*0.55);   // qo'shni pikselga qadam chegarasi (chekka to'siq)
@@ -1431,6 +1541,7 @@ function magicAdd(sx,sy){
     if(x>0)tryN(i-1); if(x<W-1)tryN(i+1); if(y>0)tryN(i-W); if(y<H-1)tryN(i+W);
   }
   if(cnt<20){ toast(t('wall_small')); }
+  else if(!layerOf(activeKind).color){ toast(t('mask_ready')); }
   renderPaint();
 }
 function paintCircle(cx,cy,add){
@@ -1448,23 +1559,61 @@ function brushStroke(x0,y0,x1,y1,add){
 }
 function scheduleRender(){ if(rafPending) return; rafPending=true; requestAnimationFrame(()=>{ rafPending=false; renderPaint(); }); }
 
-/* Tanlangan (mask) sohani bo'yaydi — asl soya/yorug'lik saqlanadi, chetlari yumshoq */
+/* Bo'yash — multiplikativ soyalash (linear RGB): shade = Y/meanY, natija = bo'yoq × shade.
+   Soya va yorug'lik tabiiy saqlanadi, och joylarda oqarib ketish yo'q.
+   Har qatlam (devor/shift/pol) ketma-ket, o'z rangi bilan chiziladi. */
+let LIN=null;
+function linLUT(){
+  if(LIN) return LIN;
+  LIN=new Float32Array(256);
+  for(let v=0;v<256;v++){ const x=v/255; LIN[v]=x>0.04045?Math.pow((x+0.055)/1.055,2.4):x/12.92; }
+  return LIN;
+}
+const g2s=c=>{ c=c<0?0:c>1?1:c; return c>0.0031308?(1.055*Math.pow(c,1/2.4)-0.055)*255:12.92*c*255; };
 function renderPaint(){
   if(!baseImg) return;
   const W=rcv.width,H=rcv.height,N=W*H,src=baseImg.data,out=curImg.data;
-  const m=ensureMask(), lab=ensureLab();
-  let cnt=0,sum=0; for(let i=0;i<N;i++) if(m[i]>0){cnt++; sum+=lab[i*3];}
-  if(!SEL || cnt===0){ out.set(src); redraw(); return; }
-  const mm=featherMask(m,W,H);
-  const meanL=sum/cnt, tL=SEL.L,tA=SEL.la,tB=SEL.lb;
-  for(let i=0;i<N;i++){
-    const a=mm[i], j=i*4;
-    if(a<=0.004){ out[j]=src[j];out[j+1]=src[j+1];out[j+2]=src[j+2]; continue; }
-    let nL=tL+(lab[i*3]-meanL); nL=Math.max(0,Math.min(100,nL));
-    const [r,g,b]=lab2rgb(nL,tA,tB);
-    out[j]  = src[j]  *(1-a)+r*a;
-    out[j+1]= src[j+1]*(1-a)+g*a;
-    out[j+2]= src[j+2]*(1-a)+b*a;
+  out.set(src);
+  const lut=linLUT();
+  for(const kind of ['wall','ceiling','floor']){
+    const L=LAYERS[kind]; if(!L) continue;
+    if(!L.color && kind!==activeKind) continue;   // rangsiz nofaol qatlam ko'rinmaydi
+    if(!L.feather){
+      L.feather=featherMask(L.mask,W,H);
+      let sY=0,sA=0;
+      const mm=L.feather;
+      for(let i=0;i<N;i++){
+        const a=mm[i];
+        if(a>0.004){ const j=i*4;
+          sY+=a*(lut[src[j]]*0.2126+lut[src[j+1]]*0.7152+lut[src[j+2]]*0.0722); sA+=a; }
+      }
+      L.meanY = sA>1e-6 ? sY/sA : 0;
+      L.has = sA>2;
+    }
+    if(!L.has) continue;
+    const mm=L.feather;
+    if(!L.color){
+      /* faol, lekin rang tanlanmagan — ko'k parda bilan ko'rsatamiz */
+      for(let i=0;i<N;i++){
+        const a=mm[i]*0.42; if(a<=0.004) continue;
+        const j=i*4;
+        out[j]  =out[j]  *(1-a)+47*a;
+        out[j+1]=out[j+1]*(1-a)+107*a;
+        out[j+2]=out[j+2]*(1-a)+243*a;
+      }
+      continue;
+    }
+    const meanY=Math.max(1e-4,L.meanY);
+    const tr=lut[L.color.r], tg=lut[L.color.g], tb=lut[L.color.b];
+    for(let i=0;i<N;i++){
+      const a=mm[i]; if(a<=0.004) continue;
+      const j=i*4;
+      const Y=lut[src[j]]*0.2126+lut[src[j+1]]*0.7152+lut[src[j+2]]*0.0722;
+      let sh=Y/meanY; if(sh>3)sh=3;
+      out[j]  =out[j]  *(1-a)+g2s(tr*sh)*a;
+      out[j+1]=out[j+1]*(1-a)+g2s(tg*sh)*a;
+      out[j+2]=out[j+2]*(1-a)+g2s(tb*sh)*a;
+    }
   }
   redraw();
 }
@@ -1485,15 +1634,26 @@ function setTool(tool){
   el('pt-erase').classList.toggle('on', tool==='erase');
   el('magicRow').style.display = tool==='magic' ? 'block' : 'none';
   el('brushRow').style.display = tool==='magic' ? 'none' : 'block';
+  updTouch();
+}
+/* Cho'tka rejimida kanvas swipe'ni oladi (chizish), boshqa rejimlarda sahifa suriladi */
+function updTouch(){
+  if(!rcv) return;
+  rcv.style.touchAction = (RMODE==='paint' && (ptool==='add'||ptool==='erase')) ? 'none' : 'pan-y';
 }
 
-/* ── AI segmentatsiya: DeepLab (ADE20K) — devor/shift/polni o'zi topadi.
-   Model o'zimizning serverda (model/), telefon ichida ishlaydi, so'rov puli yo'q. ── */
-let segModel=null, segMap=null, segW=0, segH=0, segBusy=false;
-/* ADE20K klasslari. Devor = ichki devor + tashqi fasad (building, house).
-   Pol = pol + yo'l + yo'lak + yer (hovli suratlari uchun). */
+/* ── AI segmentatsiya: SegFormer-B0 / ADE20K (ONNX, qurilma ichida) ──
+   Yumshoq ehtimollik + argmax-darvoza + guided filter → chegaralar rasm qirralariga yopishadi.
+   ORT ishlamasa — eski DeepLab (tf.js) zaxira yo'li. */
+let ortSess=null, segProb=null, segModel=null, segMap=null, segW=0, segH=0, segBusy=false;
+/* SegFormer ADE20K 0-indeks: devor=wall/building/house; pol=floor/road/sidewalk/earth; shift=ceiling */
+const SEG_SF={wall:[0,1,25], floor:[3,6,11,13], ceiling:[5]};
+const SEG_PERSON=12, AI_INPUT=640;   // 640 — mayda obyektlar (odam) yaxshiroq ajraladi
+const SEG_GATE={};
+for(const k in SEG_SF){ SEG_GATE[k]=new Uint8Array(150); SEG_SF[k].forEach(c=>SEG_GATE[k][c]=1); }
+/* DeepLab zaxira (1-indeks) */
 const SEG_CLS={wall:[1,2,26], floor:[4,7,12,14], ceiling:[6]};
-const AI_SIZE=513;   // model ichki qatlamlari 513 ga qattiq bog'langan (65x65 ASPP)
+const AI_SIZE=513;   // DeepLab ichki qatlamlari 513 ga qattiq bog'langan (65x65 ASPP)
 function aiStatus(msg){
   const s=el('aiStatus');
   if(!msg){ s.style.display='none'; return; }
@@ -1506,35 +1666,109 @@ function loadScript(src){
     document.body.appendChild(s);
   });
 }
+/* Model faylini progress bilan yuklash */
+async function fetchProgress(url, cb){
+  const res=await fetch(url);
+  if(!res.ok) throw new Error(url+' '+res.status);
+  const total=+res.headers.get('Content-Length')||0;
+  if(!res.body || !total) return await res.arrayBuffer();
+  const reader=res.body.getReader(), chunks=[]; let got=0;
+  for(;;){
+    const {done,value}=await reader.read();
+    if(done) break;
+    chunks.push(value); got+=value.length;
+    cb(Math.round(got*100/total));
+  }
+  const buf=new Uint8Array(got); let off=0;
+  for(const c of chunks){ buf.set(c,off); off+=c.length; }
+  return buf.buffer;
+}
+async function ensureOrt(){
+  if(ortSess) return;
+  if(!window.ort){ aiStatus(t('ai_lib')); await loadScript('vendor/ort.min.js'); }
+  ort.env.wasm.wasmPaths=new URL('vendor/', location.href).href;   // absolyut URL shart
+  const buf=await fetchProgress('model2/segformer_q8.onnx', p=>aiStatus(t('ai_model')+' '+p+'%'));
+  aiStatus(t('ai_model'));
+  ortSess=await ort.InferenceSession.create(buf,{executionProviders:['wasm']});
+}
+/* SegFormer: logits → wall/floor/ceiling ehtimollik xaritalari (argmax-darvoza bilan) */
+async function runSegformer(){
+  aiStatus(t('ai_run'));
+  await new Promise(r=>setTimeout(r,30));
+  const W=rcv.width,H=rcv.height;
+  const sc=AI_INPUT/Math.max(W,H);
+  const tw=Math.max(32,Math.round(W*sc/32)*32), th=Math.max(32,Math.round(H*sc/32)*32);
+  const src=document.createElement('canvas'); src.width=W; src.height=H;
+  src.getContext('2d').putImageData(baseImg,0,0);
+  const oc=document.createElement('canvas'); oc.width=tw; oc.height=th;
+  const c2=oc.getContext('2d');
+  c2.drawImage(src,0,0,tw,th);
+  const px=c2.getImageData(0,0,tw,th).data;
+  const n=tw*th, inp=new Float32Array(3*n);
+  for(let i=0;i<n;i++){
+    inp[i]    =(px[i*4]  /255-0.485)/0.229;
+    inp[n+i]  =(px[i*4+1]/255-0.456)/0.224;
+    inp[2*n+i]=(px[i*4+2]/255-0.406)/0.225;
+  }
+  const res=await ortSess.run({pixel_values:new ort.Tensor('float32',inp,[1,3,th,tw])});
+  const out=res.logits, d=out.data;
+  const C=out.dims[1], hh=out.dims[2], ww=out.dims[3], m2=hh*ww;
+  const maps={wall:new Float32Array(m2), floor:new Float32Array(m2), ceiling:new Float32Array(m2)};
+  for(let i=0;i<m2;i++){
+    let mx=-1e30, best=0;
+    for(let c=0;c<C;c++){ const v=d[c*m2+i]; if(v>mx){mx=v;best=c;} }
+    let sum=0;
+    for(let c=0;c<C;c++) sum+=Math.exp(d[c*m2+i]-mx);
+    const pPerson=Math.exp(d[SEG_PERSON*m2+i]-mx)/sum;
+    for(const k in maps){
+      /* argmax-darvoza: hukmron klass guruhdan bo'lmasa — 0 (odam/chiroq/kartina kirmaydi) */
+      let v=0;
+      if(SEG_GATE[k][best]){
+        let s=0; for(const c of SEG_SF[k]) s+=Math.exp(d[c*m2+i]-mx);
+        v = s/sum - 1.5*pPerson;
+      }
+      maps[k][i]=v<0?0:v;
+    }
+  }
+  segProb=maps; segW=ww; segH=hh; segMap=null;
+}
+/* DeepLab zaxira yo'li (tf.js) */
+async function runDeeplab(){
+  if(!window.tf){ aiStatus(t('ai_lib')); await loadScript('vendor/tf.min.js'); }
+  if(!segModel){ aiStatus(t('ai_model')); segModel=await tf.loadGraphModel('model/model.json'); }
+  aiStatus(t('ai_run'));
+  await new Promise(r=>setTimeout(r,40));
+  const oc=document.createElement('canvas');
+  oc.width=rcv.width; oc.height=rcv.height;
+  oc.getContext('2d').putImageData(baseImg,0,0);
+  const out = tf.tidy(()=>{
+    const img=tf.browser.fromPixels(oc);
+    const sc=AI_SIZE/Math.max(oc.width,oc.height);
+    const th=Math.round(oc.height*sc), tw=Math.round(oc.width*sc);
+    const resized=tf.image.resizeBilinear(img,[th,tw]);
+    return segModel.execute(resized.expandDims(0).toInt());
+  });
+  const data=await out.data();
+  const sh=out.shape[1], sw=out.shape[2];
+  tf.dispose(out);
+  segMap=data; segW=sw; segH=sh; segProb=null;
+}
 async function aiAuto(){
   if(segBusy) return;
-  if(!SEL){ toast(t('wall_need')); return; }
+  if(!baseImg) return;
   segBusy=true;
   try{
-    if(!window.tf){ aiStatus(t('ai_lib')); await loadScript('vendor/tf.min.js'); }
-    if(!segModel){ aiStatus(t('ai_model')); segModel=await tf.loadGraphModel('model/model.json'); }
-    aiStatus(t('ai_run'));
-    await new Promise(r=>setTimeout(r,40));       // status ko'rinsin
     const t0=performance.now();
-    // ASL rasmni (bo'yalmagan) offscreen kanvasga chizamiz
-    const oc=document.createElement('canvas');
-    oc.width=rcv.width; oc.height=rcv.height;
-    oc.getContext('2d').putImageData(baseImg,0,0);
-    const out = tf.tidy(()=>{
-      const img=tf.browser.fromPixels(oc);
-      const sc=AI_SIZE/Math.max(oc.width,oc.height);
-      const th=Math.round(oc.height*sc), tw=Math.round(oc.width*sc);
-      const resized=tf.image.resizeBilinear(img,[th,tw]);
-      return segModel.execute(resized.expandDims(0).toInt());
-    });
-    const data=await out.data();
-    const sh=out.shape[1], sw=out.shape[2];
-    tf.dispose(out);
-    segMap=data; segW=sw; segH=sh;
+    try{
+      await ensureOrt();
+      await runSegformer();
+    }catch(e){
+      console.error('SegFormer ishlamadi, DeepLab zaxiraga o\'tildi:', e);
+      await runDeeplab();
+    }
     const ms=Math.round(performance.now()-t0);
     aiStatus(null);
-    el('aiRow').style.display='block';
-    applySurface('wall');
+    applySurface(activeKind, true);
     toast(`🤖 ${t('ai_done')} · ${ms} ms`);
   }catch(e){
     console.error(e);
@@ -1543,26 +1777,151 @@ async function aiAuto(){
   }
   segBusy=false;
 }
-function applySurface(kind){
-  if(!segMap) return;
-  if(!SEL){ toast(t('wall_need')); return; }
-  ['wall','ceiling','floor'].forEach(k=>el('sf-'+k).classList.toggle('sel', k===kind));
-  const clsSet=new Uint8Array(160);
-  SEG_CLS[kind].forEach(c=>clsSet[c]=1);
-  const W=rcv.width,H=rcv.height,m=ensureMask();
-  let cnt=0;
+function applySurface(kind, force){
+  setActiveKind(kind);
+  const W=rcv.width,H=rcv.height,N=W*H;
+  const L=layerOf(kind), m=L.mask;
+  if(!segProb && !segMap){ renderPaint(); return; }   // AI hali ishlamagan — faqat faol qatlam almashdi
+  /* Chip bosilganda to'ldirilgan qatlam QAYTA to'ldirilmaydi (tahrir/undo saqlanadi) */
+  if(!force){
+    let empty=true;
+    for(let i=0;i<N;i++) if(m[i]>0.25){ empty=false; break; }
+    if(!empty){ renderPaint(); return; }
+  }
+  pushUndo(kind);
+  L.feather=null;
+  if(segProb){
+    const alpha=upBilinear(segProb[kind],segW,segH,W,H);
+    guidedAlpha(alpha,W,H);
+    for(let i=0;i<N;i++){
+      let v=(alpha[i]-0.35)/0.30; v=v<0?0:v>1?1:v;
+      alpha[i]=v*v*(3-2*v);
+    }
+    /* Shift: porlab turgan chiroq — emitter, bo'yalmaydi */
+    if(kind==='ceiling'){
+      const d=baseImg.data;
+      let blown=0, tot=0;
+      for(let i=0;i<N;i++) if(alpha[i]>0.5){
+        tot++; const j=i*4;
+        if(d[j]>=246&&d[j+1]>=246&&d[j+2]>=246) blown++;
+      }
+      if(tot>0 && blown/tot<0.35){
+        for(let i=0;i<N;i++){
+          if(alpha[i]<=0) continue;
+          const j=i*4, mn=Math.min(d[j],d[j+1],d[j+2]);
+          if(mn>=246) alpha[i]=0;
+          else if(mn>=232) alpha[i]*=(246-mn)/14;
+        }
+      }
+    }
+    dropIslands(alpha,W,H);
+    let cnt=0; for(let i=0;i<N;i++){ m[i]=alpha[i]; if(alpha[i]>0.5)cnt++; }
+    if(cnt<50){ toast(t('ai_none')); renderPaint(); return; }
+  }else{
+    const clsSet=new Uint8Array(160);
+    SEG_CLS[kind].forEach(c=>clsSet[c]=1);
+    let cnt=0;
+    for(let y=0;y<H;y++){
+      const sy=Math.min(segH-1,(y*segH/H)|0);
+      for(let x=0;x<W;x++){
+        const sx=Math.min(segW-1,(x*segW/W)|0);
+        const v=clsSet[segMap[sy*segW+sx]];
+        m[y*W+x]=v; cnt+=v;
+      }
+    }
+    if(cnt<50){ toast(t('ai_none')); renderPaint(); return; }
+    cleanMask(m);       // rang statistikasi bilan tozalash (mebel bleed'i ketadi)
+    refineEdges(m);     // chegaralarni haqiqiy rang chegaralariga yopishtirish
+  }
+  renderPaint();
+  if(!L.color) toast(t('mask_ready'));
+}
+/* Bilinear upsample: past aniqlikdagi ehtimollik → kanvas o'lchami */
+function upBilinear(src,sw,sh,W,H){
+  const out=new Float32Array(W*H);
   for(let y=0;y<H;y++){
-    const sy=Math.min(segH-1,(y*segH/H)|0);
+    let fy=(y+0.5)*sh/H-0.5;
+    let y0=Math.floor(fy), wy=fy-y0;
+    if(y0<0){y0=0;wy=0;} if(y0>sh-1){y0=sh-1;wy=0;}
+    const y1=Math.min(sh-1,y0+1), r0=y0*sw, r1=y1*sw, row=y*W;
     for(let x=0;x<W;x++){
-      const sx=Math.min(segW-1,(x*segW/W)|0);
-      const v=clsSet[segMap[sy*segW+sx]];
-      m[y*W+x]=v; cnt+=v;
+      let fx=(x+0.5)*sw/W-0.5;
+      let x0=Math.floor(fx), wx=fx-x0;
+      if(x0<0){x0=0;wx=0;} if(x0>sw-1){x0=sw-1;wx=0;}
+      const x1=Math.min(sw-1,x0+1);
+      out[row+x]=src[r0+x0]*(1-wx)*(1-wy)+src[r0+x1]*wx*(1-wy)
+                +src[r1+x0]*(1-wx)*wy   +src[r1+x1]*wx*wy;
     }
   }
-  if(cnt<50){ toast(t('ai_none')); renderPaint(); return; }
-  cleanMask(m);       // rang statistikasi bilan tozalash (mebel bleed'i ketadi)
-  refineEdges(m);     // chegaralarni haqiqiy rang chegaralariga yopishtirish
-  renderPaint();
+  return out;
+}
+/* Chetlari normalangan box blur (sirg'aluvchi yig'indi) */
+function boxBlur(a,W,H,r,tmp,out){
+  for(let y=0;y<H;y++){
+    const off=y*W; let s=0,c=0;
+    for(let x=-r;x<W;x++){
+      const ai=x+r; if(ai<W){ s+=a[off+ai]; c++; }
+      const ri=x-r-1; if(ri>=0){ s-=a[off+ri]; c--; }
+      if(x>=0) tmp[off+x]=s/c;
+    }
+  }
+  for(let x=0;x<W;x++){
+    let s=0,c=0;
+    for(let y=-r;y<H;y++){
+      const ai=y+r; if(ai<H){ s+=tmp[ai*W+x]; c++; }
+      const ri=y-r-1; if(ri>=0){ s-=tmp[ri*W+x]; c--; }
+      if(y>=0) out[y*W+x]=s/c;
+    }
+  }
+}
+/* Guided filter: AI chegarasi rasm qirralariga yopishadi */
+function guidedAlpha(p,W,H){
+  const N=W*H, d=baseImg.data;
+  const I=new Float32Array(N);
+  for(let i=0;i<N;i++) I[i]=(d[i*4]*0.299+d[i*4+1]*0.587+d[i*4+2]*0.114)/255;
+  const r=Math.max(4,Math.round(Math.min(W,H)/70)), eps=1e-3;
+  const tmp=new Float32Array(N);
+  const mI=new Float32Array(N), mP=new Float32Array(N);
+  boxBlur(I,W,H,r,tmp,mI);
+  boxBlur(p,W,H,r,tmp,mP);
+  const buf=new Float32Array(N);
+  for(let i=0;i<N;i++) buf[i]=I[i]*I[i];
+  const mII=new Float32Array(N); boxBlur(buf,W,H,r,tmp,mII);
+  for(let i=0;i<N;i++) buf[i]=I[i]*p[i];
+  const mIP=new Float32Array(N); boxBlur(buf,W,H,r,tmp,mIP);
+  const A=new Float32Array(N), B=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const a=(mIP[i]-mI[i]*mP[i])/((mII[i]-mI[i]*mI[i])+eps);
+    A[i]=a; B[i]=mP[i]-a*mI[i];
+  }
+  const mA=new Float32Array(N), mB=new Float32Array(N);
+  boxBlur(A,W,H,r,tmp,mA);
+  boxBlur(B,W,H,r,tmp,mB);
+  for(let i=0;i<N;i++){
+    let v=mA[i]*I[i]+mB[i];
+    p[i]=v<0?0:v>1?1:v;
+  }
+}
+/* Mayda orolchalarni olib tashlash (yumshoq alpha ustida) */
+function dropIslands(alpha,W,H){
+  const N=W*H, seen=new Int32Array(N), st=new Int32Array(N);
+  const minKeep=Math.max(120, N*0.004);
+  let label=0;
+  for(let s=0;s<N;s++){
+    if(alpha[s]<=0.25||seen[s]) continue;
+    label++;
+    let sp=0, cnt=0; st[sp++]=s; seen[s]=label;
+    const comp=[];
+    while(sp>0){
+      const i=st[--sp]; comp.push(i); cnt++;
+      const x=i%W,y=(i/W)|0;
+      if(x>0&&alpha[i-1]>0.25&&!seen[i-1]){seen[i-1]=label;st[sp++]=i-1;}
+      if(x<W-1&&alpha[i+1]>0.25&&!seen[i+1]){seen[i+1]=label;st[sp++]=i+1;}
+      if(y>0&&alpha[i-W]>0.25&&!seen[i-W]){seen[i-W]=label;st[sp++]=i-W;}
+      if(y<H-1&&alpha[i+W]>0.25&&!seen[i+W]){seen[i+W]=label;st[sp++]=i+W;}
+    }
+    if(cnt<minKeep){ for(const i of comp) alpha[i]=0; }
+  }
 }
 
 /* Chegara sayqallash: mask chetidagi har piksel lokal "devor o'rtachasi" va
@@ -1685,11 +2044,20 @@ function hisobla(){
 function paintToCart(){
   if(!SEL){ toast(t('paint_need')); return; }
   const h=hisobla();
+  /* Bo'yalgan har yuza (devor/shift/pol) alohida kolerovka qatori bilan ketadi */
+  const surfaces=[];
+  for(const kind of ['wall','ceiling','floor']){
+    const L=LAYERS[kind];
+    if(L && L.color && L.has)
+      surfaces.push({surface:kind, label:t('sf_'+kind),
+        code:L.color.c, name:palNomi(L.color), hex:chex(L.color.r,L.color.g,L.color.b)});
+  }
   PAINT={
-    code:SEL.c, name:palNomi(SEL), hex:chex(SEL.r,SEL.g,SEL.b),
+    code:SEL.c, name:palNomi(SEL), hex:chex(SEL.r,SEL.g,SEL.b),   // eski format (zaxira)
     amount:+h.amount.toFixed(1), unit:h.unit, packs:h.packs,
     area:+h.area.toFixed(1), coats:h.coats,
     product:(T[LANG].prods||T.uz.prods)[h.pi],
+    surfaces,
   };
   toast(t('paint_added'));
   updateBadge(); nav('cart');
@@ -1703,11 +2071,15 @@ function renderRang(){
     rcv=el('cv'); rctx=rcv.getContext('2d',{willReadFrequently:true});
     const cpt=e=>{ const r=rcv.getBoundingClientRect();
       return [Math.floor((e.clientX-r.left)*rcv.width/r.width), Math.floor((e.clientY-r.top)*rcv.height/r.height)]; };
+    /* Sehrli/pipetka — faqat qisqa TAP (swipe sahifani suradi, bo'yamaydi!) */
+    let downP=null;
     rcv.addEventListener('pointerdown', e=>{
       const [x,y]=cpt(e); if(x<0||y<0||x>=rcv.width||y>=rcv.height) return;
-      if(RMODE==='pick'){ pipetka(x,y); return; }
-      if(ptool==='magic'){ magicAdd(x,y); return; }
-      if(!SEL){ toast(t('wall_need')); return; }
+      if(RMODE==='pick' || ptool==='magic'){
+        downP={x,y,cx:e.clientX,cy:e.clientY,t:performance.now()};
+        return;
+      }
+      pushUndo(activeKind);
       stroking=true; lastP=[x,y];
       try{ rcv.setPointerCapture(e.pointerId); }catch(_){}
       brushStroke(x,y,x,y, ptool==='add');
@@ -1720,8 +2092,19 @@ function renderRang(){
       lastP=[x,y]; e.preventDefault();
     });
     const endStroke=()=>{ stroking=false; lastP=null; };
-    rcv.addEventListener('pointerup', endStroke);
-    rcv.addEventListener('pointercancel', endStroke);
+    rcv.addEventListener('pointerup', e=>{
+      if(downP){
+        const dx=e.clientX-downP.cx, dy=e.clientY-downP.cy;
+        const isTap=(dx*dx+dy*dy<100) && (performance.now()-downP.t<600);
+        if(isTap){
+          if(RMODE==='pick') pipetka(downP.x,downP.y);
+          else{ pushUndo(activeKind); magicAdd(downP.x,downP.y); }
+        }
+        downP=null;
+      }
+      endStroke();
+    });
+    rcv.addEventListener('pointercancel', ()=>{ downP=null; endStroke(); });
     rcv.addEventListener('pointerleave', endStroke);
     // Rang panjarasi — gorizontal swipe bilan sahifalash
     const fg=el('fangrid'); let sx=null, sy=null;
@@ -1772,11 +2155,14 @@ function applyRangLang(){
   el('ptErase').textContent=t('pt_erase'); el('ptEraseS').textContent=t('pt_erase_s');
   el('brushL').textContent=t('brush_l');
   el('clearL').textContent=t('sel_clear');
+  el('undoL').textContent=t('undo_l');
+  el('undoAllL').textContent=t('undo_all_l');
   el('aiBtn').textContent=t('ai_btn');
   el('aiPickL').textContent=t('ai_pick');
-  el('sf-wall').textContent=t('sf_wall');
-  el('sf-ceiling').textContent=t('sf_ceiling');
-  el('sf-floor').textContent=t('sf_floor');
+  el('sfl-wall').textContent=t('sf_wall');
+  el('sfl-ceiling').textContent=t('sf_ceiling');
+  el('sfl-floor').textContent=t('sf_floor');
+  renderLayerList();
   el('selH').textContent=t('sel_h');
   el('famL').textContent=t('fam_l');
   if(!SEL) el('pickedTxt').innerHTML=t('pick_hint');
