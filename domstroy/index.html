@@ -442,7 +442,7 @@ const T = {
     mask_ready:"✅ Yuza topildi — endi rang tanlang",
     ai_btn:"🤖 Avto AI — yuzalarni o'zi topadi",
     ai_lib:"⏳ AI yadrosi yuklanmoqda…",
-    ai_model:"⏳ AI modeli yuklanmoqda (bir martalik, ~16 MB)…",
+    ai_model:"⏳ AI modeli yuklanmoqda (bir martalik, ~6 MB)…",
     ai_run:"🤖 AI rasmni tahlil qilyapti…",
     ai_done:"AI yuzalarni topdi", ai_err:"AI ishlamadi — Sehrli yoki cho'tkadan foydalaning",
     ai_none:"Bu yuza rasmda topilmadi",
@@ -542,7 +542,7 @@ const T = {
     mask_ready:"✅ Поверхность найдена — теперь выберите цвет",
     ai_btn:"🤖 Авто ИИ — сам найдёт поверхности",
     ai_lib:"⏳ Загружается ядро ИИ…",
-    ai_model:"⏳ Загружается модель ИИ (однократно, ~16 МБ)…",
+    ai_model:"⏳ Загружается модель ИИ (однократно, ~6 МБ)…",
     ai_run:"🤖 ИИ анализирует фото…",
     ai_done:"ИИ нашёл поверхности", ai_err:"ИИ не сработал — используйте Волшебное или кисть",
     ai_none:"Эта поверхность не найдена на фото",
@@ -1670,6 +1670,8 @@ function loadScript(src){
 async function fetchProgress(url, cb){
   const res=await fetch(url);
   if(!res.ok) throw new Error(url+' '+res.status);
+  /* DIQQAT: server gzip bersa Content-Length siqilgan hajm, reader esa ochilganini beradi —
+     foiz 100 dan oshib ketmasligi uchun cheklanadi */
   const total=+res.headers.get('Content-Length')||0;
   if(!res.body || !total) return await res.arrayBuffer();
   const reader=res.body.getReader(), chunks=[]; let got=0;
@@ -1677,7 +1679,7 @@ async function fetchProgress(url, cb){
     const {done,value}=await reader.read();
     if(done) break;
     chunks.push(value); got+=value.length;
-    cb(Math.round(got*100/total));
+    cb(Math.min(99, Math.round(got*100/total)));
   }
   const buf=new Uint8Array(got); let off=0;
   for(const c of chunks){ buf.set(c,off); off+=c.length; }
