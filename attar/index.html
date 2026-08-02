@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Husein Attar — original atirlar katalogi</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#131015; --card:#1D1922; --ink:#F2EBDD; --ink2:#B9AE9A;
+  --gold:#C9A227; --goldd:#A8861D; --panel:#2A2433; --line:#352E40;
+  --red:#C0563B; --green:#6E8F4B; --shadow:0 4px 16px rgba(0,0,0,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#0C0A0E}
+body{background:var(--bg);color:var(--ink);font-family:'Manrope',system-ui,sans-serif;
+  padding-bottom:96px;max-width:430px;margin:0 auto;min-height:100vh;
+  box-shadow:0 0 40px rgba(0,0,0,.5)}
+.serif{font-family:'Playfair Display',Georgia,serif}
+
+/* ── Header ── */
+header{padding:18px 16px 10px;display:flex;align-items:center;gap:12px}
+.emblem{width:52px;height:52px;border-radius:50%;background:var(--panel);border:1.5px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.emblem span{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;font-size:11px;color:var(--gold)}
+.htxt h1{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;line-height:1.1}
+.htxt p{font-size:12px;color:var(--ink2);margin-top:2px}
+.phone{margin-left:auto;background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:7px 12px;font-size:12px;font-weight:700;color:var(--gold);text-decoration:none;white-space:nowrap}
+
+/* ── Search ── */
+.search{margin:8px 16px 4px;position:relative}
+.search input{width:100%;border:1px solid var(--line);background:var(--card);border-radius:14px;
+  padding:12px 14px 12px 40px;font-size:14px;font-family:inherit;color:var(--ink);outline:none}
+.search input::placeholder{color:#7E7466}
+.search svg{position:absolute;left:13px;top:12px;opacity:.55}
+
+/* ── Category chips ── */
+.cats{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;border:1px solid var(--line);background:var(--card);color:var(--ink2);
+  border-radius:20px;padding:9px 15px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer}
+.chip.on{background:var(--gold);color:#191307;border-color:var(--gold)}
+
+/* ── Grid ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:6px 16px 20px}
+.pcard{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;position:relative;border:1px solid var(--line)}
+.pimg{width:100%;aspect-ratio:1/1;object-fit:cover;background:var(--panel)}
+.badge{position:absolute;top:10px;left:10px;border-radius:12px;padding:4px 9px;font-size:10.5px;
+  font-weight:800;color:#fff;letter-spacing:.4px}
+.badge.hit{background:var(--red)} .badge.new{background:var(--green)}
+.pbody{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.pname{font-size:13.5px;font-weight:700;line-height:1.25;min-height:34px}
+.pdesc{font-size:11px;color:var(--ink2);line-height:1.35;flex:1}
+.prow{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.price{font-size:14px;font-weight:800;color:var(--gold)}
+.add{border:none;background:var(--gold);color:#191307;width:34px;height:34px;border-radius:11px;
+  font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.stepper{display:flex;align-items:center;gap:8px;background:var(--panel);border-radius:11px;padding:3px}
+.stepper button{border:none;background:var(--gold);color:#191307;width:28px;height:28px;
+  border-radius:9px;font-size:17px;cursor:pointer}
+.stepper b{min-width:18px;text-align:center;font-size:14px}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink2);padding:40px 0;font-size:14px}
+
+/* ── Cart bar ── */
+.cartbar{position:fixed;left:12px;right:12px;bottom:12px;background:var(--gold);color:#191307;
+  border-radius:16px;padding:14px 18px;display:none;align-items:center;justify-content:space-between;
+  box-shadow:0 8px 24px rgba(201,162,39,.35);cursor:pointer;z-index:40}
+.cartbar.show{display:flex}
+.cartbar .sum{font-weight:800;font-size:15px}
+.cartbar .go{font-weight:800;font-size:14px;color:#3D2F08}
+
+/* ── Sheet ── */
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:none}
+.ovl.show{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:88vh;background:var(--bg);z-index:60;
+  border-radius:22px 22px 0 0;transform:translateY(105%);transition:transform .25s ease;
+  display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.sheet.show{transform:translateY(0)}
+.shead{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 8px}
+.shead h2{font-family:'Playfair Display',serif;font-size:20px}
+.x{border:none;background:var(--panel);color:var(--ink);width:32px;height:32px;border-radius:50%;
+  font-size:16px;cursor:pointer}
+.sbody{overflow-y:auto;padding:4px 18px 20px}
+.citem{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;
+  padding:10px;margin-bottom:8px;border:1px solid var(--line)}
+.citem img{width:52px;height:52px;border-radius:10px;object-fit:cover}
+.cinfo{flex:1;min-width:0}
+.cinfo .n{font-size:12.5px;font-weight:700;line-height:1.2}
+.cinfo .p{font-size:12px;color:var(--gold);font-weight:800;margin-top:3px}
+.total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;
+  padding:12px 4px;border-top:1.5px dashed var(--line);margin-top:6px}
+label.f{display:block;font-size:12px;font-weight:800;color:var(--ink2);margin:12px 2px 5px;
+  text-transform:uppercase;letter-spacing:.4px}
+.inp{width:100%;border:1px solid var(--line);background:var(--card);border-radius:12px;
+  padding:12px 14px;font-size:14px;font-family:inherit;color:var(--ink);outline:none}
+textarea.inp{resize:none;min-height:64px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink2);
+  border-radius:12px;padding:11px 6px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
+.seg button.on{border-color:var(--gold);background:var(--panel);color:var(--ink)}
+.submit{width:100%;border:none;background:var(--gold);color:#191307;border-radius:14px;
+  padding:15px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;margin-top:16px}
+.submit:disabled{opacity:.55}
+.note{font-size:11px;color:var(--ink2);text-align:center;margin-top:8px}
+
+/* ── OK screen ── */
+.ok{position:fixed;inset:0;background:var(--bg);z-index:80;display:none;
+  flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+.ok.show{display:flex}
+.ok .big{font-size:52px;margin-bottom:12px}
+.ok h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px}
+.ok p{font-size:13.5px;color:var(--ink2);line-height:1.5;max-width:280px}
+
+/* Desktop: telefon eni markazda (Telegram ichida ta'sir qilmaydi) */
+.cartbar{left:max(12px,calc(50% - 203px));right:max(12px,calc(50% - 203px))}
+.sheet{left:max(0px,calc(50% - 215px));right:max(0px,calc(50% - 215px))}
+.ok{left:max(0px,calc(50% - 215px));right:max(0px,calc(50% - 215px))}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="emblem"><span>H·Attar</span></div>
+  <div class="htxt">
+    <h1>Husein Attar</h1>
+    <p>Original atirlar · butun O'zbekistonga yetkazamiz</p>
+  </div>
+  <a class="phone" href="tel:+998977762580">☎ 97 776-25-80</a>
+</header>
+
+<div class="search">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B9AE9A" stroke-width="2.4">
+    <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input id="q" type="text" placeholder="Qidirish: Tygar, Aventus, Libre…">
+</div>
+
+<div class="cats" id="cats"></div>
+<div class="grid" id="grid"></div>
+
+<div class="cartbar" id="cartbar">
+  <span class="sum" id="cartsum"></span><span class="go">Buyurtma berish →</span>
+</div>
+
+<div class="ovl" id="ovl"></div>
+<div class="sheet" id="sheet">
+  <div class="shead"><h2>Buyurtma</h2><button class="x" id="closex">✕</button></div>
+  <div class="sbody">
+    <div id="citems"></div>
+    <div class="total"><span>Jami:</span><span id="stotal"></span></div>
+
+    <label class="f">Ismingiz</label>
+    <input class="inp" id="fname" type="text" placeholder="Ismingizni yozing">
+
+    <label class="f">Telefon</label>
+    <input class="inp" id="ftel" type="tel" placeholder="+998 __ ___ __ __" value="+998 ">
+
+    <label class="f">Qanday olasiz?</label>
+    <div class="seg" id="modeseg">
+      <button data-m="delivery" class="on">🚚 Yetkazib berish<br><small>butun O'zbekiston</small></button>
+      <button data-m="pickup">🏪 O'zim olaman</button>
+    </div>
+    <div id="addrwrap">
+      <label class="f">Manzil</label>
+      <textarea class="inp" id="faddr" placeholder="Shahar/tuman, mahalla, ko'cha, uy — va mo'ljal"></textarea>
+    </div>
+
+    <label class="f">Izoh (ixtiyoriy)</label>
+    <textarea class="inp" id="fnote" placeholder="Masalan: sovg'a qutisida bo'lsin, atrofdagilarga bildirmasdan yetkazing"></textarea>
+
+    <label class="f">To'lov</label>
+    <div class="seg" id="payseg">
+      <button data-p="cash" class="on">💵 Naqd</button>
+      <button data-p="card">💳 Karta</button>
+    </div>
+
+    <button class="submit" id="submit">Buyurtma berish</button>
+    <p class="note">Buyurtma to'g'ridan-to'g'ri Husein Attar'ga tushadi — DM yozish shart emas</p>
+  </div>
+</div>
+
+<div class="ok" id="okscr">
+  <div class="big">🕌</div>
+  <h2>Buyurtmangiz qabul qilindi!</h2>
+  <p id="okmsg">Tez orada bog'lanamiz.<br>☎ +998 97 776-25-80</p>
+</div>
+
+<script>
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); try{tg.setHeaderColor('#131015');tg.setBackgroundColor('#131015');}catch(e){} }
+
+const fmt = n => n.toLocaleString('ru-RU').replace(/,/g,' ') + " so'm";
+let DATA = {categories:[],products:[]};
+let cart = {};           // id -> qty
+let cat = 'all', query = '';
+let mode = 'delivery', pay = 'cash';
+
+// Katalog jonli API'dan (admin o'zgarishlari darhol ko'rinadi), API ishlamasa statik faylga qaytadi
+const API_BASE = 'https://bonjour-demo-production.up.railway.app';
+fetch(API_BASE + '/api/catalog', {cache:'no-store'})
+  .then(r=>{ if(!r.ok) throw new Error('api'); return r.json(); })
+  .then(d=>{DATA=d;renderCats();renderGrid();})
+  .catch(()=> fetch('data/products.json',{cache:'no-store'}).then(r=>r.json())
+    .then(d=>{DATA=d;renderCats();renderGrid();}).catch(()=>{}));
+
+function renderCats(){
+  const el = document.getElementById('cats');
+  el.innerHTML = `<button class="chip ${cat==='all'?'on':''}" data-c="all">Hammasi</button>` +
+    DATA.categories.map(c=>`<button class="chip ${cat===c.id?'on':''}" data-c="${c.id}">${c.emoji} ${c.name}</button>`).join('');
+  el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{cat=b.dataset.c;renderCats();renderGrid();});
+}
+
+function renderGrid(){
+  const g = document.getElementById('grid');
+  const list = DATA.products.filter(p =>
+    (cat==='all'||p.cat===cat) &&
+    (!query || p.name.toLowerCase().includes(query) || (p.desc||'').toLowerCase().includes(query)));
+  if(!list.length){ g.innerHTML = `<div class="empty">Hech narsa topilmadi ✨</div>`; return; }
+  g.innerHTML = list.map(p=>{
+    const q = cart[p.id]||0;
+    const btn = q
+      ? `<div class="stepper"><button onclick="chg(${p.id},-1)">−</button><b>${q}</b><button onclick="chg(${p.id},1)">+</button></div>`
+      : `<button class="add" onclick="chg(${p.id},1)">+</button>`;
+    const badge = p.badge ? `<span class="badge ${p.badge}">${p.badge==='hit'?'XIT':'YANGI'}</span>` : '';
+    return `<div class="pcard">${badge}
+      <img class="pimg" src="${p.img}" loading="lazy" alt="">
+      <div class="pbody">
+        <div class="pname">${p.name}</div>
+        <div class="pdesc">${p.desc||''}</div>
+        <div class="prow"><span class="price">${fmt(p.price)}</span>${btn}</div>
+      </div></div>`;
+  }).join('');
+  renderBar();
+}
+
+function chg(id,d){
+  cart[id]=(cart[id]||0)+d;
+  if(cart[id]<=0) delete cart[id];
+  renderGrid();
+  if(document.getElementById('sheet').classList.contains('show')) renderSheet();
+}
+
+function totals(){
+  let n=0,s=0;
+  for(const id in cart){
+    const p=DATA.products.find(x=>x.id==id); if(!p)continue;
+    n+=cart[id]; s+=cart[id]*p.price;
+  }
+  return {n,s};
+}
+
+function renderBar(){
+  const {n,s}=totals();
+  const bar=document.getElementById('cartbar');
+  bar.classList.toggle('show',n>0);
+  document.getElementById('cartsum').textContent=`🛒 ${n} ta · ${fmt(s)}`;
+}
+
+function renderSheet(){
+  const box=document.getElementById('citems');
+  const items=Object.keys(cart).map(id=>{
+    const p=DATA.products.find(x=>x.id==id);
+    return `<div class="citem"><img src="${p.img}" alt="">
+      <div class="cinfo"><div class="n">${p.name}</div><div class="p">${fmt(p.price)}</div></div>
+      <div class="stepper"><button onclick="chg(${p.id},-1)">−</button><b>${cart[id]}</b><button onclick="chg(${p.id},1)">+</button></div>
+      </div>`;
+  }).join('');
+  box.innerHTML=items||`<div class="empty">Savat bo'sh</div>`;
+  document.getElementById('stotal').textContent=fmt(totals().s);
+  if(!totals().n) closeSheet();
+}
+
+const sheet=document.getElementById('sheet'), ovl=document.getElementById('ovl');
+function openSheet(){renderSheet();sheet.classList.add('show');ovl.classList.add('show');}
+function closeSheet(){sheet.classList.remove('show');ovl.classList.remove('show');}
+document.getElementById('cartbar').onclick=openSheet;
+document.getElementById('closex').onclick=closeSheet;
+ovl.onclick=closeSheet;
+
+document.getElementById('q').oninput=e=>{query=e.target.value.trim().toLowerCase();renderGrid();};
+
+document.getElementById('modeseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  mode=b.dataset.m;
+  document.getElementById('modeseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  document.getElementById('addrwrap').style.display = mode==='delivery'?'block':'none';
+});
+document.getElementById('payseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  pay=b.dataset.p;
+  document.getElementById('payseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+});
+
+document.getElementById('submit').onclick=()=>{
+  const name=document.getElementById('fname').value.trim();
+  const tel=document.getElementById('ftel').value.trim();
+  const addr=document.getElementById('faddr').value.trim();
+  const note=document.getElementById('fnote').value.trim();
+  if(!totals().n){alert('Savat bo\'sh');return;}
+  if(!name){alert('Ismingizni yozing');return;}
+  if(tel.replace(/\D/g,'').length<9){alert('Telefon raqamini to\'liq yozing');return;}
+  if(mode==='delivery'&&!addr){alert('Yetkazish manzilini yozing');return;}
+
+  const items=Object.keys(cart).map(id=>{
+    const p=DATA.products.find(x=>x.id==id);
+    return {id:p.id,name:p.name,qty:cart[id],price:p.price};
+  });
+  const payload={type:'order',name,tel,mode,address:addr,note,payment:pay,items,total:totals().s};
+
+  if(tg && tg.initData){
+    tg.sendData(JSON.stringify(payload));
+    showOk();
+  } else {
+    showOk('Bu — demo rejim (brauzer). Telegram ichida ochilganda buyurtma to\'g\'ridan-to\'g\'ri Husein Attar botiga tushadi.');
+  }
+};
+
+function showOk(msg){
+  closeSheet();
+  if(msg) document.getElementById('okmsg').innerHTML=msg;
+  document.getElementById('okscr').classList.add('show');
+  cart={};renderGrid();
+  setTimeout(()=>{ if(tg&&tg.initData) try{tg.close();}catch(e){} },2600);
+  setTimeout(()=>document.getElementById('okscr').classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>

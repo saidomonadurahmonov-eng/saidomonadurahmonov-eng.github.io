@@ -1,0 +1,70 @@
+{
+  "categories": [
+    { "id": "erkak", "name": "Erkaklar", "emoji": "🖤" },
+    { "id": "ayol", "name": "Ayollar", "emoji": "🌹" },
+    { "id": "unisex", "name": "Unisex", "emoji": "✨" },
+    { "id": "toplam", "name": "To'plamlar", "emoji": "🎁" }
+  ],
+  "products": [
+    {
+      "id": 1, "cat": "erkak", "name": "Bvlgari Tygar — 10 ml", "price": 480000,
+      "img": "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=800&q=80",
+      "desc": "Original dekant. Grapefrut, ambra — kunduzgi imzo hid.", "badge": "hit"
+    },
+    {
+      "id": 2, "cat": "unisex", "name": "Louis Vuitton Imagination — 10 ml", "price": 520000,
+      "img": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80",
+      "desc": "Original dekant. Sitrus-choy akkordi, uzoq turadigan.", "badge": null
+    },
+    {
+      "id": 3, "cat": "erkak", "name": "Tom Ford Ombré Leather — 10 ml", "price": 450000,
+      "img": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80",
+      "desc": "Charm, gul va tutun — kechki uchrashuvlar uchun.", "badge": null
+    },
+    {
+      "id": 4, "cat": "erkak", "name": "Creed Aventus — 10 ml", "price": 690000,
+      "img": "https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=800&q=80",
+      "desc": "Ananas, qayin — dunyodagi eng mashhur erkaklar hidi.", "badge": "hit"
+    },
+    {
+      "id": 5, "cat": "ayol", "name": "YSL Libre — 10 ml", "price": 430000,
+      "img": "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=800&q=80",
+      "desc": "Lavanda va apelsin guli — erkin ayol imzosi.", "badge": null
+    },
+    {
+      "id": 6, "cat": "ayol", "name": "Dior Miss Dior — 10 ml", "price": 440000,
+      "img": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=800&q=80",
+      "desc": "Atirgul va peoniya — nozik, bahoriy.", "badge": null
+    },
+    {
+      "id": 7, "cat": "unisex", "name": "Maison Margiela Replica Jazz Club — 10 ml", "price": 460000,
+      "img": "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=800&q=80",
+      "desc": "Rom, tamaki, vanil — issiq kechki muhit.", "badge": "new"
+    },
+    {
+      "id": 8, "cat": "unisex", "name": "Byredo Gypsy Water — 10 ml", "price": 550000,
+      "img": "https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=800&q=80",
+      "desc": "Bergamot, sandal — minimalist skandinav uslubi.", "badge": null
+    },
+    {
+      "id": 9, "cat": "toplam", "name": "Tanishuv to'plami — 5×2 ml", "price": 199000,
+      "img": "https://images.unsplash.com/photo-1602928321679-560bb453f190?w=800&q=80",
+      "desc": "5 xil xit hid, kichik hajmda. O'zingiznikini toping.", "badge": "hit"
+    },
+    {
+      "id": 10, "cat": "toplam", "name": "Erkaklar mini-to'plami — 3×2 ml", "price": 149000,
+      "img": "https://images.unsplash.com/photo-1595425964272-fc70694bf8c4?w=800&q=80",
+      "desc": "Tygar + Aventus + Ombré Leather sinov hajmida.", "badge": null
+    },
+    {
+      "id": 11, "cat": "toplam", "name": "Sovg'a qutisi — tanlangan 10 ml", "price": 580000,
+      "img": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80",
+      "desc": "Istalgan 10 ml dekant premium qutida, lenta bilan.", "badge": "new"
+    },
+    {
+      "id": 12, "cat": "ayol", "name": "Ayollar mini-to'plami — 3×2 ml", "price": 149000,
+      "img": "https://images.unsplash.com/photo-1615160460366-2c9a4e4a8b6e?w=800&q=80",
+      "desc": "Libre + Miss Dior + Jazz Club sinov hajmida.", "badge": null
+    }
+  ]
+}
