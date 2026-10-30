@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SutHisob — demo</title>
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#1f2a1f;--mute:#6b746b;--line:#e4e0d6;--acc:#2f7d4e;--acc2:#e9f4ed;--warn:#c0392b;--warn2:#fdecea;--gold:#b8860b;--gold2:#fdf4dc}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+header{background:#1f3d2b;color:#fff;padding:12px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:5}
+header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.3px}
+header small{opacity:.75;font-size:12px}
+nav{display:flex;gap:4px;flex-wrap:wrap;padding:10px 14px 0;background:var(--bg);position:sticky;top:50px;z-index:4}
+nav button{border:1px solid var(--line);background:#fff;padding:8px 13px;border-radius:999px;cursor:pointer;font-size:14px;color:var(--ink)}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{padding:14px;max-width:1100px;margin:0 auto}
+.sec{display:none}.sec.on{display:block}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.kpi .l{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
+.kpi .v{font-size:24px;font-weight:700;margin-top:4px}
+.kpi .s{font-size:12px;color:var(--mute);margin-top:2px}
+.kpi.bad .v{color:var(--warn)}.kpi.good .v{color:var(--acc)}
+h2{font-size:17px;margin:18px 0 8px}
+h3{font-size:14px;margin:0 0 10px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.row{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media(max-width:760px){.row{grid-template-columns:1fr}}
+form{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));align-items:end}
+label{font-size:12px;color:var(--mute);display:block;margin-bottom:3px}
+input,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font-size:15px;background:#fff}
+button.p{background:var(--acc);color:#fff;border:0;padding:10px 14px;border-radius:9px;font-size:15px;cursor:pointer;font-weight:600}
+button.g{background:#fff;color:var(--ink);border:1px solid var(--line);padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
+button.d{background:var(--warn2);color:var(--warn);border:0;padding:5px 9px;border-radius:7px;font-size:12px;cursor:pointer}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.tag.ok{background:var(--acc2);color:var(--acc)}.tag.bad{background:var(--warn2);color:var(--warn)}.tag.mid{background:var(--gold2);color:var(--gold)}
+.hint{background:var(--acc2);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:8px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+.muted{color:var(--mute);font-size:13px}
+.scroll{overflow-x:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:9px;padding:9px;font-size:14px;font-family:inherit}
+.foot{margin:30px 0 10px;text-align:center;color:var(--mute);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div style="font-size:26px">🥛</div>
+  <div><h1>SutHisob</h1><small>Sut korxonasi boshqaruv tizimi · demo</small></div>
+  <div style="margin-left:auto;font-size:13px;opacity:.85" id="today"></div>
+</header>
+<nav>
+  <button data-s="bosh" class="on">🏠 Bosh sahifa</button>
+  <button data-s="sut">🐄 Sut kirimi</button>
+  <button data-s="ishlab">🏭 Ishlab chiqarish</button>
+  <button data-s="ombor">📦 Ombor</button>
+  <button data-s="sotuv">🏪 Do'konlar &amp; sotuv</button>
+  <button data-s="qarz">💳 Qarzlar</button>
+  <button data-s="hisobot">📊 Hisobot</button>
+  <button data-s="soz">⚙️ Sozlamalar</button>
+</nav>
+<main>
+
+<!-- BOSH -->
+<section class="sec on" id="s-bosh">
+  <div class="grid" id="kpi"></div>
+  <div class="row" style="margin-top:12px">
+    <div class="card"><h3>Bugun nima bo'ldi</h3><div id="bugun"></div></div>
+    <div class="card"><h3>Diqqat talab qiladi</h3><div id="ogoh"></div></div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div class="card"><h3>Ombordagi mahsulot (kg)</h3><div id="omborMini"></div></div>
+    <div class="card"><h3>Oxirgi 7 kun: sut kirimi (L)</h3><div id="sut7"></div></div>
+  </div>
+</section>
+
+<!-- SUT -->
+<section class="sec" id="s-sut">
+  <div class="card">
+    <h3>Yangi sut kirimi</h3>
+    <form id="fSut">
+      <div><label>Sana</label><input type="date" name="sana" required></div>
+      <div><label>Yetkazuvchi (fermer)</label><input name="kim" list="fermerlar" placeholder="Ism" required><datalist id="fermerlar"></datalist></div>
+      <div><label>Litr</label><input type="number" name="litr" step="0.1" min="0" required></div>
+      <div><label>Yog'lilik %</label><input type="number" name="yog" step="0.1" value="3.6"></div>
+      <div><label>Narx (so'm/L)</label><input type="number" name="narx" required></div>
+      <div><label>To'landi (so'm)</label><input type="number" name="tolandi" value="0"></div>
+      <div><button class="p" type="submit">+ Qabul qilish</button></div>
+    </form>
+    <div class="hint" id="sutHint">Litr va narxni kiriting — summa avtomatik chiqadi.</div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div class="card"><h3>Fermerlar bo'yicha (shu oy)</h3><div id="fermerJami"></div></div>
+    <div class="card"><h3>Sut balansi</h3><div id="sutBalans"></div></div>
+  </div>
+  <div class="card scroll" style="margin-top:12px"><h3>Kirimlar jurnali</h3><div id="sutJ"></div></div>
+</section>
+
+<!-- ISHLAB -->
+<section class="sec" id="s-ishlab">
+  <div class="card">
+    <h3>Ishlab chiqarish partiyasi</h3>
+    <form id="fIsh">
+      <div><label>Sana</label><input type="date" name="sana" required></div>
+      <div><label>Mahsulot</label><select name="mah" id="selMah"></select></div>
+      <div><label>Sarflangan sut (L)</label><input type="number" name="litr" step="0.1" min="0" required></div>
+      <div><label>Haqiqiy chiqdi (kg)</label><input type="number" name="kg" step="0.1" placeholder="bo'sh = norma bo'yicha"></div>
+      <div><button class="p" type="submit">+ Partiya yozish</button></div>
+    </form>
+    <div class="hint" id="ishHint">Sut miqdorini kiriting — qancha mahsulot chiqishi va 1 kg tannarxi hisoblanadi.</div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div class="card"><h3>Kalkulyator: shuncha sutdan nima chiqadi?</h3>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input type="number" id="kalkL" value="1000" style="max-width:160px"> <span>litr sut</span></div>
+      <div id="kalk"></div></div>
+    <div class="card"><h3>Normadan chetlanish (oxirgi partiyalar)</h3><div id="chetlanish"></div></div>
+  </div>
+  <div class="card scroll" style="margin-top:12px"><h3>Partiyalar jurnali</h3><div id="ishJ"></div></div>
+</section>
+
+<!-- OMBOR -->
+<section class="sec" id="s-ombor">
+  <div class="card scroll"><h3>Tayyor mahsulot qoldig'i</h3><div id="omborT"></div></div>
+  <div class="card" style="margin-top:12px"><h3>Yaroqlilik nazorati</h3><div id="muddat"></div></div>
+</section>
+
+<!-- SOTUV -->
+<section class="sec" id="s-sotuv">
+  <div class="card">
+    <h3>Do'konga yuk berish</h3>
+    <form id="fSot">
+      <div><label>Sana</label><input type="date" name="sana" required></div>
+      <div><label>Do'kon</label><input name="dokon" list="dokonlar" required placeholder="Do'kon nomi"><datalist id="dokonlar"></datalist></div>
+      <div><label>Mahsulot</label><select name="mah" id="selMah2"></select></div>
+      <div><label>Kg</label><input type="number" name="kg" step="0.1" min="0" required></div>
+      <div><label>Narx (so'm/kg)</label><input type="number" name="narx" required></div>
+      <div><label>Naqd to'ladi (so'm)</label><input type="number" name="tolandi" value="0"></div>
+      <div><button class="p" type="submit">+ Yuk berish</button></div>
+    </form>
+    <div class="hint" id="sotHint">Qolgan summa do'kon qarziga avtomatik yoziladi.</div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h3>Do'kondan pul qabul qilish</h3>
+    <form id="fTol">
+      <div><label>Sana</label><input type="date" name="sana" required></div>
+      <div><label>Do'kon</label><input name="dokon" list="dokonlar" required></div>
+      <div><label>Summa (so'm)</label><input type="number" name="summa" required></div>
+      <div><button class="p" type="submit">+ To'lov</button></div>
+    </form>
+  </div>
+  <div class="card scroll" style="margin-top:12px"><h3>Do'konlar kartotekasi</h3><div id="dokT"></div></div>
+  <div class="card scroll" style="margin-top:12px"><h3>Sotuvlar jurnali</h3><div id="sotJ"></div></div>
+</section>
+
+<!-- QARZ -->
+<section class="sec" id="s-qarz">
+  <div class="grid" id="qarzKpi"></div>
+  <div class="card scroll" style="margin-top:12px"><h3>Qarzdor do'konlar (muddati bo'yicha)</h3><div id="qarzT"></div></div>
+  <div class="card" style="margin-top:12px"><h3>Eslatma matni</h3><div class="muted" style="margin-bottom:6px">Do'kon nomini bosing — tayyor xabar chiqadi (Telegram/SMS ga yuboriladi).</div><textarea id="eslatma" readonly placeholder="Yuqoridagi jadvaldan do'konni tanlang"></textarea></div>
+</section>
+
+<!-- HISOBOT -->
+<section class="sec" id="s-hisobot">
+  <div class="card"><div class="top"><h3 style="margin:0">Davr</h3>
+    <div style="display:flex;gap:6px;align-items:center"><input type="date" id="d1"> <span>—</span> <input type="date" id="d2"> <button class="g" id="dHafta">7 kun</button><button class="g" id="dOy">Shu oy</button></div></div></div>
+  <div class="grid" id="hKpi" style="margin-top:12px"></div>
+  <div class="row" style="margin-top:12px">
+    <div class="card scroll"><h3>Mahsulot bo'yicha</h3><div id="hMah"></div></div>
+    <div class="card scroll"><h3>Do'kon bo'yicha</h3><div id="hDok"></div></div>
+  </div>
+</section>
+
+<!-- SOZ -->
+<section class="sec" id="s-soz">
+  <div class="card scroll"><h3>Mahsulot normalari va narxlari</h3>
+    <div class="muted" style="margin-bottom:8px">Norma — 1 kg mahsulot uchun qancha litr sut ketadi. Korxonaning o'z texnologiyasiga qarab o'zgartiriladi.</div>
+    <div id="normT"></div></div>
+  <div class="card" style="margin-top:12px"><h3>Qo'shimcha xarajat</h3>
+    <div style="display:flex;gap:8px;align-items:center"><span>Tannarxga ustama (elektr, ish haqi, qadoq):</span><input type="number" id="ustama" style="max-width:90px"> <span>%</span></div></div>
+  <div class="card" style="margin-top:12px"><h3>Ma'lumotlar</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="g" id="bExp">⬇ Zaxira nusxa (JSON)</button>
+      <label class="g" style="cursor:pointer">⬆ Tiklash <input type="file" id="bImp" accept=".json" style="display:none"></label>
+      <button class="g" id="bDemo">↺ Demo ma'lumotni qayta yuklash</button>
+      <button class="g" id="bToza">🗑 Hammasini tozalash</button>
+    </div>
+    <div class="muted" style="margin-top:8px">Demo: ma'lumotlar shu qurilmada saqlanadi. Haqiqiy tizimda — serverda, barcha xodimlar bir bazada ishlaydi, telefon va kompyuterdan.</div></div>
+</section>
+
+<div class="foot">SutHisob demo · Saidomon Abdurahmonov · +998 90 567-30-93</div>
+</main>
+
+<script>
+// ---------- yordamchi ----------
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>Math.round(n||0).toLocaleString('ru-RU');
+const f1=n=>(Math.round((n||0)*10)/10).toLocaleString('ru-RU');
+const todayS=()=>new Date().toISOString().slice(0,10);
+const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+const kun=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+const sanaF=s=>{const [y,m,d]=s.split('-');return `${d}.${m}`};
+const KEY='suthisob-demo';
+
+// ---------- demo ma'lumot ----------
+function demo(){
+  const T=todayS();
+  const mah=[
+    {id:'sir',nom:'Sir (pishloq)',norma:10,narx:95000,muddat:30},
+    {id:'qaymoq',nom:'Qaymoq',norma:12,narx:110000,muddat:5},
+    {id:'smetana',nom:'Smetana',norma:8,narx:60000,muddat:10},
+    {id:'tvorog',nom:'Tvorog',norma:6,narx:55000,muddat:7},
+    {id:'qatiq',nom:'Qatiq',norma:1.05,narx:12000,muddat:5},
+  ];
+  const fermer=['Akmal aka','Zuhra opa','Botir fermer','Nodir aka'];
+  const dok=[{nom:'Barakat market',tel:'+998901112233'},{nom:'Oila savdo',tel:'+998933334455'},{nom:'Navro\'z do\'koni',tel:'+998975556677'},{nom:'Chorsu bozor 14',tel:'+998909998877'},{nom:'Mehr minimarket',tel:'+998911234567'}];
+  const sut=[],ish=[],sot=[],tol=[];
+  for(let i=13;i>=0;i--){
+    const d=addD(T,-i);
+    fermer.forEach((k,j)=>{ if(i===0&&j>1) return; sut.push({sana:d,kim:k,litr:180+((i*7+j*31)%120),yog:3.4+((i+j)%5)/10,narx:5200+j*100,tolandi:i>3?999999:0}); });
+    // ishlab chiqarish
+    const plan=[['sir',250],['qaymoq',150],['smetana',120],['tvorog',120],['qatiq',100]];
+    plan.forEach(([m,l],j)=>{ if(i===0&&j>2) return; const n=mah.find(x=>x.id===m); const dev=1+(((i*3+j)%7)-3)/100; ish.push({sana:d,mah:m,litr:l,kg:Math.round(l/n.norma*dev*10)/10}); });
+    // sotuv
+    dok.forEach((dk,j)=>{ if((i+j)%2) return; if(i===0&&j>1) return;
+      const m=mah[(i+j)%5]; const kg=m.id==='qatiq'?30+(i%4)*5:8+((i+j)%6)*2;
+      const summa=kg*m.narx; const tolandi=j===3?0:(j===2?Math.round(summa*0.3):(i%3?summa:0));
+      sot.push({sana:d,dokon:dk.nom,mah:m.id,kg,narx:m.narx,summa,tolandi}); });
+  }
+  sut.forEach(s=>{ if(s.tolandi===999999) s.tolandi=s.litr*s.narx; });
+  tol.push({sana:addD(T,-6),dokon:'Oila savdo',summa:1500000},{sana:addD(T,-2),dokon:'Barakat market',summa:2200000},{sana:addD(T,-9),dokon:'Chorsu bozor 14',summa:800000});
+  return {mah,dok,sut,ish,sot,tol,ustama:15};
+}
+let D=JSON.parse(localStorage.getItem(KEY)||'null')||demo();
+const save=()=>{localStorage.setItem(KEY,JSON.stringify(D));render();};
+
+// ---------- hisoblar ----------
+const M=id=>D.mah.find(m=>m.id===id)||{nom:id,norma:1,narx:0,muddat:7};
+const sutNarx=()=>{const l=D.sut.reduce((a,s)=>a+s.litr,0);const p=D.sut.reduce((a,s)=>a+s.litr*s.narx,0);return l?p/l:0};
+const tannarx=m=>M(m).norma*sutNarx()*(1+(D.ustama||0)/100);
+const sutQoldiq=()=>D.sut.reduce((a,s)=>a+s.litr,0)-D.ish.reduce((a,s)=>a+s.litr,0);
+const ombor=()=>{const o={};D.mah.forEach(m=>o[m.id]=0);D.ish.forEach(i=>o[i.mah]=(o[i.mah]||0)+i.kg);D.sot.forEach(s=>o[s.mah]=(o[s.mah]||0)-s.kg);return o};
+function dokonlar(){
+  const r={};
+  const get=n=>r[n]||(r[n]={nom:n,tel:(D.dok.find(d=>d.nom===n)||{}).tel||'',sotuv:0,tolov:0,oxirgi:null,eskiQarz:null,mahsulot:{},oxirgiTolov:null});
+  D.sot.forEach(s=>{const d=get(s.dokon);d.sotuv+=s.summa;d.tolov+=s.tolandi;if(!d.oxirgi||s.sana>d.oxirgi)d.oxirgi=s.sana;d.mahsulot[s.mah]=(d.mahsulot[s.mah]||0)+s.kg;});
+  D.tol.forEach(t=>{const d=get(t.dokon);d.tolov+=t.summa;if(!d.oxirgiTolov||t.sana>d.oxirgiTolov)d.oxirgiTolov=t.sana;});
+  // eng eski to'lanmagan sotuv (FIFO)
+  Object.values(r).forEach(d=>{
+    d.qarz=d.sotuv-d.tolov; let pul=d.tolov;
+    D.sot.filter(s=>s.dokon===d.nom).sort((a,b)=>a.sana<b.sana?-1:1).forEach(s=>{ if(d.eskiQarz) return; pul-=s.summa; if(pul<0) d.eskiQarz=s.sana; });
+    d.kun=d.eskiQarz?kun(d.eskiQarz,todayS()):0;
+  });
+  return Object.values(r).sort((a,b)=>b.qarz-a.qarz);
+}
+
+// ---------- render ----------
+function tbl(h,rows){return `<table><thead><tr>${h.map(x=>`<th class="${x[0]==='#'?'n':''}">${x.replace(/^#/,'')}</th>`).join('')}</tr></thead><tbody>${rows.length?rows.join(''):'<tr><td colspan="9" class="muted">Hozircha yozuv yo\'q</td></tr>'}</tbody></table>`}
+const td=(v,n)=>`<td class="${n?'n':''}">${v}</td>`;
+const kpi=(l,v,s,c='')=>`<div class="card kpi ${c}"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s||''}</div></div>`;
+
+function render(){
+  const T=todayS(); $('#today').textContent=new Date().toLocaleDateString('uz-UZ',{weekday:'long',day:'numeric',month:'long'});
+  const O=ombor(), DK=dokonlar(), qarzJ=DK.reduce((a,d)=>a+Math.max(d.qarz,0),0), muddat=DK.filter(d=>d.qarz>0&&d.kun>7);
+  const bugunSut=D.sut.filter(s=>s.sana===T), bugunIsh=D.ish.filter(s=>s.sana===T), bugunSot=D.sot.filter(s=>s.sana===T);
+  const omborQiymat=D.mah.reduce((a,m)=>a+Math.max(O[m.id],0)*m.narx,0);
+  // BOSH
+  $('#kpi').innerHTML=kpi('Bugun sut kirimi',f1(bugunSut.reduce((a,s)=>a+s.litr,0))+' L',fmt(bugunSut.reduce((a,s)=>a+s.litr*s.narx,0))+' so\'m')
+    +kpi('Qayta ishlanmagan sut',f1(sutQoldiq())+' L','ishlab chiqarishga tayyor',sutQoldiq()>500?'mid':'')
+    +kpi('Bugun ishlab chiqarildi',f1(bugunIsh.reduce((a,s)=>a+s.kg,0))+' kg',bugunIsh.length+' partiya')
+    +kpi('Bugun sotildi',fmt(bugunSot.reduce((a,s)=>a+s.summa,0))+' so\'m',bugunSot.length+' ta yuk','good')
+    +kpi('Ombordagi mahsulot',fmt(omborQiymat)+' so\'m','sotuv narxida')
+    +kpi('Do\'konlar qarzi',fmt(qarzJ)+' so\'m',muddat.length+' do\'kon 7 kundan oshgan',qarzJ>0?'bad':'');
+  $('#bugun').innerHTML=`<ul style="margin:0;padding-left:18px;line-height:1.7">
+    ${bugunSut.map(s=>`<li>🐄 ${s.kim}: <b>${f1(s.litr)} L</b> (${s.yog}%) — ${fmt(s.litr*s.narx)} so'm</li>`).join('')}
+    ${bugunIsh.map(s=>`<li>🏭 ${M(s.mah).nom}: ${f1(s.litr)} L → <b>${f1(s.kg)} kg</b></li>`).join('')}
+    ${bugunSot.map(s=>`<li>🏪 ${s.dokon}: ${f1(s.kg)} kg ${M(s.mah).nom} — ${fmt(s.summa)} ${s.tolandi>=s.summa?'<span class="tag ok">to\'landi</span>':s.tolandi?`<span class="tag mid">qisman</span>`:'<span class="tag bad">qarzga</span>'}</li>`).join('')}
+    ${!bugunSut.length&&!bugunIsh.length&&!bugunSot.length?'<li class="muted">Bugun hali yozuv yo\'q</li>':''}</ul>`;
+  const og=[];
+  muddat.forEach(d=>og.push(`<li>💳 <b>${d.nom}</b> — ${fmt(d.qarz)} so'm, <span class="tag bad">${d.kun} kun</span></li>`));
+  D.mah.forEach(m=>{ if(O[m.id]<5) og.push(`<li>📦 <b>${m.nom}</b> omborda tugayapti: ${f1(O[m.id])} kg</li>`); });
+  if(sutQoldiq()>500) og.push(`<li>🥛 ${f1(sutQoldiq())} L sut qayta ishlanmagan — buzilish xavfi</li>`);
+  D.mah.forEach(m=>{ const ox=D.ish.filter(i=>i.mah===m.id).slice(-3); ox.forEach(i=>{const norma=i.litr/m.norma; if(i.kg<norma*0.93) og.push(`<li>⚠️ ${sanaF(i.sana)} ${m.nom}: normadan ${f1((1-i.kg/norma)*100)}% kam chiqdi</li>`)}); });
+  $('#ogoh').innerHTML=og.length?`<ul style="margin:0;padding-left:18px;line-height:1.7">${og.join('')}</ul>`:'<span class="muted">Hammasi joyida ✅</span>';
+  const mx=Math.max(...D.mah.map(m=>O[m.id]),1);
+  $('#omborMini').innerHTML=D.mah.map(m=>`<div style="display:flex;align-items:center;gap:8px;margin:5px 0"><span style="width:110px">${m.nom}</span><div class="bar" style="flex:1"><i style="width:${Math.max(O[m.id],0)/mx*100}%"></i></div><b style="width:70px;text-align:right">${f1(O[m.id])} kg</b></div>`).join('');
+  const s7={}; for(let i=6;i>=0;i--) s7[addD(T,-i)]=0; D.sut.forEach(s=>{if(s.sana in s7) s7[s.sana]+=s.litr}); const m7=Math.max(...Object.values(s7),1);
+  $('#sut7').innerHTML=`<div style="display:flex;gap:6px;align-items:flex-end;height:110px">${Object.entries(s7).map(([d,v])=>`<div style="flex:1;text-align:center;font-size:11px"><div style="font-weight:600">${Math.round(v)}</div><div style="background:var(--acc);border-radius:4px 4px 0 0;height:${v/m7*70}px;margin:2px 4px 0"></div><div class="muted">${sanaF(d)}</div></div>`).join('')}</div>`;
+
+  // SUT
+  $('#fermerlar').innerHTML=[...new Set(D.sut.map(s=>s.kim))].map(k=>`<option value="${k}">`).join('');
+  const oy=T.slice(0,7), fj={};
+  D.sut.filter(s=>s.sana.startsWith(oy)).forEach(s=>{const f=fj[s.kim]||(fj[s.kim]={l:0,p:0,t:0,y:0});f.l+=s.litr;f.p+=s.litr*s.narx;f.t+=s.tolandi;f.y+=s.yog*s.litr});
+  $('#fermerJami').innerHTML=tbl(['Fermer','#Litr','#O\'rt. yog\'','#Summa','#Qarzimiz'],Object.entries(fj).map(([k,f])=>`<tr>${td(k)}${td(f1(f.l),1)}${td(f1(f.y/f.l)+'%',1)}${td(fmt(f.p),1)}${td(f.p-f.t>0?`<span class="tag bad">${fmt(f.p-f.t)}</span>`:'<span class="tag ok">0</span>',1)}</tr>`));
+  const jamiL=D.sut.reduce((a,s)=>a+s.litr,0), ishL=D.ish.reduce((a,s)=>a+s.litr,0);
+  $('#sutBalans').innerHTML=`<table><tr><td>Jami qabul qilingan</td>${td(f1(jamiL)+' L',1)}</tr><tr><td>Ishlab chiqarishga ketgan</td>${td(f1(ishL)+' L',1)}</tr><tr><td><b>Qoldiq (qayta ishlanmagan)</b></td>${td('<b>'+f1(jamiL-ishL)+' L</b>',1)}</tr><tr><td>O'rtacha sut narxi</td>${td(fmt(sutNarx())+' so\'m/L',1)}</tr></table>`;
+  $('#sutJ').innerHTML=tbl(['Sana','Fermer','#Litr','#Yog\'','#Narx','#Summa','Holat',''],[...D.sut].reverse().slice(0,40).map((s,i)=>`<tr>${td(sanaF(s.sana))}${td(s.kim)}${td(f1(s.litr),1)}${td(s.yog+'%',1)}${td(fmt(s.narx),1)}${td(fmt(s.litr*s.narx),1)}${td(s.tolandi>=s.litr*s.narx?'<span class="tag ok">to\'langan</span>':'<span class="tag bad">qarz '+fmt(s.litr*s.narx-s.tolandi)+'</span>')}<td><button class="d" onclick="del('sut',${D.sut.length-1-i})">×</button></td></tr>`));
+
+  // ISHLAB
+  const opts=D.mah.map(m=>`<option value="${m.id}">${m.nom}</option>`).join(''); const v1=$('#selMah').value,v2=$('#selMah2').value;
+  $('#selMah').innerHTML=opts; $('#selMah2').innerHTML=opts; if(v1)$('#selMah').value=v1; if(v2)$('#selMah2').value=v2;
+  kalk();
+  const ch=[...D.ish].reverse().slice(0,8).map(i=>{const n=i.litr/M(i.mah).norma,p=(i.kg/n-1)*100;return `<tr>${td(sanaF(i.sana))}${td(M(i.mah).nom)}${td(f1(n),1)}${td(f1(i.kg),1)}${td(`<span class="tag ${p<-5?'bad':p>3?'mid':'ok'}">${p>0?'+':''}${f1(p)}%</span>`,1)}</tr>`});
+  $('#chetlanish').innerHTML=tbl(['Sana','Mahsulot','#Norma kg','#Haqiqat','#Farq'],ch);
+  $('#ishJ').innerHTML=tbl(['Sana','Mahsulot','#Sut (L)','#Chiqdi (kg)','#Tannarx/kg','#Sotuv/kg','#Marja',''],[...D.ish].reverse().slice(0,40).map((i,k)=>{const t=tannarx(i.mah),m=M(i.mah);return `<tr>${td(sanaF(i.sana))}${td(m.nom)}${td(f1(i.litr),1)}${td(f1(i.kg),1)}${td(fmt(t),1)}${td(fmt(m.narx),1)}${td(`<span class="tag ${m.narx>t*1.2?'ok':'mid'}">${fmt((m.narx/t-1)*100)}%</span>`,1)}<td><button class="d" onclick="del('ish',${D.ish.length-1-k})">×</button></td></tr>`}));
+
+  // OMBOR
+  $('#omborT').innerHTML=tbl(['Mahsulot','#Ishlab chiqarilgan','#Sotilgan','#Qoldiq (kg)','#Tannarx/kg','#Qoldiq qiymati','Holat'],D.mah.map(m=>{const p=D.ish.filter(i=>i.mah===m.id).reduce((a,i)=>a+i.kg,0),s=D.sot.filter(i=>i.mah===m.id).reduce((a,i)=>a+i.kg,0);return `<tr>${td('<b>'+m.nom+'</b>')}${td(f1(p),1)}${td(f1(s),1)}${td('<b>'+f1(O[m.id])+'</b>',1)}${td(fmt(tannarx(m.id)),1)}${td(fmt(O[m.id]*m.narx),1)}${td(O[m.id]<5?'<span class="tag bad">tugayapti</span>':O[m.id]>60?'<span class="tag mid">ko\'p turibdi</span>':'<span class="tag ok">me\'yorda</span>')}</tr>`}));
+  $('#muddat').innerHTML=tbl(['Mahsulot','#Yaroqlilik','Eng eski partiya','Holat'],D.mah.map(m=>{const ox=D.ish.filter(i=>i.mah===m.id).sort((a,b)=>a.sana<b.sana?-1:1);const eski=ox.length?ox[Math.max(0,ox.length-3)].sana:null;const k=eski?kun(eski,T):0;return `<tr>${td(m.nom)}${td(m.muddat+' kun',1)}${td(eski?sanaF(eski)+' ('+k+' kun)':'—')}${td(!eski?'—':k>=m.muddat?'<span class="tag bad">muddati o\'tgan bo\'lishi mumkin</span>':k>=m.muddat-2?'<span class="tag mid">tez sotish kerak</span>':'<span class="tag ok">yangi</span>')}</tr>`}));
+
+  // SOTUV
+  $('#dokonlar').innerHTML=[...new Set([...D.dok.map(d=>d.nom),...D.sot.map(s=>s.dokon)])].map(k=>`<option value="${k}">`).join('');
+  $('#dokT').innerHTML=tbl(['Do\'kon','Nima oladi','Oxirgi yuk','#Jami olgan','#To\'lagan','#Qarz','Holat'],DK.map(d=>`<tr>${td('<b>'+d.nom+'</b><br><span class="muted">'+d.tel+'</span>')}${td(Object.entries(d.mahsulot).sort((a,b)=>b[1]-a[1]).map(([m,k])=>`${M(m).nom} ${f1(k)}kg`).join(', '))}${td(d.oxirgi?sanaF(d.oxirgi)+' <span class="muted">('+kun(d.oxirgi,T)+' kun oldin)</span>':'—')}${td(fmt(d.sotuv),1)}${td(fmt(d.tolov),1)}${td(d.qarz>0?'<b style="color:var(--warn)">'+fmt(d.qarz)+'</b>':'0',1)}${td(d.qarz<=0?'<span class="tag ok">toza</span>':d.kun>14?'<span class="tag bad">'+d.kun+' kun!</span>':d.kun>7?'<span class="tag mid">'+d.kun+' kun</span>':'<span class="tag ok">'+d.kun+' kun</span>')}</tr>`));
+  $('#sotJ').innerHTML=tbl(['Sana','Do\'kon','Mahsulot','#Kg','#Narx','#Summa','#To\'landi',''],[...D.sot].reverse().slice(0,40).map((s,k)=>`<tr>${td(sanaF(s.sana))}${td(s.dokon)}${td(M(s.mah).nom)}${td(f1(s.kg),1)}${td(fmt(s.narx),1)}${td(fmt(s.summa),1)}${td(s.tolandi>=s.summa?'<span class="tag ok">'+fmt(s.tolandi)+'</span>':'<span class="tag bad">'+fmt(s.tolandi)+'</span>',1)}<td><button class="d" onclick="del('sot',${D.sot.length-1-k})">×</button></td></tr>`));
+
+  // QARZ
+  const qd=DK.filter(d=>d.qarz>0);
+  $('#qarzKpi').innerHTML=kpi('Jami qarz',fmt(qarzJ)+' so\'m',qd.length+' do\'kon','bad')+kpi('7 kundan oshgan',fmt(qd.filter(d=>d.kun>7).reduce((a,d)=>a+d.qarz,0))+' so\'m',qd.filter(d=>d.kun>7).length+' do\'kon','bad')+kpi('Shu hafta tushgan pul',fmt(D.tol.filter(t=>kun(t.sana,T)<7).reduce((a,t)=>a+t.summa,0)+D.sot.filter(t=>kun(t.sana,T)<7).reduce((a,t)=>a+t.tolandi,0))+' so\'m','','good')+kpi('Fermerlarga qarzimiz',fmt(D.sut.reduce((a,s)=>a+Math.max(s.litr*s.narx-s.tolandi,0),0))+' so\'m','sut uchun');
+  $('#qarzT').innerHTML=tbl(['Do\'kon','#Qarz','Eng eski qarz','#Kun','Oxirgi to\'lov','Eslatma'],qd.sort((a,b)=>b.kun-a.kun).map(d=>`<tr>${td('<b>'+d.nom+'</b>')}${td('<b>'+fmt(d.qarz)+'</b>',1)}${td(d.eskiQarz?sanaF(d.eskiQarz):'—')}${td(`<span class="tag ${d.kun>14?'bad':d.kun>7?'mid':'ok'}">${d.kun}</span>`,1)}${td(d.oxirgiTolov?sanaF(d.oxirgiTolov):'<span class="muted">hech qachon</span>')}<td><button class="g" onclick="eslat('${d.nom.replace(/'/g,"\\'")}')">✉ Matn</button></td></tr>`));
+
+  // HISOBOT
+  if(!$('#d1').value){$('#d1').value=addD(T,-6);$('#d2').value=T}
+  hisobot();
+
+  // SOZ
+  $('#normT').innerHTML=tbl(['Mahsulot','#Norma (L / 1 kg)','#Sotuv narxi (so\'m/kg)','#Yaroqlilik (kun)','#Tannarx (hozir)','#Marja'],D.mah.map((m,i)=>`<tr>${td(m.nom)}${td(`<input type="number" step="0.1" value="${m.norma}" style="max-width:90px" onchange="soz(${i},'norma',this.value)">`,1)}${td(`<input type="number" value="${m.narx}" style="max-width:110px" onchange="soz(${i},'narx',this.value)">`,1)}${td(`<input type="number" value="${m.muddat}" style="max-width:70px" onchange="soz(${i},'muddat',this.value)">`,1)}${td(fmt(tannarx(m.id)),1)}${td(fmt((m.narx/tannarx(m.id)-1)*100)+'%',1)}</tr>`));
+  $('#ustama').value=D.ustama||0;
+  $$('input[type=date][name=sana]').forEach(i=>{if(!i.value)i.value=T});
+}
+function kalk(){const L=+$('#kalkL').value||0;$('#kalk').innerHTML=tbl(['Agar hammasini...','#Chiqadi','#Tannarx 1 kg','#Sotuv summasi'],D.mah.map(m=>{const kg=L/m.norma;return `<tr>${td(m.nom+' qilsak')}${td('<b>'+f1(kg)+' kg</b>',1)}${td(fmt(tannarx(m.id)),1)}${td(fmt(kg*m.narx),1)}</tr>`}))}
+function hisobot(){
+  const a=$('#d1').value,b=$('#d2').value,in_=s=>s.sana>=a&&s.sana<=b;
+  const sut=D.sut.filter(in_),ish=D.ish.filter(in_),sot=D.sot.filter(in_),tol=D.tol.filter(in_);
+  const sutL=sut.reduce((x,s)=>x+s.litr,0),sutP=sut.reduce((x,s)=>x+s.litr*s.narx,0),sotS=sot.reduce((x,s)=>x+s.summa,0),tan=sot.reduce((x,s)=>x+s.kg*tannarx(s.mah),0);
+  const pul=tol.reduce((x,t)=>x+t.summa,0)+sot.reduce((x,s)=>x+s.tolandi,0);
+  $('#hKpi').innerHTML=kpi('Sut qabul',f1(sutL)+' L',fmt(sutP)+' so\'m')+kpi('Ishlab chiqarildi',f1(ish.reduce((x,i)=>x+i.kg,0))+' kg',ish.length+' partiya')+kpi('Sotuv',fmt(sotS)+' so\'m',f1(sot.reduce((x,s)=>x+s.kg,0))+' kg','good')+kpi('Kassaga tushdi',fmt(pul)+' so\'m','naqd + to\'lovlar')+kpi('Yalpi foyda',fmt(sotS-tan)+' so\'m',sotS?fmt((sotS-tan)/sotS*100)+'% marja':'',sotS-tan>0?'good':'bad');
+  const pm={};sot.forEach(s=>{const p=pm[s.mah]||(pm[s.mah]={kg:0,s:0,t:0});p.kg+=s.kg;p.s+=s.summa;p.t+=s.kg*tannarx(s.mah)});
+  $('#hMah').innerHTML=tbl(['Mahsulot','#Sotildi kg','#Summa','#Foyda'],Object.entries(pm).sort((x,y)=>y[1].s-x[1].s).map(([m,p])=>`<tr>${td(M(m).nom)}${td(f1(p.kg),1)}${td(fmt(p.s),1)}${td(fmt(p.s-p.t),1)}</tr>`));
+  const dm={};sot.forEach(s=>{const p=dm[s.dokon]||(dm[s.dokon]={s:0,n:0});p.s+=s.summa;p.n++});
+  $('#hDok').innerHTML=tbl(['Do\'kon','#Yuklar','#Summa'],Object.entries(dm).sort((x,y)=>y[1].s-x[1].s).map(([d,p])=>`<tr>${td(d)}${td(p.n,1)}${td(fmt(p.s),1)}</tr>`));
+}
+function eslat(nom){const d=dokonlar().find(x=>x.nom===nom);$('#eslatma').value=`Assalomu alaykum, ${nom}!\nSizning sut mahsulotlari bo'yicha qarzingiz: ${fmt(d.qarz)} so'm (eng eskisi ${sanaF(d.eskiQarz)} dan, ${d.kun} kun).\nIltimos, yaqin kunlarda to'lab bering. Rahmat!\n— SutHisob avtomatik eslatmasi`;$('#eslatma').scrollIntoView({behavior:'smooth'})}
+function del(k,i){if(confirm('O\'chirilsinmi?')){D[k].splice(i,1);save()}}
+function soz(i,k,v){D.mah[i][k]=+v;save()}
+function fd(f){const o={};new FormData(f).forEach((v,k)=>o[k]=isNaN(v)||v===''?v:+v);return o}
+
+// ---------- hodisalar ----------
+$$('nav button').forEach(b=>b.onclick=()=>{$$('nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');$$('.sec').forEach(s=>s.classList.remove('on'));$('#s-'+b.dataset.s).classList.add('on');window.scrollTo(0,0)});
+$('#fSut').onsubmit=e=>{e.preventDefault();const o=fd(e.target);D.sut.push({sana:o.sana,kim:o.kim,litr:o.litr,yog:o.yog||0,narx:o.narx,tolandi:o.tolandi||0});e.target.litr.value='';e.target.tolandi.value=0;save()};
+$('#fSut').oninput=e=>{const f=e.target.form;$('#sutHint').innerHTML=f.litr.value&&f.narx.value?`<b>${f1(+f.litr.value)} L × ${fmt(+f.narx.value)} = ${fmt(f.litr.value*f.narx.value)} so'm</b>${+f.tolandi.value<f.litr.value*f.narx.value?` · fermerga qarz qoladi: ${fmt(f.litr.value*f.narx.value-f.tolandi.value)}`:''}`:'Litr va narxni kiriting — summa avtomatik chiqadi.'};
+$('#fIsh').onsubmit=e=>{e.preventDefault();const o=fd(e.target);const kg=o.kg||+(o.litr/M(o.mah).norma).toFixed(1);if(o.litr>sutQoldiq()+0.01&&!confirm(`Omborda faqat ${f1(sutQoldiq())} L sut bor. Baribir yozilsinmi?`))return;D.ish.push({sana:o.sana,mah:o.mah,litr:o.litr,kg});e.target.litr.value='';e.target.kg.value='';save()};
+$('#fIsh').oninput=e=>{const f=e.target.form,m=M(f.mah.value),L=+f.litr.value;$('#ishHint').innerHTML=L?`<b>${f1(L)} L sut → ≈ ${f1(L/m.norma)} kg ${m.nom}</b> (norma ${m.norma} L/kg) · 1 kg tannarxi ≈ <b>${fmt(tannarx(m.id))} so'm</b> · sotuvda ${fmt(m.narx)} → partiya foydasi ≈ ${fmt(L/m.norma*(m.narx-tannarx(m.id)))} so'm`:'Sut miqdorini kiriting — qancha mahsulot chiqishi va 1 kg tannarxi hisoblanadi.'};
+$('#kalkL').oninput=kalk;
+$('#fSot').onsubmit=e=>{e.preventDefault();const o=fd(e.target);const O=ombor();if(o.kg>O[o.mah]+0.01&&!confirm(`Omborda faqat ${f1(O[o.mah])} kg ${M(o.mah).nom} bor. Baribir yozilsinmi?`))return;if(!D.dok.find(d=>d.nom===o.dokon))D.dok.push({nom:o.dokon,tel:''});D.sot.push({sana:o.sana,dokon:o.dokon,mah:o.mah,kg:o.kg,narx:o.narx,summa:o.kg*o.narx,tolandi:o.tolandi||0});e.target.kg.value='';e.target.tolandi.value=0;save()};
+$('#fSot').oninput=e=>{const f=e.target.form;if(e.target.name==='mah'||!f.narx.value)f.narx.value=M(f.mah.value).narx;const s=f.kg.value*f.narx.value;$('#sotHint').innerHTML=s?`<b>Summa: ${fmt(s)} so'm</b> · naqd ${fmt(+f.tolandi.value)} · <b style="color:var(--warn)">qarzga yoziladi: ${fmt(Math.max(s-f.tolandi.value,0))}</b>`:'Qolgan summa do\'kon qarziga avtomatik yoziladi.'};
+$('#selMah2').onchange=()=>{$('#fSot').narx.value=M($('#selMah2').value).narx};
+$('#fTol').onsubmit=e=>{e.preventDefault();const o=fd(e.target);D.tol.push({sana:o.sana,dokon:o.dokon,summa:o.summa});e.target.summa.value='';save()};
+$('#d1').onchange=$('#d2').onchange=hisobot;
+$('#dHafta').onclick=()=>{$('#d1').value=addD(todayS(),-6);$('#d2').value=todayS();hisobot()};
+$('#dOy').onclick=()=>{$('#d1').value=todayS().slice(0,8)+'01';$('#d2').value=todayS();hisobot()};
+$('#ustama').onchange=e=>{D.ustama=+e.target.value;save()};
+$('#bExp').onclick=()=>{const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(JSON.stringify(D));a.download='suthisob-'+todayS()+'.json';a.click()};
+$('#bImp').onchange=e=>{const r=new FileReader();r.onload=()=>{try{D=JSON.parse(r.result);save()}catch{alert('Fayl noto\'g\'ri')}};r.readAsText(e.target.files[0])};
+$('#bDemo').onclick=()=>{if(confirm('Demo ma\'lumot qayta yuklansinmi?')){D=demo();save()}};
+$('#bToza').onclick=()=>{if(confirm('Hamma yozuvlar o\'chiriladi. Davom etasizmi?')){D={mah:D.mah,dok:[],sut:[],ish:[],sot:[],tol:[],ustama:D.ustama};save()}};
+render();
+$('#fSot').narx.value=M($('#selMah2').value).narx;
+</script>
+</body>
+</html>
